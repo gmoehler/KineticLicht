@@ -21,28 +21,82 @@ Adafruit_StepperMotor *motor4 = AFMS_b.getStepper(200, 1);
 #define oe  -1  // set to -1 to not use the enable pin (its optional)
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, clock, data, latch);
 
-
-
-KeyFrame keyFrames1[2] {
+KeyFrame motor1_kf[2] {
   {5000, 400},
   {7000, 200}
 };
 
-KeyFrame keyFrames2[2] {
+KeyFrame motor2_kf[2] {
   {5000, 400},
   {7000, 200}
 };
 
-KeyFrameRgb keyFramesRgb1[] {
+KeyFrame motor3_kf[2] {
+  {5000, 400},
+  {7000, 200}
+};
+
+KeyFrame motor4_kf[2] {
+  {5000, 400},
+  {7000, 200}
+};
+
+
+KeyFrameRgb rgb1o_kf[] {
+  {2000, RED},
+  {4000, YELLOW},
+  {7000, BLUE}
+};
+
+KeyFrameRgb rgb1u_kf[] {
+  {2000, RED},
+  {4000, YELLOW},
+  {7000, BLUE}
+};
+KeyFrameRgb rgb2o_kf[] {
+  {2000, RED},
+  {4000, YELLOW},
+  {7000, BLUE}
+};
+KeyFrameRgb rgb2u_kf[] {
+  {2000, RED},
+  {4000, YELLOW},
+  {7000, BLUE}
+};
+KeyFrameRgb rgb3o_kf[] {
+  {2000, RED},
+  {4000, YELLOW},
+  {7000, BLUE}
+};
+KeyFrameRgb rgb3u_kf[] {
+  {2000, RED},
+  {4000, YELLOW},
+  {7000, BLUE}
+};
+KeyFrameRgb rgb4o_kf[] {
+  {2000, RED},
+  {4000, YELLOW},
+  {7000, BLUE}
+};
+KeyFrameRgb rgb4u_kf[] {
   {2000, RED},
   {4000, YELLOW},
   {7000, BLUE}
 };
 
 
-KeyFrameStepper  stepper1 = KeyFrameStepper(motor1, keyFrames1, 2);
-KeyFrameStepper  stepper2 = KeyFrameStepper(motor2, keyFrames2, 2);
-KeyFrameRgbLED       led1 = KeyFrameRgbLED (&tlc, 0, keyFramesRgb1, 3);
+KeyFrameStepper  stepper1 = KeyFrameStepper(motor1, motor1_kf, 2);
+KeyFrameStepper  stepper2 = KeyFrameStepper(motor2, motor2_kf, 2);
+KeyFrameStepper  stepper3 = KeyFrameStepper(motor3, motor3_kf, 2);
+KeyFrameStepper  stepper4 = KeyFrameStepper(motor4, motor4_kf, 2);
+KeyFrameRgbLED      rgb1o = KeyFrameRgbLED (&tlc, 0, rgb1o_kf, 3);
+KeyFrameRgbLED      rgb1u = KeyFrameRgbLED (&tlc, 1, rgb1u_kf, 3);
+KeyFrameRgbLED      rgb2o = KeyFrameRgbLED (&tlc, 2, rgb2o_kf, 3);
+KeyFrameRgbLED      rgb2u = KeyFrameRgbLED (&tlc, 3, rgb2u_kf, 3);
+KeyFrameRgbLED      rgb3o = KeyFrameRgbLED (&tlc, 4, rgb3o_kf, 3);
+KeyFrameRgbLED      rgb3u = KeyFrameRgbLED (&tlc, 5, rgb3u_kf, 3);
+KeyFrameRgbLED      rgb4o = KeyFrameRgbLED (&tlc, 6, rgb4o_kf, 3);
+KeyFrameRgbLED      rgb4u = KeyFrameRgbLED (&tlc, 7, rgb4u_kf, 3);
 
 void setup()
 {
@@ -51,12 +105,32 @@ void setup()
   
   stepper1.start();
   stepper2.start();
-  led1.start();
+  stepper3.start();
+  stepper4.start();
+  
+  rgb1o.start();
+  rgb1u.start();
+  rgb2o.start();
+  rgb2u.start();
+  rgb3o.start();
+  rgb3u.start();
+  rgb4o.start();
+  rgb4u.start();
 }
 
 void loop()
 {
   stepper1.loop();
   stepper2.loop();
-  led1.loop();
+  stepper3.loop();
+  stepper4.loop();
+  
+  rgb1o.loop();
+  rgb1u.loop();
+  rgb2o.loop();
+  rgb2u.loop();
+  rgb3o.loop();
+  rgb3u.loop();
+  rgb4o.loop();
+  rgb4u.loop();
 }
