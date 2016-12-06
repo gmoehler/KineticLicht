@@ -2,8 +2,8 @@
 
 bool debug1 = false;
 
-KeyFrameRgbLED::KeyFrameRgbLED(int ledRedPin, int ledGreenPin, int ledBluePin, KeyFrameRgb keyFrame[], int numFrames)
- : _rgbLed(ledRedPin, ledGreenPin, ledBluePin), _keyFrame(keyFrame), _numFrames(numFrames)
+KeyFrameRgbLED::KeyFrameRgbLED(Adafruit_TLC5947* tlc, int ledId, KeyFrameRgb keyFrame[], int numFrames)
+ : _rgbLed(tlc, ledId), _keyFrame(keyFrame), _numFrames(numFrames)
 {
   _startTime = 0;
   _animationActive = false;

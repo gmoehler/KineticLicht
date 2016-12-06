@@ -1,14 +1,25 @@
-#include <AFMotor.h>
+#include <Adafruit_MotorShield.h>
+#include "Adafruit_TLC5947.h"
+
 #include "KeyFrameStepper.h"
 #include "KeyFrameRgbLED.h"
 
 // two stepper motors one on each port
-AF_Stepper motor1(200, 1);
-AF_Stepper motor2(200, 2);
+//AF_Stepper motor1(200, 1);
+//AF_Stepper motor2(200, 2);
+Adafruit_MotorShield AFMS_a = Adafruit_MotorShield(0x61); 
+Adafruit_MotorShield AFMS_b = Adafruit_MotorShield(0x61); 
 
-int  ledRedPin = 44;
-int  ledGreenPin = 45;
-int  ledBluePin = 46;
+Adafruit_StepperMotor *motor1 = AFMS_a.getStepper(200, 0);
+Adafruit_StepperMotor *motor2 = AFMS_a.getStepper(200, 1);
+Adafruit_StepperMotor *motor3 = AFMS_b.getStepper(200, 0);
+Adafruit_StepperMotor *motor4 = AFMS_b.getStepper(200, 1);
+
+#define data   4
+#define clock   5
+#define latch   6
+#define oe  -1  // set to -1 to not use the enable pin (its optional)
+Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, clock, data, latch);
 
 
 
@@ -31,7 +42,7 @@ KeyFrameRgb keyFramesRgb1[] {
 
 KeyFrameStepper  stepper1 = KeyFrameStepper(motor1, keyFrames1, 2);
 KeyFrameStepper  stepper2 = KeyFrameStepper(motor2, keyFrames2, 2);
-KeyFrameRgbLED       led1 = KeyFrameRgbLED(ledRedPin, ledGreenPin, ledBluePin, keyFramesRgb1, 3);
+KeyFrameRgbLED       led1 = KeyFrameRgbLED (&tlc, 0, keyFramesRgb1, 3);
 
 void setup()
 {

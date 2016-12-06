@@ -2,7 +2,7 @@
 
 bool debug = false;
 
-KeyFrameStepper::KeyFrameStepper(AF_Stepper motor, KeyFrame keyFrame[], int numFrames)
+KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor, KeyFrame keyFrame[], int numFrames)
  : _motor(motor), _keyFrame(keyFrame), _numFrames(numFrames)
 {
   _startTime = 0;
@@ -123,13 +123,13 @@ unsigned long KeyFrameStepper::getRuntime() {
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
 // wrappers for the first motor!
 void KeyFrameStepper::forwardStep() {
-  _motor.onestep(FORWARD, DOUBLE);
+  _motor->onestep(FORWARD, DOUBLE);
 }
 void KeyFrameStepper::backwardStep() {
-  _motor.onestep(BACKWARD, DOUBLE);
+  _motor->onestep(BACKWARD, DOUBLE);
 }
 void KeyFrameStepper::release() {
   Serial.println("Release");
-  _motor.release();
+  _motor->release();
 }
 

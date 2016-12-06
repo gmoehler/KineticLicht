@@ -4,13 +4,13 @@
 #define KeyFrameStepper_h
 
 #include "Arduino.h"
-#include <AFMotor.h>
+#include <Adafruit_MotorShield.h>
 #include "KeyFrame.h"
 
 class KeyFrameStepper
 {
   public:
-    KeyFrameStepper(AF_Stepper motor, KeyFrame keyFrame[], int numFrames);
+    KeyFrameStepper(Adafruit_StepperMotor *motor, KeyFrame keyFrame[], int numFrames);
 
     void start();
     void loop();
@@ -37,7 +37,7 @@ class KeyFrameStepper
     // release the motor
     void release();
 
-    AF_Stepper _motor;
+    Adafruit_StepperMotor *_motor;
     KeyFrame* _keyFrame;
     int _numFrames;
     int _currentFrameIdx;

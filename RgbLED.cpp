@@ -1,16 +1,9 @@
 #include "RgbLED.h"
 
-RgbLED::RgbLED(int redPin, int greenPin, int bluePin) {
-
-  //Rotary LED pins
-  ledRedPin = redPin;
-  ledGreenPin = greenPin;
-  ledBluePin = bluePin;
-
-  pinMode(ledRedPin, OUTPUT);
-  pinMode(ledGreenPin, OUTPUT);
-  pinMode(ledBluePin, OUTPUT);
-}
+RgbLED::RgbLED(Adafruit_TLC5947* tlc, int rgbId) :
+  _rgbId(rgbId), _tlc(tlc){
+    
+    };
 
 void RgbLED::white(int brightness) {
   rgbOutput(WHITE, brightness);
@@ -41,14 +34,11 @@ void RgbLED::rgbOutput(int red, int green, int blue, int brightness) {
 
   double factor = brightness / 100.0;
 
-  int red_inv   = 255 - (factor * red);
-  int green_inv = 255 - (factor * green);
-  int blue_inv  = 255 - (factor * blue);
+  int red_dimmed   = COLOR_MAX_VAL - (factor * red);
+  int green_dimmed = COLOR_MAX_VAL - (factor * green);
+  int blue_dimmed  = COLOR_MAX_VAL - (factor * blue);
 
-  analogWrite(ledRedPin, red_inv);
-  analogWrite(ledGreenPin, green_inv);
-  analogWrite(ledBluePin, blue_inv);
-
+  _tlc->setLED(_rgbId, red_dimmed, green_dimmed, blue_dimmed);
   printToSerialRgb(red, green, blue, brightness);
 }
 

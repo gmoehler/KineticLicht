@@ -4,13 +4,14 @@
 #define KeyFrameRgbLED_h
 
 #include "Arduino.h"
+#include "Adafruit_TLC5947.h"
 #include "KeyFrame.h"
 #include "RgbLED.h"
 
 class KeyFrameRgbLED
 {
 public:
-     KeyFrameRgbLED(int ledRedPin, int ledGreenPin, int ledBluePin, KeyFrameRgb keyFrame[], int numFrames);
+     KeyFrameRgbLED(Adafruit_TLC5947* tlc, int rgbId, KeyFrameRgb keyFrame[], int numFrames);
 
     void start();
     void loop();
