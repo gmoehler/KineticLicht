@@ -30,6 +30,7 @@ private:
     void calculateCurrentSpeed();
 
     RgbLED _rgbLed;
+    int _ledId;
     KeyFrameRgb* _keyFrame;
     int _numFrames;
     int _currentFrameIdx;

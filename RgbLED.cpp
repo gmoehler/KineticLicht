@@ -1,8 +1,7 @@
 #include "RgbLED.h"
 
 RgbLED::RgbLED(Adafruit_TLC5947* tlc, int rgbId) :
-  _rgbId(rgbId), _tlc(tlc){
-    
+  _rgbId(rgbId), _tlc(tlc), _printFineSerialOut(false){ 
     };
 
 void RgbLED::white(int brightness) {
@@ -32,22 +31,26 @@ void RgbLED::cyan(int brightness) {
 
 void RgbLED::rgbOutput(int red, int green, int blue, int brightness) {
 
-  double factor = brightness / 100.0;
+  int red_dimmed   = (long) red   * brightness / 100;
+  int green_dimmed = (long) green * brightness / 100;
+  int blue_dimmed  = (long) blue  * brightness / 100;
 
-  int red_dimmed   = COLOR_MAX_VAL - (factor * red);
-  int green_dimmed = COLOR_MAX_VAL - (factor * green);
-  int blue_dimmed  = COLOR_MAX_VAL - (factor * blue);
+  red_dimmed   = (red_dimmed < 0) ? 0 : red_dimmed;
+  green_dimmed = (green_dimmed < 0) ? 0 : green_dimmed;
+  blue_dimmed  = (blue_dimmed < 0) ? 0 : blue_dimmed;
 
   _tlc->setLED(_rgbId, red_dimmed, green_dimmed, blue_dimmed);
+  _tlc->write();
   printToSerialRgb(red, green, blue, brightness);
+  printToSerialRgb(red_dimmed, green_dimmed, blue_dimmed, brightness);
 }
 
 void RgbLED::doFineSerialOutput(bool doOutput) {
-  printFineSerialOut = doOutput;
+  _printFineSerialOut = doOutput;
 }
 
 void RgbLED::printToSerialRgb(int red, int green, int blue, int bright) {
-  if (printFineSerialOut) {
+  if (_printFineSerialOut) {
     Serial.print(" ");
     Serial.print(bright);
     Serial.print("%: ");

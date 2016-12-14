@@ -2,8 +2,8 @@
 
 bool debug = false;
 
-KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor, KeyFrame keyFrame[], int numFrames)
- : _motor(motor), _keyFrame(keyFrame), _numFrames(numFrames)
+KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor, int id, KeyFrame keyFrame[], int numFrames)
+ : _motor(motor), _keyFrame(keyFrame), _numFrames(numFrames), _id(id)
 {
   _startTime = 0;
   _animationActive = false;
@@ -21,23 +21,27 @@ void KeyFrameStepper::start() {
     _previousKeyFrame = KeyFrame();
     calculateCurrentSpeed();
 
-    Serial.print("Start time:");
-    Serial.println(_startTime);
+    Serial.print(_id);
+    Serial.print(" Start time:");
+    Serial.print(_startTime);
+    Serial.print(" Speed:");
+    Serial.println(_currentSpeed);
   }
 }
 
 void KeyFrameStepper::loop() {
 
-  if (_animationActive) {
+  updateCurrentKeyFrame();
 
-    updateCurrentKeyFrame();
+  if (_animationActive) {
 
     unsigned long time = getRuntime();
 
     unsigned long expectedPosition = _previousKeyFrame.getTarget() + _currentSpeed * (time -  _previousKeyFrame.getTimeMs());
 
     if (debug) {
-      Serial.print("***Loop***");
+      Serial.print(_id);
+      Serial.print(" ***Loop***");
       Serial.print("Time:");
       Serial.print(time);
       Serial.print(" Speed:");
@@ -78,8 +82,9 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
     unsigned long currentTargetTime = _currentKeyFrame.getTimeMs();
 
     if (debug) {
-      Serial.print("**Update**");
-      Serial.print("Runime:");
+      Serial.print(_id);
+      Serial.print(" **Update**");
+      Serial.print("Runtime:");
       Serial.print(runtime);
       Serial.print(" TarTime:");
       Serial.print(currentTargetTime);
@@ -91,21 +96,25 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
 
     // update current key frame if required
     while (_currentKeyFrame.getTimeMs() <= runtime) {
-      Serial.print("Update time:");
+      Serial.print(_id);
+      Serial.print(" Update time:");
       Serial.println(runtime);
       if (_currentFrameIdx == _numFrames - 1) {
-        Serial.print("Finish time:");
+        Serial.print(_id);
+        Serial.print(" Finish time:");
         Serial.println(runtime);
         _animationActive = false;
         release();
         break;
       }
       else {
-        Serial.println("NextFrame");
+        Serial.print(_id);
+        Serial.print(" NextFrame: Speed ");
         _currentFrameIdx++;
         _previousKeyFrame = _currentKeyFrame;
         _currentKeyFrame  = _keyFrame[_currentFrameIdx];
         calculateCurrentSpeed();
+        Serial.println(_currentSpeed);
       }
     }
   }
@@ -121,12 +130,11 @@ unsigned long KeyFrameStepper::getRuntime() {
 }
 
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
-// wrappers for the first motor!
 void KeyFrameStepper::forwardStep() {
-  _motor->onestep(FORWARD, DOUBLE);
+  _motor->onestep(FORWARD, INTERLEAVE);
 }
 void KeyFrameStepper::backwardStep() {
-  _motor->onestep(BACKWARD, DOUBLE);
+  _motor->onestep(BACKWARD, INTERLEAVE);
 }
 void KeyFrameStepper::release() {
   Serial.println("Release");

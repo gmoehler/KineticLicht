@@ -4,12 +4,6 @@
 #include "Arduino.h"
 #include "Adafruit_TLC5947.h"
 
-//ports
-#define data   4
-#define clock   5
-#define latch   6
-#define oe  -1  // set to -1 to not use the enable pin (its optional)
-
 #define COLOR_MAX_VAL 4095
 
 #define WHITE COLOR_MAX_VAL,COLOR_MAX_VAL,COLOR_MAX_VAL
@@ -48,7 +42,7 @@ class RgbLED {
   private:
     Adafruit_TLC5947* _tlc;
     int _rgbId;
-    bool printFineSerialOut;
+    bool _printFineSerialOut;
 };
 
 
