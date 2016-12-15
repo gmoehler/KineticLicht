@@ -4,6 +4,9 @@
 #include "KeyFrameStepper.h"
 #include "KeyFrameRgbLED.h"
 
+#include <AccelStepper.h>
+
+
 // two stepper motors one on each port
 Adafruit_MotorShield AFMS_a(0x60); 
 Adafruit_MotorShield AFMS_b(0x61); 
@@ -98,6 +101,11 @@ KeyFrameRgbLED      rgb4u = KeyFrameRgbLED (&tlc, 7, rgb4o_kf, 3);
 
 RgbLED led = RgbLED( &tlc, 4);
 
+AccelStepper astepper1(motor1->onestep(FORWARD, SINGLE), motor1->onestep(BACKWARD, SINGLE)); // use functions to step
+AccelStepper astepper2(motor2->onestep(FORWARD, SINGLE), motor2->onestep(BACKWARD, SINGLE)); // use functions to step
+AccelStepper astepper3(motor3->onestep(FORWARD, SINGLE), motor3->onestep(BACKWARD, SINGLE)); // use functions to step
+AccelStepper astepper4(motor4->onestep(FORWARD, SINGLE), motor4->onestep(BACKWARD, SINGLE)); // use functions to step
+
 
 void setup()
 {
@@ -111,6 +119,16 @@ void setup()
   stepper2.start();
   stepper3.start();
   stepper4.start();
+
+  astepper1.setSpeed(50);
+  astepper2.setSpeed(100);
+  astepper3.setSpeed(200);
+  astepper4.setSpeed(50);
+
+  astepper1.moveTo(300);
+  astepper2.moveTo(500);
+  astepper3.moveTo(200);
+  astepper4.moveTo(300);
 
   tlc.begin();
   led.doFineSerialOutput(true);
@@ -127,10 +145,15 @@ void setup()
 
 void loop()
 {
- stepper1.loop();
- stepper2.loop();
- stepper3.loop();
- stepper4.loop();
+ //stepper1.loop();
+ //stepper2.loop();
+ //stepper3.loop();
+ //stepper4.loop();
+
+  astepper1.runSpeed();
+  astepper2.runSpeed();
+  astepper3.runSpeed();
+  astepper4.runSpeed();
 
   //rgb1o.loop();
   //rgb1u.loop();
