@@ -10,13 +10,11 @@
 // two stepper motors one on each port
 Adafruit_MotorShield AFMS_a = Adafruit_MotorShield(0x60); 
 Adafruit_MotorShield AFMS_b = Adafruit_MotorShield(0x61); 
-/*
-Adafruit_StepperMotor *motor1 = AFMS_a.getStepper(200, 1);
-Adafruit_StepperMotor *motor2 = AFMS_a.getStepper(200, 2);
-Adafruit_StepperMotor *motor3 = AFMS_b.getStepper(200, 1);
-Adafruit_StepperMotor *motor4 = AFMS_b.getStepper(200, 2);
-*/
 
+Adafruit_StepperMotor *steppermotor1 = AFMS_a.getStepper(200, 1);
+Adafruit_StepperMotor *steppermotor2 = AFMS_a.getStepper(200, 2);
+Adafruit_StepperMotor *steppermotor3 = AFMS_b.getStepper(200, 1);
+Adafruit_StepperMotor *steppermotor4 = AFMS_b.getStepper(200, 2);
 
 #define data   4
 #define clock  5
@@ -93,10 +91,6 @@ KeyFrameStepper  stepper2 = KeyFrameStepper(motor2, 2, motor2_kf, 2);
 KeyFrameStepper  stepper3 = KeyFrameStepper(motor3, 3, motor3_kf, 2);
 KeyFrameStepper  stepper4 = KeyFrameStepper(motor4, 4, motor4_kf, 2);
 */
-Adafruit_StepperMotor *stepper1 = AFMS_a.getStepper(200, 1);
-Adafruit_StepperMotor *stepper2 = AFMS_a.getStepper(200, 2);
-Adafruit_StepperMotor *stepper3 = AFMS_b.getStepper(200, 1);
-Adafruit_StepperMotor *stepper4 = AFMS_b.getStepper(200, 2);
 
 KeyFrameRgbLED      rgb1o = KeyFrameRgbLED (&tlc, 0, rgb1u_kf, 3);
 KeyFrameRgbLED      rgb1u = KeyFrameRgbLED (&tlc, 1, rgb1o_kf, 3);
@@ -108,39 +102,39 @@ KeyFrameRgbLED      rgb4o = KeyFrameRgbLED (&tlc, 6, rgb4u_kf, 3);
 KeyFrameRgbLED      rgb4u = KeyFrameRgbLED (&tlc, 7, rgb4o_kf, 3);
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
 void forwardstep1() {  
-  stepper1->onestep(FORWARD, DOUBLE);
+  steppermotor1->onestep(FORWARD, DOUBLE);
 }
 void backwardstep1() {  
-  stepper1->onestep(BACKWARD, DOUBLE);
+  steppermotor1->onestep(BACKWARD, DOUBLE);
 }
 AccelStepper astepper1(forwardstep1, backwardstep1); // use functions to step
 
 void forwardstep2() {  
-  stepper2->onestep(FORWARD, DOUBLE);
+  steppermotor2->onestep(FORWARD, DOUBLE);
 }
 void backwardstep2() {  
-  stepper2->onestep(BACKWARD, DOUBLE);
+  steppermotor2->onestep(BACKWARD, DOUBLE);
 }
 
 AccelStepper astepper2(forwardstep2, backwardstep2); // use functions to step
 
 void forwardstep3() {  
-  stepper3->onestep(FORWARD, DOUBLE);
+  steppermotor3->onestep(FORWARD, DOUBLE);
 }
 void backwardstep3() {  
-  stepper3->onestep(BACKWARD, DOUBLE);
+  steppermotor3->onestep(BACKWARD, DOUBLE);
 }
 
 AccelStepper astepper3(forwardstep3, backwardstep3); // use functions to step
 
 void forwardstep4() {  
-  stepper4->onestep(FORWARD, DOUBLE);
+  steppermotor4->onestep(FORWARD, DOUBLE);
 }
 void backwardstep4() {  
-  stepper4->onestep(BACKWARD, DOUBLE);
+  steppermotor4->onestep(BACKWARD, DOUBLE);
 }
 
-AccelStepper astepper4(forwardstep4, backwardstep4); // use functions to step
+Accelsteppermotor astepper4(forwardstep4, backwardstep4); // use functions to step
 
 RgbLED led = RgbLED( &tlc, 4);
 
