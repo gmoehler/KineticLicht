@@ -10,7 +10,7 @@
 class KeyFrameStepper
 {
   public:
-    KeyFrameStepper(Adafruit_StepperMotor *motor, int id, KeyFrame keyFrame[], int numFrames);
+    KeyFrameStepper(Adafruit_StepperMotor *motor, int id, KeyFrame keyFrame[], int numFrames, int endStopPin);
 
     void start();
     void loop();
@@ -37,6 +37,10 @@ class KeyFrameStepper
     // release the motor
     void release();
 
+    getCurrentPosition();
+    resetPosition();
+    updateSpeed();
+
     Adafruit_StepperMotor *_motor;
     int _id;
     KeyFrame* _keyFrame;
@@ -44,6 +48,7 @@ class KeyFrameStepper
     int _currentFrameIdx;
     long _currentPosition;
     double _currentSpeed;
+    int _endStopPin;
 
     unsigned long _startTime;
 

@@ -2,8 +2,8 @@
 
 bool debug = false;
 
-KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor, int id, KeyFrame keyFrame[], int numFrames)
- : _motor(motor), _keyFrame(keyFrame), _numFrames(numFrames), _id(id)
+KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor, int id, KeyFrame keyFrame[], int numFrames, int endStopPin)
+ : _motor(motor), _keyFrame(keyFrame), _numFrames(numFrames), _id(id), _endStopPin(endStopPin)
 {
   _startTime = 0;
   _animationActive = false;
@@ -15,11 +15,16 @@ KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor, int id, KeyFrame 
 
 void KeyFrameStepper::start() {
   if (_numFrames > 0) {
+
+    pinMode(_endStopPin,INPUT_PULLUP);
+
     _animationActive = true;
     _startTime = millis();
+    resetPosition();
     _currentKeyFrame = _keyFrame[_currentFrameIdx];
     _previousKeyFrame = KeyFrame();
     calculateCurrentSpeed();
+    updateSpeed();
 
     Serial.print(_id);
     Serial.print(" Start time:");
@@ -29,12 +34,29 @@ void KeyFrameStepper::start() {
   }
 }
 
+void KeyFrameStepper::calibrate(){
+
+    setSpeed(-20);
+
+    while (! isEndStop()){
+        run();
+    }
+    release();
+}
+
 void KeyFrameStepper::loop() {
 
+  if (isEndStop()) {
+    release();
+    _animationActive = false;
+  }
   updateCurrentKeyFrame();
 
   if (_animationActive) {
 
+    updateSpeed();
+
+    /*
     unsigned long time = getRuntime();
 
     unsigned long expectedPosition = _previousKeyFrame.getTarget() + _currentSpeed * (time -  _previousKeyFrame.getTimeMs());
@@ -70,6 +92,7 @@ void KeyFrameStepper::loop() {
         dirPrinted = true;
       }
     }
+    */
   }
 }
 
@@ -109,6 +132,10 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
       }
       else {
         Serial.print(_id);
+        Serial.print( "Expected position: ");
+        Serial.print(_currentKeyFrame.getTarget());
+        Serial.print( "Actual position  : ")
+        Serial.print(getCurrentPosition());
         Serial.print(" NextFrame: Speed ");
         _currentFrameIdx++;
         _previousKeyFrame = _currentKeyFrame;
@@ -129,6 +156,28 @@ unsigned long KeyFrameStepper::getRuntime() {
   return millis() - _startTime;
 }
 
+long KeyFrameStepper::getCurrentPosition(){
+  Serial.println("Current Position");
+  return _motor->currentPosition();
+}
+
+void KeyFrameStepper::resetPosition() {
+  Serial.println("Reset Position");
+  _motor->setCurrentPosition(0);
+}
+
+void KeyFrameStepper::release() {
+  Serial.println("Release");
+  _motor->release();
+}
+
+void KeyFrameStepper::updateSpeed() {
+  Serial.print("SetSpeed: ");
+  Serial.println(_currentSpeed);
+  _motor->setSpeed(_currentSpeed);
+}
+
+
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
 void KeyFrameStepper::forwardStep() {
   _motor->onestep(FORWARD, INTERLEAVE);
@@ -136,8 +185,9 @@ void KeyFrameStepper::forwardStep() {
 void KeyFrameStepper::backwardStep() {
   _motor->onestep(BACKWARD, INTERLEAVE);
 }
-void KeyFrameStepper::release() {
-  Serial.println("Release");
-  _motor->release();
-}
 
+bool isEndStop(){
+
+    int endStop = digitalRead(_endStopPin);
+    return (endStop == HIGH);
+}
