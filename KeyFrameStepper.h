@@ -24,7 +24,7 @@ class KeyFrameStepper
     bool isAnimationFinished();
 
     // did the end stop switch detect the light
-    bool isEndStop();
+    bool isEndStopHit();
 
     // initial routine: tear up lights until they hit the end stop - call this 0 and go down a bit
     void calibrate();
@@ -58,6 +58,9 @@ class KeyFrameStepper
 
     // reset the current position to 0
     void resetPosition();
+
+    // what to do when an end stop is reached
+    void operateOnEndStop();
 
     Adafruit_StepperMotor *_motor;
     AccelStepper _astepper;

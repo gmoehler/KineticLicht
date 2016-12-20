@@ -182,20 +182,20 @@ void loop()
  //stepper3.loop();
  //stepper4.loop();
 
- if (kfstepper1.isEndStop()){
+ if (kfstepper1.isEndStopHit()){
   Serial.println("1 Stop");
  }
- if (kfstepper2.isEndStop()){
+ if (kfstepper2.isEndStopHit()){
   Serial.println("2 Stop");
  }
- if (kfstepper3.isEndStop()){
+ if (kfstepper3.isEndStopHit()){
   Serial.println("3 Stop");
  }
- if (kfstepper4.isEndStop()){
+ if (kfstepper4.isEndStopHit()){
   Serial.println("4 Stop");
  }
 
-  //kfstepper3.calibrate();
+  kfstepper3.calibrate();
 
 /*  
   astepper1.runSpeed();

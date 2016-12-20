@@ -44,12 +44,16 @@ void KeyFrameStepper::start() {
 
 void KeyFrameStepper::calibrate() {
 
+  serprint0("Calibrating");
+
   // go up until end stop is hit
   _astepper.setSpeed(-20);
 
   while (! isEndStopHit()) {
     _astepper.run();
   }
+
+  serprint0("Calibration reached end stop");
 
   // go down until end stop is released again
   _astepper.setSpeed(20);
@@ -60,7 +64,9 @@ void KeyFrameStepper::calibrate() {
   // call this 0
   resetPosition();
 
-  release();
+  //release();
+
+  serprint0("Calibration finished");
 }
 
 void KeyFrameStepper::loop() {
