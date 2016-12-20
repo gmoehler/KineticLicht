@@ -78,47 +78,49 @@ void KeyFrameStepper::loop() {
 
   updateCurrentKeyFrame();
 
-/*
+
   if (_animationActive) {
 
-    
-      unsigned long time = getRuntime();
+    runStepper();
 
-      unsigned long expectedPosition = _previousKeyFrame.getTarget() + _currentSpeed * (time -  _previousKeyFrame.getTimeMs());
+    /*
+          unsigned long time = getRuntime();
 
-      if (debug) {
-      Serial.print(_id);
-      Serial.print(" ***Loop***");
-      Serial.print("Time:");
-      Serial.print(time);
-      Serial.print(" Speed:");
-      Serial.print(_currentSpeed);
-      Serial.print(" Pos:");
-      Serial.print(_currentPosition);
-      Serial.print(" ExpPos:");
-      Serial.println(expectedPosition);
-      }
+          unsigned long expectedPosition = _previousKeyFrame.getTarget() + _currentSpeed * (time -  _previousKeyFrame.getTimeMs());
 
-      bool dirPrinted = false;
-      while (_currentPosition < expectedPosition) {
-      _currentPosition += 1;
-      forwardStep();
-      if (!dirPrinted) {
-        //Serial.println("->forward");
-        dirPrinted = true;
-      }
-      }
-      dirPrinted = false;
-      while (_currentPosition > expectedPosition) {
-      _currentPosition -= 1;
-      backwardStep();
-      if (!dirPrinted) {
-        // Serial.println("->backward");
-        dirPrinted = true;
-      }
-      }
+          if (debug) {
+          Serial.print(_id);
+          Serial.print(" ***Loop***");
+          Serial.print("Time:");
+          Serial.print(time);
+          Serial.print(" Speed:");
+          Serial.print(_currentSpeed);
+          Serial.print(" Pos:");
+          Serial.print(_currentPosition);
+          Serial.print(" ExpPos:");
+          Serial.println(expectedPosition);
+          }
+
+          bool dirPrinted = false;
+          while (_currentPosition < expectedPosition) {
+          _currentPosition += 1;
+          forwardStep();
+          if (!dirPrinted) {
+            //Serial.println("->forward");
+            dirPrinted = true;
+          }
+          }
+          dirPrinted = false;
+          while (_currentPosition > expectedPosition) {
+          _currentPosition -= 1;
+          backwardStep();
+          if (!dirPrinted) {
+            // Serial.println("->backward");
+            dirPrinted = true;
+          }
+          }
+    */
   }
-  */
 }
 
 void KeyFrameStepper::updateCurrentKeyFrame() {
@@ -158,12 +160,7 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
         break;
       }
       else {
-        Serial.print(_id);
-        Serial.print( "Expected position: ");
-        Serial.print(_currentKeyFrame.getTarget());
-        Serial.print( "Actual position  : ");
-        Serial.print(getCurrentPosition());
-        Serial.print(" NextFrame: Speed ");
+        serprint("%d Expected position: %d Actual: %l", _id, _currentKeyFrame.getTarget(), getCurrentPosition());
 
         // read next key frame and update speed
         _currentFrameIdx++;
@@ -181,10 +178,8 @@ void KeyFrameStepper::updateSpeed(double speed) {
     _currentSpeed =  speed;
 
     _astepper.setSpeed(_currentSpeed);
-    _astepper.runSpeed();
-    
-    serprint0("Update Speed: ");
-    Serial.println(_currentSpeed);
+
+    serprint("Update Speed: %f", _currentSpeed);
   }
 }
 
@@ -199,17 +194,17 @@ unsigned long KeyFrameStepper::getRuntime() {
 }
 
 long KeyFrameStepper::getCurrentPosition() {
-  serprint0("Current Position");
+  serprint("%d Current Position", _id);
   return _astepper.currentPosition();
 }
 
 void KeyFrameStepper::resetPosition() {
-  serprint0("Reset Position");
+  serprint("%d Reset Position", _id);
   _astepper.setCurrentPosition(0);
 }
 
 void KeyFrameStepper::release() {
-  serprint0("Release");
+  serprint("%d Release", _id);
   _motor->release();
 }
 
@@ -231,6 +226,10 @@ void KeyFrameStepper::operateOnEndStop() {
   calibrate();
 }
 
+void KeyFrameStepper::runStepper() {
+  _astepper.runSpeed();
+}
+
 void KeyFrameStepper::serprint0(char* str) {
 
   Serial.print(_id);
@@ -245,23 +244,43 @@ void KeyFrameStepper::serprint1(char* str) {
   Serial.println(str);
 }
 
-void KeyFrameStepper::serprint(char* str, ...) {
+int KeyFrameStepper::serprint(char* str, ...) {
 
-  Serial.print(_id);
-  Serial.print(" ");
+  int i, j, count = 0;
 
-  va_list ap;
-  va_start(ap, str);
+  va_list argv;
+  va_start(argv, str);
+  for (i = 0, j = 0; str[i] != '\0'; i++) {
+    if (str[i] == '%') {
+      count++;
 
-  for (int i = 1; i <= str; i++) {
-    char* text = va_arg(ap, char*);
-    if (i < str) {
-      Serial.print(text);
+      Serial.write(reinterpret_cast<const uint8_t*>(str + j), i - j);
+
+      switch (str[++i]) {
+        case 'd': Serial.print(va_arg(argv, int));
+          break;
+        case 'l': Serial.print(va_arg(argv, long));
+          break;
+        case 'f': Serial.print(va_arg(argv, double));
+          break;
+        case 'c': Serial.print((char) va_arg(argv, int));
+          break;
+        case 's': Serial.print(va_arg(argv, char *));
+          break;
+        case '%': Serial.print("%");
+          break;
+        default:;
+      };
+
+      j = i + 1;
     }
-    else {
-      Serial.println(text);
-    }
+  };
+  va_end(argv);
+
+  if (i > j) {
+    Serial.write(reinterpret_cast<const uint8_t*>(str + j), i - j);
   }
-  va_end(ap);
+
+  return count;
 }
 

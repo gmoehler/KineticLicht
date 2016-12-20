@@ -9,6 +9,7 @@
 
 #include "KeyFrame.h"
 
+
 class KeyFrameStepper
 {
   public:
@@ -44,6 +45,9 @@ class KeyFrameStepper
     // calculate a new speed based on the next key frame
     void updateSpeed();
 
+    // where we actually do the stepping work
+    void runStepper();
+
     // one step forward
     void forwardStep();
 
@@ -74,7 +78,7 @@ class KeyFrameStepper
     int _endStopPin;
     void serprint0(char* str);
     void serprint1(char* str);
-    void serprint(char* str, ...);
+    int serprint(char* str, ...);
 
 
     unsigned long _startTime;
