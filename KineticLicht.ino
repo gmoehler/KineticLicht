@@ -85,12 +85,7 @@ KeyFrameRgb rgb4u_kf[] {
   {7000, BLUE}
 };
 
-/*
-KeyFrameStepper  stepper1 = KeyFrameStepper(motor1, 1, motor1_kf, 2);
-KeyFrameStepper  stepper2 = KeyFrameStepper(motor2, 2, motor2_kf, 2);
-KeyFrameStepper  stepper3 = KeyFrameStepper(motor3, 3, motor3_kf, 2);
-KeyFrameStepper  stepper4 = KeyFrameStepper(motor4, 4, motor4_kf, 2);
-*/
+
 
 KeyFrameRgbLED      rgb1o = KeyFrameRgbLED (&tlc, 0, rgb1u_kf, 3);
 KeyFrameRgbLED      rgb1u = KeyFrameRgbLED (&tlc, 1, rgb1o_kf, 3);
@@ -115,7 +110,6 @@ void forwardstep2() {
 void backwardstep2() {  
   steppermotor2->onestep(BACKWARD, DOUBLE);
 }
-
 AccelStepper astepper2(forwardstep2, backwardstep2); // use functions to step
 
 void forwardstep3() {  
@@ -124,7 +118,6 @@ void forwardstep3() {
 void backwardstep3() {  
   steppermotor3->onestep(BACKWARD, DOUBLE);
 }
-
 AccelStepper astepper3(forwardstep3, backwardstep3); // use functions to step
 
 void forwardstep4() {  
@@ -133,10 +126,15 @@ void forwardstep4() {
 void backwardstep4() {  
   steppermotor4->onestep(BACKWARD, DOUBLE);
 }
+AccelStepper astepper4(forwardstep4, backwardstep4); // use functions to step
 
-Accelsteppermotor astepper4(forwardstep4, backwardstep4); // use functions to step
+KeyFrameStepper  kfstepper1 = KeyFrameStepper(steppermotor1, astepper1, 1, motor1_kf, 2, 47);
+KeyFrameStepper  kfstepper2 = KeyFrameStepper(steppermotor2, astepper2, 2, motor2_kf, 2, 49);
+KeyFrameStepper  kfstepper3 = KeyFrameStepper(steppermotor3, astepper3, 3, motor3_kf, 2, 51);
+KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, motor4_kf, 2, 53);
 
-RgbLED led = RgbLED( &tlc, 4);
+
+//RgbLED led = RgbLED( &tlc, 4);
 
 void setup()
 {
@@ -145,16 +143,19 @@ void setup()
 
   AFMS_a.begin();
   AFMS_b.begin();
+  TWBR = ((F_CPU /400000l) - 16) / 2; // Change the i2c clock to 400KHz
+  
+  kfstepper1.start();
+  kfstepper2.start();
+  kfstepper3.start();
+  kfstepper4.start();
+
 /*  
-  stepper1.start();
-  stepper2.start();
-  stepper3.start();
-  stepper4.start();
-*/
   astepper1.setSpeed(50);
   astepper2.setSpeed(100);
   astepper3.setSpeed(200);
   astepper4.setSpeed(4000);
+*/
 /*
   astepper1.moveTo(300);
   astepper2.moveTo(500);
@@ -181,11 +182,27 @@ void loop()
  //stepper3.loop();
  //stepper4.loop();
 
-  //astepper1.runSpeed();
+ if (kfstepper1.isEndStop()){
+  Serial.println("1 Stop");
+ }
+ if (kfstepper2.isEndStop()){
+  Serial.println("2 Stop");
+ }
+ if (kfstepper3.isEndStop()){
+  Serial.println("3 Stop");
+ }
+ if (kfstepper4.isEndStop()){
+  Serial.println("4 Stop");
+ }
+
+  //kfstepper3.calibrate();
+
+/*  
+  astepper1.runSpeed();
   astepper2.runSpeed();
-  //astepper3.runSpeed();
+  astepper3.runSpeed();
   astepper4.runSpeed();
- 
+*/ 
   //rgb1o.loop();
   //rgb1u.loop();
   //rgb2o.loop();
