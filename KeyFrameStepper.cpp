@@ -44,29 +44,28 @@ void KeyFrameStepper::start() {
 
 void KeyFrameStepper::calibrate() {
 
-  serprint0("Calibrating");
+  serprint0("Calibrating...");
 
   // go up until end stop is hit
   _astepper.setSpeed(-20);
 
   while (! isEndStopHit()) {
-    _astepper.run();
+    _astepper.runSpeed();
   }
 
-  serprint0("Calibration reached end stop");
+  Serial.print("...reached end stop...");
+  delay(100);
 
   // go down until end stop is released again
   _astepper.setSpeed(20);
   while (isEndStopHit()) {
-    _astepper.run();
+    _astepper.runSpeed();
   }
 
   // call this 0
   resetPosition();
-
   //release();
-
-  serprint0("Calibration finished");
+  Serial.println (" ...finished.");
 }
 
 void KeyFrameStepper::loop() {
@@ -79,11 +78,10 @@ void KeyFrameStepper::loop() {
 
   updateCurrentKeyFrame();
 
+/*
   if (_animationActive) {
 
-    updateSpeed();
-
-    /*
+    
       unsigned long time = getRuntime();
 
       unsigned long expectedPosition = _previousKeyFrame.getTarget() + _currentSpeed * (time -  _previousKeyFrame.getTimeMs());
@@ -119,8 +117,8 @@ void KeyFrameStepper::loop() {
         dirPrinted = true;
       }
       }
-    */
   }
+  */
 }
 
 void KeyFrameStepper::updateCurrentKeyFrame() {
@@ -178,17 +176,21 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
 }
 
 void KeyFrameStepper::updateSpeed(double speed) {
-  _currentSpeed =  speed;
 
-  _astepper.setSpeed(_currentSpeed);
-  serprint0("SetSpeed: ");
-  Serial.println(_currentSpeed);
+  if (speed != _currentSpeed) {
+    _currentSpeed =  speed;
+
+    _astepper.setSpeed(_currentSpeed);
+    _astepper.runSpeed();
+    
+    serprint0("Update Speed: ");
+    Serial.println(_currentSpeed);
+  }
 }
-
 
 void KeyFrameStepper::updateSpeed() {
   double newSpeed =  1000 * ((double)(_currentKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
-                   / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
+                     / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
   updateSpeed(newSpeed);
 }
 
@@ -226,31 +228,38 @@ bool KeyFrameStepper::isEndStopHit() {
 }
 
 void KeyFrameStepper::operateOnEndStop() {
-    calibrate();
+  calibrate();
 }
 
-void KeyFrameStepper::serprint0(char* str){
+void KeyFrameStepper::serprint0(char* str) {
 
   Serial.print(_id);
   Serial.print(" ");
   Serial.print(str);
 }
 
+void KeyFrameStepper::serprint1(char* str) {
+
+  Serial.print(_id);
+  Serial.print(" ");
+  Serial.println(str);
+}
+
 void KeyFrameStepper::serprint(char* str, ...) {
 
   Serial.print(_id);
   Serial.print(" ");
-  
+
   va_list ap;
   va_start(ap, str);
 
   for (int i = 1; i <= str; i++) {
     char* text = va_arg(ap, char*);
-    if (i < str){
-        Serial.print(text);
+    if (i < str) {
+      Serial.print(text);
     }
     else {
-        Serial.println(text);
+      Serial.println(text);
     }
   }
   va_end(ap);

@@ -73,6 +73,7 @@ class KeyFrameStepper
     double _currentSpeed;
     int _endStopPin;
     void serprint0(char* str);
+    void serprint1(char* str);
     void serprint(char* str, ...);
 
 

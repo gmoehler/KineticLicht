@@ -26,7 +26,7 @@ void KeyFrameRgbLED::start() {
 
     Serial.print("RGB Start time:");
     Serial.print(_startTime);
-    Serial.print("Speed: ");
+    Serial.print(" Speed: ");
     Serial.print(_currentRedSpeed);
     Serial.print (" ");
     Serial.print(_currentGreenSpeed);

@@ -33,8 +33,8 @@ KeyFrame motor2_kf[2] {
 };
 
 KeyFrame motor3_kf[2] {
-  {5000, 400},
-  {7000, 200}
+  {5000, 2000},
+  {7000, 1500}
 };
 
 KeyFrame motor4_kf[2] {
@@ -145,10 +145,10 @@ void setup()
   AFMS_b.begin();
   TWBR = ((F_CPU /400000l) - 16) / 2; // Change the i2c clock to 400KHz
   
-  kfstepper1.start();
-  kfstepper2.start();
+  //kfstepper1.start();
+  //kfstepper2.start();
   kfstepper3.start();
-  kfstepper4.start();
+  //kfstepper4.start();
 
 /*  
   astepper1.setSpeed(50);
@@ -179,23 +179,25 @@ void loop()
 {
  //stepper1.loop();
  //stepper2.loop();
- //stepper3.loop();
+ kfstepper3.loop();
  //stepper4.loop();
 
- if (kfstepper1.isEndStopHit()){
+ /*
+  if (kfstepper1.isEndStopHit()){
   Serial.println("1 Stop");
  }
  if (kfstepper2.isEndStopHit()){
   Serial.println("2 Stop");
  }
+ */
  if (kfstepper3.isEndStopHit()){
   Serial.println("3 Stop");
  }
+ /*
  if (kfstepper4.isEndStopHit()){
   Serial.println("4 Stop");
  }
-
-  kfstepper3.calibrate();
+*/
 
 /*  
   astepper1.runSpeed();
