@@ -14,10 +14,19 @@ class KeyFrameStepper
   public:
     KeyFrameStepper(Adafruit_StepperMotor *motor, AccelStepper &astepper, int id, KeyFrame keyFrame[], int numFrames, int endStopPin);
 
+    // to be called in setup()
     void start();
+
+    // to be called in loop()
     void loop();
+
+    // did we pass the last key frame
     bool isAnimationFinished();
+
+    // did the end stop switch detect the light
     bool isEndStop();
+
+    // initial routine: tear up lights until they hit the end stop - call this 0 and go down a bit
     void calibrate();
 
   protected:
@@ -29,8 +38,11 @@ class KeyFrameStepper
     // update current and previous key frames
     void updateCurrentKeyFrame();
 
-    // calculates the current Speed
-    void calculateCurrentSpeed();
+    // update to a specified speed
+    void updateSpeed(double newSpeed);
+
+    // calculate a new speed based on the next key frame
+    void updateSpeed();
 
     // one step forward
     void forwardStep();
@@ -41,9 +53,11 @@ class KeyFrameStepper
     // release the motor
     void release();
 
+    // get current position of stepper
     long getCurrentPosition();
+
+    // reset the current position to 0
     void resetPosition();
-    void updateSpeed();
 
     Adafruit_StepperMotor *_motor;
     AccelStepper _astepper;

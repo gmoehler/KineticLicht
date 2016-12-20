@@ -19,13 +19,20 @@ void KeyFrameStepper::start() {
 
     pinMode(_endStopPin, INPUT_PULLUP);
 
-    _animationActive = true;
-    _startTime = millis();
-    resetPosition();
+    // calibrate position
+    calibrate();
+
+    // initialize key frames
+    _currentFrameIdx = 0;
     _currentKeyFrame = _keyFrame[_currentFrameIdx];
     _previousKeyFrame = KeyFrame();
-    calculateCurrentSpeed();
+
+    // set speed and time
     updateSpeed();
+    _startTime = millis();
+
+    // allow animation to run
+    _animationActive = true;
 
     Serial.print(_id);
     Serial.print(" Start time:");
@@ -37,20 +44,33 @@ void KeyFrameStepper::start() {
 
 void KeyFrameStepper::calibrate() {
 
+  // go up until end stop is hit
   _astepper.setSpeed(-20);
 
-  while (! isEndStop()) {
+  while (! isEndStopHit()) {
     _astepper.run();
   }
+
+  // go down until end stop is released again
+  _astepper.setSpeed(20);
+  while (isEndStopHit()) {
+    _astepper.run();
+  }
+
+  // call this 0
+  resetPosition();
+
   release();
 }
 
 void KeyFrameStepper::loop() {
 
-  if (isEndStop()) {
-    release();
+  if (isEndStopHit()) {
+    operateOnEndStop();
     _animationActive = false;
+    return;
   }
+
   updateCurrentKeyFrame();
 
   if (_animationActive) {
@@ -123,12 +143,14 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
       Serial.print(_id);
       Serial.print(" Update time:");
       Serial.println(runtime);
+
+      // we have passed the last key frame: end animation
       if (_currentFrameIdx == _numFrames - 1) {
         Serial.print(_id);
         Serial.print(" Finish time:");
         Serial.println(runtime);
         _animationActive = false;
-        release();
+        updateSpeed(0);
         break;
       }
       else {
@@ -138,19 +160,30 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
         Serial.print( "Actual position  : ");
         Serial.print(getCurrentPosition());
         Serial.print(" NextFrame: Speed ");
+
+        // read next key frame and update speed
         _currentFrameIdx++;
         _previousKeyFrame = _currentKeyFrame;
         _currentKeyFrame  = _keyFrame[_currentFrameIdx];
-        calculateCurrentSpeed();
-        Serial.println(_currentSpeed);
+        updateSpeed();
       }
     }
   }
 }
 
-void KeyFrameStepper::calculateCurrentSpeed() {
-  _currentSpeed =  ((double)(_currentKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
+void KeyFrameStepper::updateSpeed(double speed) {
+  _currentSpeed =  speed;
+
+  _astepper.setSpeed(_currentSpeed);
+  serprint0("SetSpeed: ");
+  Serial.println(_currentSpeed);
+}
+
+
+void KeyFrameStepper::updateSpeed() {
+  double newSpeed =  1000 * ((double)(_currentKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
                    / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
+  updateSpeed(newSpeed);
 }
 
 unsigned long KeyFrameStepper::getRuntime() {
@@ -168,16 +201,9 @@ void KeyFrameStepper::resetPosition() {
 }
 
 void KeyFrameStepper::release() {
-  Serial.println("Release");
+  serprint0("Release");
   _motor->release();
 }
-
-void KeyFrameStepper::updateSpeed() {
-  Serial.print("SetSpeed: ");
-  Serial.println(_currentSpeed);
-  _astepper.setSpeed(_currentSpeed);
-}
-
 
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
 void KeyFrameStepper::forwardStep() {
@@ -187,12 +213,15 @@ void KeyFrameStepper::backwardStep() {
   _motor->onestep(BACKWARD, INTERLEAVE);
 }
 
-bool KeyFrameStepper::isEndStop() {
+bool KeyFrameStepper::isEndStopHit() {
 
   int endStop = digitalRead(_endStopPin);
   return (endStop == LOW);
 }
 
+void KeyFrameStepper::operateOnEndStop() {
+    calibrate();
+}
 
 void KeyFrameStepper::serprint0(char* str){
 
