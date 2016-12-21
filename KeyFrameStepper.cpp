@@ -1,7 +1,8 @@
 #include "KeyFrameStepper.h"
 
-bool debug = true;
+bool debug = false;
 #define ARDBUFFER 80
+#define MAX_SPEED 600
 
 KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor,  AccelStepper &astepper, int id,
                                  KeyFrame keyFrame[], int numFrames, int endStopPin, bool reverseDirection)
@@ -22,8 +23,8 @@ void KeyFrameStepper::start() {
 
     pinMode(_endStopPin, INPUT_PULLUP);
 
-    // calibrate position
-    calibrate();
+    // should be calibrated by the time we come here
+    //calibrate();
 
     // initialize key frames
     _currentFrameIdx = 0;
@@ -37,28 +38,39 @@ void KeyFrameStepper::start() {
     // allow animation to run
     _animationActive = true;
 
-    serprintln("%d Start  Exp t: %d t: %l", _id, _currentKeyFrame.getTimeMs(), getRuntime());
+    serprintln("%d ***START  Tgt t: %d t: %l", _id, _currentKeyFrame.getTimeMs(), getRuntime(), 0);
     Serial.println(getRuntime());
-    serprintln("%d Start  Exp pos: %d Act: %l", _id, 0, getCurrentPosition());
+    serprintln("%d Start  Tgt pos: %d Act: %l", _id, 0, getCurrentPosition(), 0);
   }
 }
 
 void KeyFrameStepper::calibrate() {
 
-  serprintln("Calibrating...");
+  pinMode(_endStopPin, INPUT_PULLUP);
+  
+  serprintln("%d ***CALIBRATING...", _id);
 
   // go up until end stop is hit
-  updateSpeed(-20);
+  updateSpeed(-100);
 
   while (! isEndStopHit()) {
     _astepper.runSpeed();
   }
 
   Serial.println("...reached end stop...");
-  delay(100);
+  delay(300);
 
-  // go down until end stop is released again
-  updateSpeed(20);
+  // go down 200ms and then until end stop is released again
+  Serial.println("...going down - phase 1...");
+  updateSpeed(100);
+  long now = millis();
+
+  while (millis() - now < 200) {
+    //Serial.println(millis());
+    _astepper.runSpeed();
+  }
+  
+  Serial.println("...going down - phase 2...");
   while (isEndStopHit()) {
     _astepper.runSpeed();
   }
@@ -151,18 +163,17 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
 
       // we have passed the last key frame: end animation
       if (_currentFrameIdx == _numFrames - 1) {
-        serprintln("%d Finish Exp t: %d t: %l", _id, currentTargetTime, runtime);
+        serprintln("%d ***FINISH Exp t: %d t: %l", _id, currentTargetTime, runtime, 0);
         Serial.println(runtime);
-        serprintln("%d Finish Exp pos: %d Act: %d", _id, tgtPos, curPos);
+        serprintln("%d Finish Exp pos: %d Act: %d", _id, tgtPos, curPos, 0);
         _animationActive = false;
         updateSpeed(0);
         break;
       }
       else {
-        serprintln("%d Update Exp t: %d t: %d", _id, currentTargetTime, runtime);
+        serprintln("%d UPDATE Exp t: %d t: %d", _id, currentTargetTime, runtime, 0);
         Serial.println(runtime);
-        serprintln("%d Update Exp pos: %d Act: %d", _id, tgtPos, curPos);
-
+        serprintln("%d Update Exp pos: %d Act: %d", _id, tgtPos, curPos, 0);
         // read next key frame and update speed
         _currentFrameIdx++;
         _previousKeyFrame = _currentKeyFrame;
@@ -176,10 +187,13 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
 void KeyFrameStepper::updateSpeed(double speed) {
 
   if (speed != _currentSpeed) {
+    if (abs(speed) > MAX_SPEED) {
+      speed = speed > 0 ? MAX_SPEED : -MAX_SPEED;
+    }
     _currentSpeed =  speed;
     double act_speed = _reverseDirection ? - _currentSpeed : _currentSpeed;
     _astepper.setSpeed(act_speed);
-    serprintln("%d Update Speed: %f Act: %f", _id, _currentSpeed, act_speed);
+    serprintln("%d Update Speed: %f Act: %f", _id, _currentSpeed, act_speed, 0);
   }
 }
 
@@ -203,7 +217,7 @@ void KeyFrameStepper::resetPosition() {
   serprintln("%d Reset Position", _id);
   _astepper.setCurrentPosition(0);
   long curPos = _astepper.currentPosition();
-  serprintln("%d Current Position: %d", _id, curPos);
+  serprintln("%d Current Position: %d", _id, curPos, 0);
 }
 
 void KeyFrameStepper::release() {
@@ -226,6 +240,7 @@ bool KeyFrameStepper::isEndStopHit() {
 }
 
 void KeyFrameStepper::operateOnEndStop() {
+  serprintln("%d Endstop", _id);
   calibrate();
 }
 

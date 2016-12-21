@@ -19,7 +19,7 @@ KeyFrameRgbLED::KeyFrameRgbLED(Adafruit_TLC5947* tlc, int ledId, KeyFrameRgb key
 void KeyFrameRgbLED::start() {
   if (_numFrames > 0) {
     _animationActive = true;
-    _startTime = millis();
+    _startTime = millis(); 
     _currentKeyFrame = _keyFrame[_currentFrameIdx];
     _previousKeyFrame = KeyFrameRgb();
     calculateCurrentSpeed();
