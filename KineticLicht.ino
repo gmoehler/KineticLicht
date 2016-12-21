@@ -70,10 +70,10 @@ void backwardstep4() {
 }
 AccelStepper astepper4(forwardstep4, backwardstep4); // use functions to step
 
-KeyFrameStepper  kfstepper1 = KeyFrameStepper(steppermotor1, astepper1, 1, motor1_kf, 2, 47);
-KeyFrameStepper  kfstepper2 = KeyFrameStepper(steppermotor2, astepper2, 2, motor2_kf, 2, 49);
-KeyFrameStepper  kfstepper3 = KeyFrameStepper(steppermotor3, astepper3, 3, motor3_kf, 2, 51);
-KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, motor4_kf, 2, 53);
+KeyFrameStepper  kfstepper1 = KeyFrameStepper(steppermotor1, astepper1, 1, motor1_kf, 2, 47, true);
+KeyFrameStepper  kfstepper2 = KeyFrameStepper(steppermotor2, astepper2, 2, motor2_kf, 2, 49, false);
+KeyFrameStepper  kfstepper3 = KeyFrameStepper(steppermotor3, astepper3, 3, motor3_kf, 2, 51, false);
+KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, motor4_kf, 2, 53, true);
 
 /************
  *  Setup   *

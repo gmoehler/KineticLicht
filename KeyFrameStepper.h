@@ -13,7 +13,8 @@
 class KeyFrameStepper
 {
   public:
-    KeyFrameStepper(Adafruit_StepperMotor *motor, AccelStepper &astepper, int id, KeyFrame keyFrame[], int numFrames, int endStopPin);
+    KeyFrameStepper(Adafruit_StepperMotor *motor, AccelStepper &astepper, int id, KeyFrame keyFrame[], 
+                    int numFrames, int endStopPin, bool reverseDirection);
 
     // to be called in setup()
     void start();
@@ -76,9 +77,8 @@ class KeyFrameStepper
     long _currentPosition;
     double _currentSpeed;
     int _endStopPin;
-    void serprint0(char* str);
-    void serprint1(char* str);
-    int serprint(char* str, ...);
+    bool _reverseDirection;
+    void serprintln(char* str, ...);
 
 
     unsigned long _startTime;

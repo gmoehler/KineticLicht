@@ -1,9 +1,12 @@
 #include "KeyFrameStepper.h"
 
-bool debug = false;
+bool debug = true;
+#define ARDBUFFER 80
 
-KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor,  AccelStepper &astepper, int id, KeyFrame keyFrame[], int numFrames, int endStopPin)
-  : _motor(motor), _astepper(astepper), _keyFrame(keyFrame), _numFrames(numFrames), _id(id), _endStopPin(endStopPin)
+KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor,  AccelStepper &astepper, int id,
+                                 KeyFrame keyFrame[], int numFrames, int endStopPin, bool reverseDirection)
+  : _motor(motor), _astepper(astepper), _keyFrame(keyFrame), _numFrames(numFrames), _id(id),
+    _endStopPin(endStopPin), _reverseDirection(reverseDirection)
 {
   _startTime = 0;
   _animationActive = false;
@@ -34,30 +37,27 @@ void KeyFrameStepper::start() {
     // allow animation to run
     _animationActive = true;
 
-    Serial.print(_id);
-    Serial.print(" Start time:");
-    Serial.print(_startTime);
-    Serial.print(" Speed:");
-    Serial.println(_currentSpeed);
+    serprintln("%d Start  Exp t: %d t: %d", _id, _currentKeyFrame.getTimeMs(), getRuntime());
+    serprintln("%d Start  Exp pos: %d Act: %l", _id, 0, getCurrentPosition());
   }
 }
 
 void KeyFrameStepper::calibrate() {
 
-  serprint0("Calibrating...");
+  serprintln("Calibrating...");
 
   // go up until end stop is hit
-  _astepper.setSpeed(-20);
+  updateSpeed(-20);
 
   while (! isEndStopHit()) {
     _astepper.runSpeed();
   }
 
-  Serial.print("...reached end stop...");
+  Serial.println("...reached end stop...");
   delay(100);
 
   // go down until end stop is released again
-  _astepper.setSpeed(20);
+  updateSpeed(20);
   while (isEndStopHit()) {
     _astepper.runSpeed();
   }
@@ -127,11 +127,9 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
 
   if (_animationActive) {
     unsigned long runtime = getRuntime();
-    //    Serial.println(runtime);
-
     unsigned long currentTargetTime = _currentKeyFrame.getTimeMs();
 
-    if (debug) {
+    if (0) {
       Serial.print(_id);
       Serial.print(" **Update**");
       Serial.print("Runtime:");
@@ -146,21 +144,21 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
 
     // update current key frame if required
     while (_currentKeyFrame.getTimeMs() <= runtime) {
-      Serial.print(_id);
-      Serial.print(" Update time:");
-      Serial.println(runtime);
+
+      int curPos = (int) getCurrentPosition();
+      int  tgtPos = _currentKeyFrame.getTarget();
 
       // we have passed the last key frame: end animation
       if (_currentFrameIdx == _numFrames - 1) {
-        Serial.print(_id);
-        Serial.print(" Finish time:");
-        Serial.println(runtime);
+        serprintln("%d Finish Exp t: %d t: %d", _id, currentTargetTime, runtime);
+        serprintln("%d Finish Exp pos: %d Act: %d", _id, tgtPos, curPos);
         _animationActive = false;
         updateSpeed(0);
         break;
       }
       else {
-        serprint("%d Expected position: %d Actual: %l", _id, _currentKeyFrame.getTarget(), getCurrentPosition());
+        serprintln("%d Update Exp t: %d t: %d", _id, currentTargetTime, runtime);
+        serprintln("%d Update Exp pos: %d Act: %d", _id, tgtPos, curPos);
 
         // read next key frame and update speed
         _currentFrameIdx++;
@@ -176,10 +174,9 @@ void KeyFrameStepper::updateSpeed(double speed) {
 
   if (speed != _currentSpeed) {
     _currentSpeed =  speed;
-
-    _astepper.setSpeed(_currentSpeed);
-
-    serprint("Update Speed: %f", _currentSpeed);
+    double act_speed = _reverseDirection ? - _currentSpeed : _currentSpeed;
+    _astepper.setSpeed(act_speed);
+    serprintln("%d Update Speed: %f Act: %f", _id, _currentSpeed, act_speed);
   }
 }
 
@@ -194,17 +191,20 @@ unsigned long KeyFrameStepper::getRuntime() {
 }
 
 long KeyFrameStepper::getCurrentPosition() {
-  serprint("%d Current Position", _id);
-  return _astepper.currentPosition();
+  long curPos = _astepper.currentPosition();
+  serprintln("%d Current Position: %d", _id, curPos);
+  return curPos;
 }
 
 void KeyFrameStepper::resetPosition() {
-  serprint("%d Reset Position", _id);
+  serprintln("%d Reset Position", _id);
   _astepper.setCurrentPosition(0);
+  long curPos = _astepper.currentPosition();
+  serprintln("%d Current Position: %d", _id, curPos);
 }
 
 void KeyFrameStepper::release() {
-  serprint("%d Release", _id);
+  serprintln("%d Release", _id);
   _motor->release();
 }
 
@@ -230,57 +230,89 @@ void KeyFrameStepper::runStepper() {
   _astepper.runSpeed();
 }
 
-void KeyFrameStepper::serprint0(char* str) {
+void KeyFrameStepper::serprintln(char* str, ...) {
+  if (debug) {
+    int i, count = 0, j = 0, flag = 0;
+    char temp[ARDBUFFER + 1];
+    for (i = 0; str[i] != '\0'; i++)  if (str[i] == '%')  count++;
 
-  Serial.print(_id);
-  Serial.print(" ");
-  Serial.print(str);
-}
+    va_list argv;
+    va_start(argv, count);
+    for (i = 0, j = 0; str[i] != '\0'; i++)
+    {
+      if (str[i] == '%')
+      {
+        temp[j] = '\0';
+        Serial.print(temp);
+        j = 0;
+        temp[0] = '\0';
 
-void KeyFrameStepper::serprint1(char* str) {
+        switch (str[++i])
+        {
+          case 'd': Serial.print(va_arg(argv, int));
+            break;
+          case 'l': Serial.print(va_arg(argv, long));
+            break;
+          case 'f': Serial.print(va_arg(argv, double));
+            break;
+          case 'c': Serial.print((char)va_arg(argv, int));
+            break;
+          case 's': Serial.print(va_arg(argv, char *));
+            break;
+          default:  ;
+        };
+      }
+      else
+      {
+        temp[j] = str[i];
+        j = (j + 1) % ARDBUFFER;
+        if (j == 0)
+        {
+          temp[ARDBUFFER] = '\0';
+          Serial.print(temp);
+          temp[0] = '\0';
+        }
+      }
+    };
+    Serial.println();
 
-  Serial.print(_id);
-  Serial.print(" ");
-  Serial.println(str);
-}
+  /*
+    int i, j, count = 0;
 
-int KeyFrameStepper::serprint(char* str, ...) {
+    va_list argv;
+    va_start(argv, str);
+    for (i = 0, j = 0; str[i] != '\0'; i++) {
+      if (str[i] == '%') {
+        count++;
 
-  int i, j, count = 0;
+        Serial.write(reinterpret_cast<const uint8_t*>(str + j), i - j);
 
-  va_list argv;
-  va_start(argv, str);
-  for (i = 0, j = 0; str[i] != '\0'; i++) {
-    if (str[i] == '%') {
-      count++;
+        switch (str[++i]) {
+          case 'd': Serial.print(va_arg(argv, int));
+            break;
+          case 'l': Serial.print(va_arg(argv, long));
+            break;
+          case 'f': Serial.print(va_arg(argv, double));
+            break;
+          case 'c': Serial.print((char) va_arg(argv, int));
+            break;
+          case 's': Serial.print(va_arg(argv, char *));
+            break;
+          case '%': Serial.print("%");
+            break;
+          default:;
+        };
 
+        j = i + 1;
+      }
+    };
+    va_end(argv);
+
+    if (i > j) {
       Serial.write(reinterpret_cast<const uint8_t*>(str + j), i - j);
-
-      switch (str[++i]) {
-        case 'd': Serial.print(va_arg(argv, int));
-          break;
-        case 'l': Serial.print(va_arg(argv, long));
-          break;
-        case 'f': Serial.print(va_arg(argv, double));
-          break;
-        case 'c': Serial.print((char) va_arg(argv, int));
-          break;
-        case 's': Serial.print(va_arg(argv, char *));
-          break;
-        case '%': Serial.print("%");
-          break;
-        default:;
-      };
-
-      j = i + 1;
     }
-  };
-  va_end(argv);
-
-  if (i > j) {
-    Serial.write(reinterpret_cast<const uint8_t*>(str + j), i - j);
-  }
-
-  return count;
+    Serial.println();
+  */
+}
 }
 

@@ -7,7 +7,7 @@ KeyFrame motor1_kf[2] {
 };
 
 KeyFrame motor2_kf[2] {
-  {5000, 400},
+  {5000, 1000},
   {7000, 200}
 };
 
