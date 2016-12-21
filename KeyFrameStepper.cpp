@@ -37,7 +37,8 @@ void KeyFrameStepper::start() {
     // allow animation to run
     _animationActive = true;
 
-    serprintln("%d Start  Exp t: %d t: %d", _id, _currentKeyFrame.getTimeMs(), getRuntime());
+    serprintln("%d Start  Exp t: %d t: %l", _id, _currentKeyFrame.getTimeMs(), getRuntime());
+    Serial.println(getRuntime());
     serprintln("%d Start  Exp pos: %d Act: %l", _id, 0, getCurrentPosition());
   }
 }
@@ -126,8 +127,8 @@ void KeyFrameStepper::loop() {
 void KeyFrameStepper::updateCurrentKeyFrame() {
 
   if (_animationActive) {
-    unsigned long runtime = getRuntime();
-    unsigned long currentTargetTime = _currentKeyFrame.getTimeMs();
+    long runtime = getRuntime();
+    long currentTargetTime = _currentKeyFrame.getTimeMs();
 
     if (0) {
       Serial.print(_id);
@@ -150,7 +151,8 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
 
       // we have passed the last key frame: end animation
       if (_currentFrameIdx == _numFrames - 1) {
-        serprintln("%d Finish Exp t: %d t: %d", _id, currentTargetTime, runtime);
+        serprintln("%d Finish Exp t: %d t: %l", _id, currentTargetTime, runtime);
+        Serial.println(runtime);
         serprintln("%d Finish Exp pos: %d Act: %d", _id, tgtPos, curPos);
         _animationActive = false;
         updateSpeed(0);
@@ -158,6 +160,7 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
       }
       else {
         serprintln("%d Update Exp t: %d t: %d", _id, currentTargetTime, runtime);
+        Serial.println(runtime);
         serprintln("%d Update Exp pos: %d Act: %d", _id, tgtPos, curPos);
 
         // read next key frame and update speed
@@ -186,13 +189,13 @@ void KeyFrameStepper::updateSpeed() {
   updateSpeed(newSpeed);
 }
 
-unsigned long KeyFrameStepper::getRuntime() {
+long KeyFrameStepper::getRuntime() {
   return millis() - _startTime;
 }
 
 long KeyFrameStepper::getCurrentPosition() {
   long curPos = _astepper.currentPosition();
-  serprintln("%d Current Position: %d", _id, curPos);
+  //serprintln("%d Current Position: %d", _id, curPos);
   return curPos;
 }
 
@@ -232,7 +235,7 @@ void KeyFrameStepper::runStepper() {
 
 void KeyFrameStepper::serprintln(char* str, ...) {
   if (debug) {
-    int i, count = 0, j = 0, flag = 0;
+/*    int i, count = 0, j = 0, flag = 0;
     char temp[ARDBUFFER + 1];
     for (i = 0; str[i] != '\0'; i++)  if (str[i] == '%')  count++;
 
@@ -276,7 +279,7 @@ void KeyFrameStepper::serprintln(char* str, ...) {
     };
     Serial.println();
 
-  /*
+  */
     int i, j, count = 0;
 
     va_list argv;
@@ -312,7 +315,7 @@ void KeyFrameStepper::serprintln(char* str, ...) {
       Serial.write(reinterpret_cast<const uint8_t*>(str + j), i - j);
     }
     Serial.println();
-  */
+  
 }
 }
 

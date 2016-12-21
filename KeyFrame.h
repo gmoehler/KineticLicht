@@ -9,12 +9,12 @@
 class KeyFrame
 {
   public:
-    KeyFrame(int time_ms, int target) 
+    KeyFrame(long time_ms, int target) 
      : _time_ms(time_ms), _target(target){}
     KeyFrame() 
      : _time_ms(0), _target(0){}
     
-    unsigned int getTimeMs() {
+    long getTimeMs() {
       return _time_ms;
     }
 
@@ -23,19 +23,19 @@ class KeyFrame
     }
 
   private:
-    unsigned int _time_ms;
+    long _time_ms;
     int _target;
 };
 
 class KeyFrameRgb
 {
   public:
-    KeyFrameRgb(int time_ms, int red, int green, int blue) 
+    KeyFrameRgb(long time_ms, int red, int green, int blue) 
       : _time_ms(time_ms), _red(red), _green(green), _blue(blue){}
     KeyFrameRgb() 
       : _time_ms(0), _red(0), _green(0), _blue(0){}
     
-    unsigned int getTimeMs() {
+    long getTimeMs() {
       return _time_ms;
     }
 
@@ -52,7 +52,7 @@ class KeyFrameRgb
     }
 
   private:
-    unsigned int _time_ms;
+    long _time_ms;
     int _red;
     int _green;
     int _blue;

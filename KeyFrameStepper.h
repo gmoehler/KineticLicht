@@ -35,7 +35,7 @@ class KeyFrameStepper
 
   private:
     // current time from start time to now
-    unsigned long getRuntime();
+    long getRuntime();
 
     // update current and previous key frames
     void updateCurrentKeyFrame();
@@ -81,7 +81,7 @@ class KeyFrameStepper
     void serprintln(char* str, ...);
 
 
-    unsigned long _startTime;
+    long _startTime;
 
     bool _animationActive;
 
