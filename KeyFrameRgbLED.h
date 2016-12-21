@@ -5,6 +5,8 @@
 
 #include "Arduino.h"
 #include "Adafruit_TLC5947.h"
+
+#include "helpers.h"
 #include "KeyFrame.h"
 #include "RgbLED.h"
 

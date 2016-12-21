@@ -16,15 +16,15 @@
 #define LED_LATCH  6
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, LED_CLOCK, LED_DATA, LED_LATCH);
 
-KeyFrameRgbLED rgb1o = KeyFrameRgbLED (&tlc, 4, rgb1u_kf, 3);
-KeyFrameRgbLED rgb1u = KeyFrameRgbLED (&tlc, 5, rgb1o_kf, 3);
-/*KeyFrameRgbLED rgb2o = KeyFrameRgbLED (&tlc, 2, rgb2u_kf, 3);
-KeyFrameRgbLED rgb2u = KeyFrameRgbLED (&tlc, 3, rgb2o_kf, 3);
-KeyFrameRgbLED rgb3o = KeyFrameRgbLED (&tlc, 4, rgb3u_kf, 3);
-KeyFrameRgbLED rgb3u = KeyFrameRgbLED (&tlc, 5, rgb3o_kf, 3);
+KeyFrameRgbLED rgb1o = KeyFrameRgbLED (&tlc, 1, rgb1u_kf, 3);
+KeyFrameRgbLED rgb1u = KeyFrameRgbLED (&tlc, 2, rgb1o_kf, 3);
+/*KeyFrameRgbLED rgb2o = KeyFrameRgbLED (&tlc, 3, rgb2u_kf, 3);
+KeyFrameRgbLED rgb2u = KeyFrameRgbLED (&tlc, 4, rgb2o_kf, 3);
+KeyFrameRgbLED rgb3o = KeyFrameRgbLED (&tlc, 5, rgb3u_kf, 3);
+KeyFrameRgbLED rgb3u = KeyFrameRgbLED (&tlc, 6, rgb3o_kf, 3);
 */
-KeyFrameRgbLED rgb4o = KeyFrameRgbLED (&tlc, 6, rgb4u_kf, 3);
-KeyFrameRgbLED rgb4u = KeyFrameRgbLED (&tlc, 7, rgb4o_kf, 3);
+KeyFrameRgbLED rgb4o = KeyFrameRgbLED (&tlc, 7, rgb4u_kf, 3);
+KeyFrameRgbLED rgb4u = KeyFrameRgbLED (&tlc, 8, rgb4o_kf, 3);
 
 /*************************
  *  create Stepper objects
@@ -127,7 +127,7 @@ void loop()
  kfstepper4.loop();
 
 
-  //rgb1o.loop();
+  rgb1o.loop();
   //rgb1u.loop();
   //rgb2o.loop();
   //rgb2u.loop();

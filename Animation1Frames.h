@@ -3,7 +3,7 @@
 
 KeyFrame motor1_kf[2] {
   {3000, 1800},
-  {5000, 1000}
+  {5000, 1200}
 };
 /*
 KeyFrame motor2_kf[2] {
@@ -17,7 +17,7 @@ KeyFrame motor3_kf[2] {
 };
 */
 KeyFrame motor4_kf[2] {
-  {3000, 1800},
+  {3000, 1200},
   {5000, 1000}
 };
 

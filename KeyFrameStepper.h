@@ -8,6 +8,7 @@
 #include <AccelStepper.h>
 
 #include "KeyFrame.h"
+#include "helpers.h"
 
 
 class KeyFrameStepper
