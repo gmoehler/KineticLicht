@@ -49,6 +49,7 @@ private:
 
     bool _animationActive;
     bool _needsUpdate;
+    int _needsUpdateDelta;
 
     KeyFrameRgb _previousKeyFrame;
     KeyFrameRgb _currentKeyFrame;

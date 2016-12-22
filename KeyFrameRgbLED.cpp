@@ -7,24 +7,26 @@ KeyFrameRgbLED::KeyFrameRgbLED(int ledId, KeyFrameRgb keyFrame[], int numFrames)
 {
   _startTime = 0;
   _animationActive = false;
-  _needsUpdate=false;
+  _needsUpdate = false;
 
   _currentFrameIdx = 0;
   _currentRedSpeed = 0.0;
   _currentGreenSpeed = 0.0;
   _currentBlueSpeed = 0.0;
 
+  _needsUpdateDelta = 64;
+
   //_rgbLed.doFineSerialOutput(true);
 }
 
-int KeyFrameRgbLED::getId(){
+int KeyFrameRgbLED::getId() {
   return _rgbLed.getId();
 }
 
 void KeyFrameRgbLED::start() {
   if (_numFrames > 0) {
     _animationActive = true;
-    _startTime = millis(); 
+    _startTime = millis();
     _currentKeyFrame = _keyFrame[_currentFrameIdx];
     _previousKeyFrame = KeyFrameRgb();
     calculateCurrentSpeed();
@@ -63,17 +65,22 @@ void KeyFrameRgbLED::loop() {
       Serial.print(" ");
       Serial.println(expectedBlue);
     }
-    _currentColor = _rgbLed.getRGB(expectedRed, expectedGreen, expectedBlue);
-    // serPrintln("###### %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
-    _needsUpdate = true;
+
+    _needsUpdate = abs(expectedRed - _currentColor.red()) > _needsUpdateDelta ||
+                   abs(expectedGreen - _currentColor.green()) > _needsUpdateDelta ||
+                   abs(expectedBlue - _currentColor.blue()) > _needsUpdateDelta;
+    if (_needsUpdate) {
+      _currentColor = _rgbLed.getRGB(expectedRed, expectedGreen, expectedBlue);
+      // serPrintln("###### %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
+    }
   }
 }
 
-bool KeyFrameRgbLED::needsUpdate(){
+bool KeyFrameRgbLED::needsUpdate() {
   return _needsUpdate;
 }
 
-RGB KeyFrameRgbLED::getCurrentColor(){
+RGB KeyFrameRgbLED::getCurrentColor() {
   //serPrintln("****** %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
   return _currentColor;
 }
@@ -101,32 +108,32 @@ void KeyFrameRgbLED::updateCurrentKeyFrame() {
 
     // update current key frame if required
     if (runtime >= currentTargetTime) {
-    if (debug1) {
-      Serial.print("LED");
-      Serial.print(_ledId);
-      Serial.print(" RGB Update time:");
-      Serial.println(runtime);
-    }      
+      if (debug1) {
+        Serial.print("LED");
+        Serial.print(_ledId);
+        Serial.print(" RGB Update time:");
+        Serial.println(runtime);
+      }
       // after last key frame
       if (_currentFrameIdx == _numFrames - 1) {
-      /*Serial.print(_ledId);
-        Serial.print("RGB Finish time:");
-        Serial.println(runtime);*/
+        /*Serial.print(_ledId);
+          Serial.print("RGB Finish time:");
+          Serial.println(runtime);*/
         _animationActive = false;
         _currentColor = _rgbLed.black();
       }
       else {
-      /*  Serial.print(_ledId);
-        Serial.print(" RGB NextFrame: Speed ");*/
+        /*  Serial.print(_ledId);
+          Serial.print(" RGB NextFrame: Speed ");*/
         _currentFrameIdx++;
         _previousKeyFrame = _currentKeyFrame;
         _currentKeyFrame  = _keyFrame[_currentFrameIdx];
         calculateCurrentSpeed();
-       /* Serial.print(_currentRedSpeed);
-        Serial.print (" ");
-        Serial.print(_currentGreenSpeed);
-        Serial.print(" ");
-        Serial.println(_currentBlueSpeed);*/
+        /* Serial.print(_currentRedSpeed);
+          Serial.print (" ");
+          Serial.print(_currentGreenSpeed);
+          Serial.print(" ");
+          Serial.println(_currentBlueSpeed);*/
       }
     }
   }

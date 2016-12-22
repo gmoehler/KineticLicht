@@ -137,9 +137,9 @@ void loop()
   rgb4o.loop();
   rgb4u.loop();
 
-  if (rgb1o.needsUpdate() && rgb1u.needsUpdate() && rgb4o.needsUpdate() && rgb4u.needsUpdate()) {
-   // updateLEDs(tlc, rgb1o.getId(), rgb1o.getCurrentColor(), rgb1u.getId(), rgb1u.getCurrentColor(),
-   //            rgb4o.getId(), rgb4o.getCurrentColor(), rgb4u.getId(), rgb4u.getCurrentColor());
+  if (rgb1o.needsUpdate() || rgb1u.needsUpdate() || rgb4o.needsUpdate() || rgb4u.needsUpdate()) {
+    updateLEDs(tlc, rgb1o.getId(), rgb1o.getCurrentColor(), rgb1u.getId(), rgb1u.getCurrentColor(),
+               rgb4o.getId(), rgb4o.getCurrentColor(), rgb4u.getId(), rgb4u.getCurrentColor());
   }
 
 }
