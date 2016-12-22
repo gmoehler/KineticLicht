@@ -14,7 +14,7 @@
 class KeyFrameStepper
 {
   public:
-    KeyFrameStepper(Adafruit_StepperMotor *motor, AccelStepper &astepper, int id, KeyFrame keyFrame[], 
+    KeyFrameStepper(Adafruit_StepperMotor *motor, AccelStepper &astepper, int id, KeyFrame keyFrame[],
                     int numFrames, int endStopPin, bool reverseDirection);
 
     // to be called in setup()
@@ -31,6 +31,9 @@ class KeyFrameStepper
 
     // initial routine: tear up lights until they hit the end stop - call this 0 and go down a bit
     void calibrate();
+
+    void init();
+
 
   protected:
 
@@ -70,7 +73,7 @@ class KeyFrameStepper
 
     Adafruit_StepperMotor *_motor;
     AccelStepper _astepper;
-    
+
     int _id;
     KeyFrame* _keyFrame;
     int _numFrames;
@@ -79,8 +82,7 @@ class KeyFrameStepper
     double _currentSpeed;
     int _endStopPin;
     bool _reverseDirection;
-    void serprintln(char* str, ...);
-
+    int _calibrateSpeed;
 
     long _startTime;
 

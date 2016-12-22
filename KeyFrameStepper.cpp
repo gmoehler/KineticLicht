@@ -16,6 +16,8 @@ KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor,  AccelStepper &as
   _currentPosition = 0;
   _currentSpeed = 0.0;
 
+  _calibrateSpeed = -400;
+
 }
 
 void KeyFrameStepper::start() {
@@ -43,6 +45,13 @@ void KeyFrameStepper::start() {
     serPrintln("%d Start  Tgt pos: %d Act: %l", _id, 0, getCurrentPosition(), 0);
   }
 }
+void KeyFrameStepper::init() {
+  
+  updateSpeed(0);
+  _astepper.runSpeed();
+}
+
+
 
 void KeyFrameStepper::calibrate() {
 
@@ -51,7 +60,7 @@ void KeyFrameStepper::calibrate() {
   serPrintln("%d ***CALIBRATING...", _id);
 
   // go up until end stop is hit
-  updateSpeed(-100);
+  updateSpeed(_calibrateSpeed);
 
   while (! isEndStopHit()) {
     _astepper.runSpeed();
@@ -90,48 +99,9 @@ void KeyFrameStepper::loop() {
 
   updateCurrentKeyFrame();
 
-
   if (_animationActive) {
 
     runStepper();
-
-    /*
-          unsigned long time = getRuntime();
-
-          unsigned long expectedPosition = _previousKeyFrame.getTarget() + _currentSpeed * (time -  _previousKeyFrame.getTimeMs());
-
-          if (debug) {
-          Serial.print(_id);
-          Serial.print(" ***Loop***");
-          Serial.print("Time:");
-          Serial.print(time);
-          Serial.print(" Speed:");
-          Serial.print(_currentSpeed);
-          Serial.print(" Pos:");
-          Serial.print(_currentPosition);
-          Serial.print(" ExpPos:");
-          Serial.println(expectedPosition);
-          }
-
-          bool dirPrinted = false;
-          while (_currentPosition < expectedPosition) {
-          _currentPosition += 1;
-          forwardStep();
-          if (!dirPrinted) {
-            //Serial.println("->forward");
-            dirPrinted = true;
-          }
-          }
-          dirPrinted = false;
-          while (_currentPosition > expectedPosition) {
-          _currentPosition -= 1;
-          backwardStep();
-          if (!dirPrinted) {
-            // Serial.println("->backward");
-            dirPrinted = true;
-          }
-          }
-    */
   }
 }
 
