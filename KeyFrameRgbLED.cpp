@@ -121,6 +121,7 @@ void KeyFrameRgbLED::updateCurrentKeyFrame() {
           Serial.println(runtime);*/
         _animationActive = false;
         _currentColor = _rgbLed.black();
+        _needsUpdate=true;
       }
       else {
         /*  Serial.print(_ledId);
