@@ -1,6 +1,43 @@
-#include "Arduino.h"
+#include "Helpers.h"
 
 #define DEBUG true
+
+void printRGB(int id, RGB col){
+  serPrintln("LED%d, %d, %d, %d", id, col.red(), col.green(), col.blue());
+}
+
+void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor){
+
+    //Serial.println ("***Update LEDs");
+    //printRGB(rgb1oId, rgb1oColor);
+    tlc.setLED(rgb1oId, rgb1oColor.red(), rgb1oColor.green(), rgb1oColor.blue());
+    //printRGB(rgb1uId, rgb1uColor);
+    tlc.setLED(rgb1uId, rgb1uColor.red(), rgb1uColor.green(), rgb1uColor.blue());
+    /*
+    RGB rgb2oColor = rgb2o.getCurrentColor();
+    tlc.setLED(rgb2o.getId(), rgb2oColor.red(), rgb2oColor.green(), rgb2oColor.blue());
+    RGB rgb2uColor = rgb2u.getCurrentColor();
+    tlc.setLED(rgb2u.getId(), rgb2uColor.red(), rgb2uColor.green(), rgb2uColor.blue());
+    RGB rgb3oColor = rgb3o.getCurrentColor();
+    tlc.setLED(rgb3o.getId(), rgb3oColor.red(), rgb3oColor.green(), rgb3oColor.blue());
+    RGB rgb3uColor = rgbu3u.getCurrentColor();
+    tlc.setLED(rgb3u.getId(), rgb3uColor.red(), rgb3uColor.green(), rgb3uColor.blue());
+    */
+    //printRGB(rgb4oId, rgb4oColor);
+    tlc.setLED(rgb4oId, rgb4oColor.red(), rgb4oColor.green(), rgb4oColor.blue());
+    //printRGB(rgb4uId, rgb4uColor);
+    tlc.setLED(rgb4uId, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+
+    //tlc.setLED(3, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+    //tlc.setLED(4, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+    //tlc.setLED(5, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+    //tlc.setLED(6, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+    
+    tlc.write();
+
+}
+
+
 
 void serPrintln(char* const str, ...) {
   if (DEBUG) {

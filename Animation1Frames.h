@@ -23,15 +23,15 @@ KeyFrame motor4_kf[2] {
 
 
 KeyFrameRgb rgb1o_kf[] {
-  {2000, RED},
-  {4000, YELLOW},
-  {7000, BLUE}
+  {1000, RED},
+  {2000, YELLOW},
+  {5000, BLUE}
 };
 
 KeyFrameRgb rgb1u_kf[] {
-  {2000, RED},
-  {4000, YELLOW},
-  {7000, BLUE}
+  {1000, RED},
+  {2000, YELLOW},
+  {5000, BLUE}
 };
 /*
 KeyFrameRgb rgb2o_kf[] {
@@ -56,14 +56,14 @@ KeyFrameRgb rgb3u_kf[] {
 };
 */
 KeyFrameRgb rgb4o_kf[] {
-  {2000, RED},
-  {4000, YELLOW},
-  {7000, BLUE}
+  {1000, RED},
+  {2000, YELLOW},
+  {5000, BLUE}
 };
 KeyFrameRgb rgb4u_kf[] {
-  {2000, RED},
-  {4000, YELLOW},
-  {7000, BLUE}
+  {1000, RED},
+  {2000, YELLOW},
+  {5000, BLUE}
 };
 
 #endif

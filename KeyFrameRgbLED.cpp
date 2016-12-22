@@ -2,11 +2,12 @@
 
 bool debug1 = false;
 
-KeyFrameRgbLED::KeyFrameRgbLED(Adafruit_TLC5947* tlc, int ledId, KeyFrameRgb keyFrame[], int numFrames)
-  : _rgbLed(tlc, ledId), _keyFrame(keyFrame), _numFrames(numFrames), _ledId(ledId)
+KeyFrameRgbLED::KeyFrameRgbLED(int ledId, KeyFrameRgb keyFrame[], int numFrames)
+  : _rgbLed(ledId), _keyFrame(keyFrame), _numFrames(numFrames), _ledId(ledId)
 {
   _startTime = 0;
   _animationActive = false;
+  _needsUpdate=false;
 
   _currentFrameIdx = 0;
   _currentRedSpeed = 0.0;
@@ -14,6 +15,10 @@ KeyFrameRgbLED::KeyFrameRgbLED(Adafruit_TLC5947* tlc, int ledId, KeyFrameRgb key
   _currentBlueSpeed = 0.0;
 
   //_rgbLed.doFineSerialOutput(true);
+}
+
+int KeyFrameRgbLED::getId(){
+  return _rgbLed.getId();
 }
 
 void KeyFrameRgbLED::start() {
@@ -53,11 +58,24 @@ void KeyFrameRgbLED::loop() {
       Serial.print(getRuntime());
       Serial.print(" RGB:");
       Serial.print(expectedRed);
+      Serial.print(" ");
       Serial.print(expectedGreen);
+      Serial.print(" ");
       Serial.println(expectedBlue);
     }
-    _rgbLed.rgbOutput(expectedRed, expectedGreen, expectedBlue);
+    _currentColor = _rgbLed.getRGB(expectedRed, expectedGreen, expectedBlue);
+    // serPrintln("###### %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
+    _needsUpdate = true;
   }
+}
+
+bool KeyFrameRgbLED::needsUpdate(){
+  return _needsUpdate;
+}
+
+RGB KeyFrameRgbLED::getCurrentColor(){
+  //serPrintln("****** %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
+  return _currentColor;
 }
 
 void KeyFrameRgbLED::updateCurrentKeyFrame() {
@@ -83,18 +101,19 @@ void KeyFrameRgbLED::updateCurrentKeyFrame() {
 
     // update current key frame if required
     if (runtime >= currentTargetTime) {
+    if (debug1) {
       Serial.print("LED");
       Serial.print(_ledId);
       Serial.print(" RGB Update time:");
       Serial.println(runtime);
-      
+    }      
       // after last key frame
       if (_currentFrameIdx == _numFrames - 1) {
       /*Serial.print(_ledId);
         Serial.print("RGB Finish time:");
         Serial.println(runtime);*/
         _animationActive = false;
-        _rgbLed.black();
+        _currentColor = _rgbLed.black();
       }
       else {
       /*  Serial.print(_ledId);

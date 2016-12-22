@@ -1,8 +1,8 @@
 #ifndef RgbLED_h
 #define RgbLED_h
 
-#include "Arduino.h"
-#include "Adafruit_TLC5947.h"
+#include "Arduino.h" 
+#include "RGB.h"
 
 #define COLOR_MAX_VAL 4095
 
@@ -19,19 +19,19 @@ class RgbLED {
 
   public:
     RgbLED();
-    RgbLED(Adafruit_TLC5947* tcl, int rgbId);
+    RgbLED(int rgbId);
 
-    void white(int brightness = 100);
-    void black(int brightness = 100);
-    void red(int brightness = 100);
-    void blue(int brightness = 100);
-    void green(int brightness = 100);
-    void yellow(int brightness = 100);
-    void lila(int brightness = 100);
-    void cyan(int brightness = 100);
+    RGB white(int brightness = 100);
+    RGB black(int brightness = 100);
+    RGB red(int brightness = 100);
+    RGB blue(int brightness = 100);
+    RGB green(int brightness = 100);
+    RGB yellow(int brightness = 100);
+    RGB lila(int brightness = 100);
+    RGB cyan(int brightness = 100);
 
     // rgb-Wert auf RGB LED  ausgeben
-    void rgbOutput(int red, int green, int blue, int brightness = 100);
+    RGB getRGB(int red, int green, int blue, int brightness = 100);
 
     // debug output to serial out
     void printToSerialRgb(int red, int green, int blue, int brightness);
@@ -39,8 +39,9 @@ class RgbLED {
     // do fine-grained debug output
     void doFineSerialOutput(bool doOutput);
 
+    int getId();
+
   private:
-    Adafruit_TLC5947* _tlc;
     int _rgbId;
     bool _printFineSerialOut;
 };
