@@ -2,7 +2,7 @@
 #define Animation1Frames_h
 
 // full height: 4200 = 2100mm
-/*
+
 int motor1_num = 5;
 KeyFrame motor1_kf[] {
   {0, 0},
@@ -23,7 +23,7 @@ KeyFrame motor3_kf[] {
   {7000, 1500}
 };
 */
-/*
+
 int motor4_num = 5;
 KeyFrame motor4_kf[] {
   {0, 0},
@@ -86,10 +86,11 @@ KeyFrameRgb rgb3u_kf[] {
   {7000, BLUE}
 };
 */
-/*
-int rgb4o_num = 11;
+
+int rgb4o_num = 12;
 KeyFrameRgb rgb4o_kf[] {
   {0,    YELLOW, 0}, 
+  {1000, YELLOW, 0}, 
   {2500, YELLOW, 50},
   {3000, YELLOW, 50}, 
  {11000, RED, 100}, //100
@@ -101,9 +102,10 @@ KeyFrameRgb rgb4o_kf[] {
  {30000, YELLOW, 50}, 
  {35000, YELLOW, 50},
 };
-int rgb4u_num = 11;
+int rgb4u_num = 12;
 KeyFrameRgb rgb4u_kf[] {
   {0,    YELLOW, 0},
+  {1000,    YELLOW, 0},
   {4500, YELLOW, 50}, 
   {5000, YELLOW, 50}, 
  {14000, RED}, //100
@@ -115,9 +117,9 @@ KeyFrameRgb rgb4u_kf[] {
  {32000, YELLOW, 50},
  {37000, YELLOW, 0}, 
 };
-*/
+
 //animation 2
-int motor1_num = 3;
+/*int motor1_num = 3;
 KeyFrame motor1_kf[] {
   {0, 0},
   {4000, 3000},
@@ -175,5 +177,5 @@ KeyFrameRgb rgb4u_kf[] {
   {20000, WHITE, 100}, 
   {22000, BLACK, 0}, 
 };
-
+*/
 #endif

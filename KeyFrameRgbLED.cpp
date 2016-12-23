@@ -14,7 +14,7 @@ KeyFrameRgbLED::KeyFrameRgbLED(int ledId, KeyFrameRgb keyFrame[], int numFrames)
   _currentGreenSpeed = 0.0;
   _currentBlueSpeed = 0.0;
 
-  _needsUpdateDelta = 4;
+  _needsUpdateDelta = 16;
 
   //_rgbLed.doFineSerialOutput(true);
 }

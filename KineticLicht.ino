@@ -92,7 +92,7 @@ void setup()
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
-  kfstepper1.init();
+  //kfstepper1.init();
   //kfstepper2.init();
   //kfstepper3.init();
   kfstepper4.init();
