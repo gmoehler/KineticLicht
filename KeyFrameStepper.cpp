@@ -25,16 +25,14 @@ void KeyFrameStepper::start() {
 
     pinMode(_endStopPin, INPUT_PULLUP);
 
-    // should be calibrated by the time we come here
-    //calibrate();
-
     // initialize key frames
     _currentFrameIdx = 0;
     _currentKeyFrame = _keyFrame[_currentFrameIdx];
     _previousKeyFrame = KeyFrame();
 
     // set speed and time
-    updateSpeed();
+    updateSpeed(0,0);  // not required but get strange compiler error if not there
+    updateSpeed(0);
     _startTime = millis();
 
     // allow animation to run
@@ -43,6 +41,7 @@ void KeyFrameStepper::start() {
     serPrintln("%d ***START  Tgt t: %d t: %l", _id, _currentKeyFrame.getTimeMs(), getRuntime(), 0);
     Serial.println(getRuntime());
     serPrintln("%d Start  Tgt pos: %d Act: %l", _id, 0, getCurrentPosition(), 0);
+
   }
 }
 void KeyFrameStepper::init() {
@@ -50,8 +49,6 @@ void KeyFrameStepper::init() {
   updateSpeed(0);
   _astepper.runSpeed();
 }
-
-
 
 void KeyFrameStepper::calibrate() {
 
@@ -140,14 +137,14 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
         break;
       }
       else {
-        serPrintln("%d UPDATE Exp t: %d t: %d", _id, currentTargetTime, runtime, 0);
+        serPrint("%d UPDATE Exp t: %d t: ", _id, currentTargetTime );
         Serial.println(runtime);
         serPrintln("%d Update Exp pos: %d Act: %d", _id, tgtPos, curPos, 0);
         // read next key frame and update speed
         _currentFrameIdx++;
         _previousKeyFrame = _currentKeyFrame;
         _currentKeyFrame  = _keyFrame[_currentFrameIdx];
-        updateSpeed();
+        updateSpeed(curPos, runtime);
       }
     }
   }
@@ -161,14 +158,22 @@ void KeyFrameStepper::updateSpeed(double speed) {
     }
     _currentSpeed =  speed;
     double act_speed = _reverseDirection ? - _currentSpeed : _currentSpeed;
-    _astepper.setSpeed(act_speed);
+    // bug: 0 is not possible
+    if (speed == 0){
+      _astepper.setSpeed(1);
+    }
+    else {
+      _astepper.setSpeed(act_speed);
+    }
     serPrintln("%d Update Speed: %f Act: %f", _id, _currentSpeed, act_speed, 0);
   }
 }
 
-void KeyFrameStepper::updateSpeed() {
-  double newSpeed =  1000 * ((double)(_currentKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
-                     / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
+void KeyFrameStepper::updateSpeed(int curPos, long runTime) {
+//  double newSpeed =  1000 * ((double)(_currentKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
+//                     / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
+  double newSpeed =  1000 * ((double)(_currentKeyFrame.getTarget() - curPos))
+                     / (_currentKeyFrame.getTimeMs() - runTime);
   updateSpeed(newSpeed);
 }
 
@@ -179,7 +184,7 @@ long KeyFrameStepper::getRuntime() {
 long KeyFrameStepper::getCurrentPosition() {
   long curPos = _astepper.currentPosition();
   //serPrintln("%d Current Position: %d", _id, curPos);
-  return curPos;
+  return _reverseDirection ? -curPos : curPos;
 }
 
 void KeyFrameStepper::resetPosition() {
@@ -192,14 +197,6 @@ void KeyFrameStepper::resetPosition() {
 void KeyFrameStepper::release() {
   serPrintln("%d Release", _id);
   _motor->release();
-}
-
-// you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
-void KeyFrameStepper::forwardStep() {
-  _motor->onestep(FORWARD, INTERLEAVE);
-}
-void KeyFrameStepper::backwardStep() {
-  _motor->onestep(BACKWARD, INTERLEAVE);
 }
 
 bool KeyFrameStepper::isEndStopHit() {

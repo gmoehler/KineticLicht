@@ -14,6 +14,7 @@
   Written by Limor Fried/Ladyada for Adafruit Industries.
   BSD license, all text above must be included in any redistribution
  ****************************************************/
+//Use hardwired pins in order to use fast digital write
 #define LED_DATA   4
 #define LED_CLOCK  5
 #define LED_LATCH  6
@@ -27,16 +28,11 @@ Adafruit_TLC5947::Adafruit_TLC5947(uint8_t n, uint8_t c, uint8_t d, uint8_t l) {
   _dat = d;
   _lat = l;
 
-  pinModeFast(LED_DATA, OUTPUT);
-  pinModeFast(LED_CLOCK, OUTPUT);
-  pinModeFast(LED_LATCH, OUTPUT);
-
-
   pwmbuffer = (uint16_t *)calloc(2, 24 * n);
 }
 
 void Adafruit_TLC5947::write(void) {
-  digitalWrite(LED_LATCH, LOW);
+  digitalWriteFast(LED_LATCH, LOW);
   // 24 channels per TLC5974
   for (int8_t c = 24 * numdrivers - 1; c >= 0 ; c--) {
     // 12 bits per channel, send MSB first
@@ -54,8 +50,8 @@ void Adafruit_TLC5947::write(void) {
   }
   digitalWriteFast(LED_CLOCK, LOW);
 
-  digitalWrite(LED_LATCH, HIGH);
-  digitalWrite(LED_LATCH, LOW);
+  digitalWriteFast(LED_LATCH, HIGH);
+  digitalWriteFast(LED_LATCH, LOW);
 }
 
 
@@ -77,10 +73,11 @@ void Adafruit_TLC5947::setLED(uint8_t lednum, uint16_t r, uint16_t g, uint16_t b
 boolean Adafruit_TLC5947::begin() {
   if (!pwmbuffer) return false;
 
-  pinMode(_clk, OUTPUT);
-  pinMode(_dat, OUTPUT);
-  pinMode(_lat, OUTPUT);
-  digitalWrite(_lat, LOW);
+  pinModeFast(LED_DATA, OUTPUT);
+  pinModeFast(LED_CLOCK, OUTPUT);
+  pinModeFast(LED_LATCH, OUTPUT);
+
+  digitalWriteFast(LED_LATCH, LOW);
 
   return true;
 }

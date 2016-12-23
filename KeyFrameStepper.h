@@ -48,7 +48,7 @@ class KeyFrameStepper
     void updateSpeed(double newSpeed);
 
     // calculate a new speed based on the next key frame
-    void updateSpeed();
+    void updateSpeed(int curPos, long runTime);
 
     // where we actually do the stepping work
     void runStepper();

@@ -15,6 +15,7 @@
 #define LED_DATA   4
 #define LED_CLOCK  5
 #define LED_LATCH  6
+// these are hardwired in the lib using fast data write
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, LED_CLOCK, LED_DATA, LED_LATCH);
 
 KeyFrameRgbLED rgb1o = KeyFrameRgbLED (4, rgb1u_kf, 11);
@@ -24,8 +25,8 @@ KeyFrameRgbLED rgb1u = KeyFrameRgbLED (5, rgb1o_kf, 11);
   KeyFrameRgbLED rgb3o = KeyFrameRgbLED (5, rgb3u_kf, 3);
   KeyFrameRgbLED rgb3u = KeyFrameRgbLED (6, rgb3o_kf, 3);
 */
-KeyFrameRgbLED rgb4o = KeyFrameRgbLED (6, rgb4u_kf, 3);
-KeyFrameRgbLED rgb4u = KeyFrameRgbLED (7, rgb4o_kf, 3);
+KeyFrameRgbLED rgb4o = KeyFrameRgbLED (6, rgb4u_kf, 11);
+KeyFrameRgbLED rgb4u = KeyFrameRgbLED (7, rgb4o_kf, 11);
 
 /*************************
     create Stepper objects
@@ -75,7 +76,7 @@ AccelStepper astepper4(forwardstep4, backwardstep4); // use functions to step
 KeyFrameStepper  kfstepper1 = KeyFrameStepper(steppermotor1, astepper1, 1, motor1_kf, 5, 53, true);
 //KeyFrameStepper  kfstepper2 = KeyFrameStepper(steppermotor2, astepper2, 2, motor2_kf, 2, 49, false);
 //KeyFrameStepper  kfstepper3 = KeyFrameStepper(steppermotor3, astepper3, 3, motor3_kf, 2, 51, false);
-KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, motor4_kf, 2, 47, true);
+KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, motor4_kf, 5, 47, true);
 
 /************
     Setup
