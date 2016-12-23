@@ -31,14 +31,16 @@ void KeyFrameRgbLED::start() {
     _previousKeyFrame = KeyFrameRgb();
     calculateCurrentSpeed();
 
-    Serial.print("RGB Start time:");
-    Serial.print(_startTime);
-    Serial.print(" Speed: ");
-    Serial.print(_currentRedSpeed);
-    Serial.print (" ");
-    Serial.print(_currentGreenSpeed);
-    Serial.print(" ");
-    Serial.println(_currentBlueSpeed);
+    if (debug1) {
+      Serial.print("RGB Start time:");
+      Serial.print(_startTime);
+      Serial.print(" Speed: ");
+      Serial.print(_currentRedSpeed);
+      Serial.print (" ");
+      Serial.print(_currentGreenSpeed);
+      Serial.print(" ");
+      Serial.println(_currentBlueSpeed);
+    }
   }
 }
 
@@ -67,13 +69,15 @@ void KeyFrameRgbLED::loop() {
       Serial.println(expectedBlue);
     }
 
-    RGB expectedColor = _rgbLed.getRGB(expectedRed, expectedGreen, expectedBlue, expectedBrightness);  
+    RGB expectedColor = _rgbLed.getRGB(expectedRed, expectedGreen, expectedBlue, expectedBrightness);
     _needsUpdate = abs(expectedColor.red() - _currentColor.red()) > _needsUpdateDelta ||
                    abs(expectedColor.green() - _currentColor.green()) > _needsUpdateDelta ||
                    abs(expectedColor.blue() - _currentColor.blue()) > _needsUpdateDelta;
+      serPrintln("###### CUR %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
+      serPrintln("###### EXP %d %d %d %d B: %d", _rgbLed.getId(), expectedColor.red(), expectedColor.green(), expectedColor.blue(), expectedBrightness);
     if (_needsUpdate) {
       _currentColor = expectedColor;
-      // serPrintln("###### %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
+      serPrintln("###### UPDATE %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
     }
   }
 }
@@ -123,7 +127,7 @@ void KeyFrameRgbLED::updateCurrentKeyFrame() {
           Serial.println(runtime);*/
         _animationActive = false;
         _currentColor = _rgbLed.black();
-        _needsUpdate=true;
+        _needsUpdate = true;
       }
       else {
         /*  Serial.print(_ledId);
@@ -149,7 +153,9 @@ void KeyFrameRgbLED::calculateCurrentSpeed() {
                         / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
   _currentBlueSpeed =  ((double)(_currentKeyFrame.getBlue() - _previousKeyFrame.getBlue()))
                        / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
-  serPrintln("LED%d Update Current Speed: %f, %f, %f", _ledId, _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed, 0);
+  _currentBrightnessSpeed =  ((double)(_currentKeyFrame.getBrightness() - _previousKeyFrame.getBrightness()))
+                       / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
+  serPrintln("LED%d Update Current Speed: %f, %f, %f, %f", _ledId, _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed, _currentBrightnessSpeed, 0);
 }
 
 unsigned long KeyFrameRgbLED::getRuntime() {

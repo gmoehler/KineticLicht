@@ -2,7 +2,8 @@
 #define Animation1Frames_h
 
 // full height: 4200 = 2100mm
-
+/*
+int motor1_num = 5;
 KeyFrame motor1_kf[] {
   {0, 0},
   {2000, 0},
@@ -10,6 +11,7 @@ KeyFrame motor1_kf[] {
  {12000, 2600},
  {26000, 10},
 };
+
 /*
 KeyFrame motor2_kf[] {
   {5000, 1000},
@@ -21,6 +23,8 @@ KeyFrame motor3_kf[] {
   {7000, 1500}
 };
 */
+/*
+int motor4_num = 5;
 KeyFrame motor4_kf[] {
   {0, 0},
   {3000, 0},
@@ -30,6 +34,7 @@ KeyFrame motor4_kf[] {
 };
 
 
+int rgb1o_num = 11;
 KeyFrameRgb rgb1o_kf[] {
   {0,    YELLOW, 0}, 
   {1500, YELLOW, 50}, 
@@ -44,6 +49,7 @@ KeyFrameRgb rgb1o_kf[] {
  {33000, YELLOW, 0},
 };
 
+int rgb1u_num = 11;
 KeyFrameRgb rgb1u_kf[] {
   {0,    YELLOW, 0},
   {3500, YELLOW, 50},
@@ -80,6 +86,8 @@ KeyFrameRgb rgb3u_kf[] {
   {7000, BLUE}
 };
 */
+/*
+int rgb4o_num = 11;
 KeyFrameRgb rgb4o_kf[] {
   {0,    YELLOW, 0}, 
   {2500, YELLOW, 50},
@@ -93,6 +101,7 @@ KeyFrameRgb rgb4o_kf[] {
  {30000, YELLOW, 50}, 
  {35000, YELLOW, 50},
 };
+int rgb4u_num = 11;
 KeyFrameRgb rgb4u_kf[] {
   {0,    YELLOW, 0},
   {4500, YELLOW, 50}, 
@@ -105,6 +114,66 @@ KeyFrameRgb rgb4u_kf[] {
  {31000, GREEN, 50}, 
  {32000, YELLOW, 50},
  {37000, YELLOW, 0}, 
+};
+*/
+//animation 2
+int motor1_num = 3;
+KeyFrame motor1_kf[] {
+  {0, 0},
+  {4000, 3000},
+  {8000, 0},
+};
+
+int motor4_num = 4;
+KeyFrame motor4_kf[] {
+  {0, 0},
+  {2000, 0},
+  {6000, 3000},
+  {10000, 0},
+};
+
+
+int rgb1o_num = 7;
+KeyFrameRgb rgb1o_kf[] {
+  {400,  WHITE, 100}, 
+  {1000, BLACK, 0}, 
+  {2300,  BLACK, 0}, 
+  {2400,  WHITE, 100}, 
+  {3000, BLACK, 0}, 
+  {20000, WHITE, 100}, 
+  {22000, BLACK, 0}, 
+};
+
+int rgb1u_num = 7;
+KeyFrameRgb rgb1u_kf[] {
+  {200,  WHITE, 100}, 
+  {800, BLACK, 0}, 
+  {2000,  BLACK, 0}, 
+  {2200,  WHITE, 100}, 
+  {2800, BLACK, 0}, 
+  {20000, WHITE, 100}, 
+  {22000, BLACK, 0}, 
+};
+
+int rgb4o_num = 7;
+KeyFrameRgb rgb4o_kf[] {
+  {500,  WHITE, 100}, 
+  {1000, BLACK, 0}, 
+  {3600,  BLACK, 0}, 
+  {3700,  WHITE, 100}, 
+  {4100, BLACK, 0}, 
+  {20000, WHITE, 100}, 
+  {22000, BLACK, 0}, 
+};
+int rgb4u_num = 7;
+KeyFrameRgb rgb4u_kf[] {
+  {300,  WHITE, 100}, 
+  {800, BLACK, 0}, 
+  {3500,  BLACK, 0}, 
+  {3600,  WHITE, 100}, 
+  {4200, BLACK, 0}, 
+  {20000, WHITE, 100}, 
+  {22000, BLACK, 0}, 
 };
 
 #endif

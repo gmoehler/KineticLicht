@@ -31,7 +31,8 @@ void KeyFrameStepper::start() {
     _previousKeyFrame = KeyFrame();
 
     // set speed and time
-    updateSpeed(0,0);  // not required but get strange compiler error if not there
+    //updateSpeed(0,0);  // not required but get strange compiler error if not there
+    updateSpeed(0);  
     _startTime = millis();
 
     // allow animation to run
@@ -129,7 +130,7 @@ void KeyFrameStepper::updateCurrentKeyFrame() {
       // we have passed the last key frame: end animation
       if (_currentFrameIdx == _numFrames - 1) {
         serPrintln("%d ***FINISH Exp t: %d t: %l", _id, currentTargetTime, runtime, 0);
-        Serial.println(runtime);
+        if (debug) Serial.println(runtime);
         serPrintln("%d Finish Exp pos: %d Act: %d", _id, tgtPos, curPos, 0);
         _animationActive = false;
         updateSpeed(0);
