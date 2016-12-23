@@ -30,10 +30,12 @@ class KeyFrame
 class KeyFrameRgb
 {
   public:
+    KeyFrameRgb(long time_ms, int red, int green, int blue, int brightness) 
+      : _time_ms(time_ms), _red(red), _green(green), _blue(blue), _brightness(brightness){}
     KeyFrameRgb(long time_ms, int red, int green, int blue) 
-      : _time_ms(time_ms), _red(red), _green(green), _blue(blue){}
+      : _time_ms(time_ms), _red(red), _green(green), _blue(blue), _brightness(100){}
     KeyFrameRgb() 
-      : _time_ms(0), _red(0), _green(0), _blue(0){}
+      : _time_ms(0), _red(0), _green(0), _blue(0), _brightness(0){}
     
     long getTimeMs() {
       return _time_ms;
@@ -50,12 +52,17 @@ class KeyFrameRgb
     int getBlue() {
       return _blue;
     }
+    int getBrightness() {
+      return _brightness;
+    }
+
 
   private:
     long _time_ms;
     int _red;
     int _green;
     int _blue;
+    int _brightness;
 };
 
 #endif

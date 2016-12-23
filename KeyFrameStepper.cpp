@@ -32,7 +32,6 @@ void KeyFrameStepper::start() {
 
     // set speed and time
     updateSpeed(0,0);  // not required but get strange compiler error if not there
-    updateSpeed(0);
     _startTime = millis();
 
     // allow animation to run

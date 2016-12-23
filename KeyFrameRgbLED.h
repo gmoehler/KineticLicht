@@ -44,6 +44,7 @@ private:
     double _currentRedSpeed;
     double _currentGreenSpeed;
     double _currentBlueSpeed;
+    double _currentBrightnessSpeed;
 
     unsigned long _startTime;
 

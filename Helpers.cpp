@@ -1,6 +1,6 @@
 #include "Helpers.h"
 
-#define DEBUG true
+#define DEBUG false
 
 void printRGB(int id, RGB col){
   serPrintln("LED%d, %d, %d, %d", id, col.red(), col.green(), col.blue());

@@ -14,7 +14,7 @@ KeyFrameRgbLED::KeyFrameRgbLED(int ledId, KeyFrameRgb keyFrame[], int numFrames)
   _currentGreenSpeed = 0.0;
   _currentBlueSpeed = 0.0;
 
-  _needsUpdateDelta = 64;
+  _needsUpdateDelta = 4;
 
   //_rgbLed.doFineSerialOutput(true);
 }
@@ -53,6 +53,7 @@ void KeyFrameRgbLED::loop() {
     int expectedRed   = _previousKeyFrame.getRed() + _currentRedSpeed * delta;
     int expectedGreen = _previousKeyFrame.getGreen() + _currentGreenSpeed * delta;
     int expectedBlue  = _previousKeyFrame.getBlue() + _currentBlueSpeed * delta;
+    int expectedBrightness  = _previousKeyFrame.getBrightness() + _currentBrightnessSpeed * delta;
 
     if (debug1) {
       Serial.print("***RGB Loop***");
@@ -66,11 +67,12 @@ void KeyFrameRgbLED::loop() {
       Serial.println(expectedBlue);
     }
 
-    _needsUpdate = abs(expectedRed - _currentColor.red()) > _needsUpdateDelta ||
-                   abs(expectedGreen - _currentColor.green()) > _needsUpdateDelta ||
-                   abs(expectedBlue - _currentColor.blue()) > _needsUpdateDelta;
+    RGB expectedColor = _rgbLed.getRGB(expectedRed, expectedGreen, expectedBlue, expectedBrightness);  
+    _needsUpdate = abs(expectedColor.red() - _currentColor.red()) > _needsUpdateDelta ||
+                   abs(expectedColor.green() - _currentColor.green()) > _needsUpdateDelta ||
+                   abs(expectedColor.blue() - _currentColor.blue()) > _needsUpdateDelta;
     if (_needsUpdate) {
-      _currentColor = _rgbLed.getRGB(expectedRed, expectedGreen, expectedBlue);
+      _currentColor = expectedColor;
       // serPrintln("###### %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
     }
   }
