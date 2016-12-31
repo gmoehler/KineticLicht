@@ -5,7 +5,7 @@
 #include "KeyFrameStepper.h"
 #include "KeyFrameRgbLED.h"
 
-#include "Animation1Frames.h"
+#include "AnimationStore.h"
 #include "RGB.h"
 
 /*************************
@@ -18,15 +18,18 @@
 // these are hardwired in the lib using fast data write
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, LED_CLOCK, LED_DATA, LED_LATCH);
 
-KeyFrameRgbLED rgb1o = KeyFrameRgbLED (4, rgb1u_kf, rgb1o_num);
-KeyFrameRgbLED rgb1u = KeyFrameRgbLED (5, rgb1o_kf, rgb1u_num);
+AnimationStore animationStore = AnimationStore();
+Animation a1 = animationStore.getAnimation(1);
+
+KeyFrameRgbLED rgb1o = KeyFrameRgbLED (4, a1.getRgbKeyframes(1, BOTTOM), a1.getNumRgbKeyframes(1, BOTTOM));
+KeyFrameRgbLED rgb1u = KeyFrameRgbLED (5, a1.getRgbKeyframes(1, TOP), a1.getNumRgbKeyframes(1, TOP));
 /*KeyFrameRgbLED rgb2o = KeyFrameRgbLED (7, rgb2u_kf, 3);
   KeyFrameRgbLED rgb2u = KeyFrameRgbLED (8, rgb2o_kf, 3);
   KeyFrameRgbLED rgb3o = KeyFrameRgbLED (5, rgb3u_kf, 3);
   KeyFrameRgbLED rgb3u = KeyFrameRgbLED (6, rgb3o_kf, 3);
 */
-KeyFrameRgbLED rgb4o = KeyFrameRgbLED (6, rgb4u_kf, rgb4o_num);
-KeyFrameRgbLED rgb4u = KeyFrameRgbLED (7, rgb4o_kf, rgb4u_num);
+KeyFrameRgbLED rgb4o = KeyFrameRgbLED (6, a1.getRgbKeyframes(4, BOTTOM), a1.getNumRgbKeyframes(4, BOTTOM));
+KeyFrameRgbLED rgb4u = KeyFrameRgbLED (7,a1.getRgbKeyframes(4, TOP), a1.getNumRgbKeyframes(4, TOP));
 
 /*************************
     create Stepper objects
@@ -73,10 +76,10 @@ void backwardstep4() {
 }
 AccelStepper astepper4(forwardstep4, backwardstep4); // use functions to step
 
-KeyFrameStepper  kfstepper1 = KeyFrameStepper(steppermotor1, astepper1, 1, motor1_kf, motor1_num, 53, true);
+KeyFrameStepper  kfstepper1 = KeyFrameStepper(steppermotor1, astepper1, 1, a1.getMotorKeyframes(1), a1.getNumMotorKeyframes(4), 53, true);
 //KeyFrameStepper  kfstepper2 = KeyFrameStepper(steppermotor2, astepper2, 2, motor2_kf, 2, 49, false);
 //KeyFrameStepper  kfstepper3 = KeyFrameStepper(steppermotor3, astepper3, 3, motor3_kf, 2, 51, false);
-KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, motor4_kf, motor4_num, 47, true);
+KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, a1.getMotorKeyframes(4), a1.getNumMotorKeyframes(4), 47, true);
 
 /************
     Setup
