@@ -10,6 +10,8 @@ AnimationStore::AnimationStore() {
 
   animation1 = Animation();
 
+  vector<int> v { 34,23 };
+  
   KeyFrame motor1_kf[] {
     {0, 0},
     {2000, 0},

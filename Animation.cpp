@@ -1,32 +1,38 @@
 #include "Animation.h"
 
 Animation::Animation() {
-
 }
 
-KeyFrame* Animation::getMotorKeyframes(int motorId) {
-  return motorKeyFrames[motorId - 1];
+vector<KeyFrame> Animation::getMotorKeyframes(int motorId) {
+  vector<KeyFrame> kfs = motorKeyFrames[motorId];
+  return kfs;
 }
 
 int Animation::getNumMotorKeyframes(int motorId) {
-  return numMotorFrames[motorId];
+  vector<KeyFrame> kfs = motorKeyFrames[motorId];
+  return kfs.size();
 }
-void Animation::addMotorKeyFrames(int motorId, KeyFrame&  kf, int numKeyFrames) {
-  motorKeyFrames[motorId - 1] = kf;
-  numMotorFrames[motorId - 1] = numKeyFrames; 
+void Animation::addMotorKeyFrame(int motorId, KeyFrame kf) {
+  vector<KeyFrame> kfs = motorKeyFrames[motorId];
+  kfs.push_back(kf); 
 }
 
-KeyFrameRgb* Animation::getRgbKeyframes(int ledId, LedPosition topOrBottom) {
-  return rgbKeyFrames[getIndex(ledId, topOrBottom)];
+vector<KeyFrameRgb> Animation::getRgbKeyframes(int ledId, LedPosition topOrBottom) {
+  int index = getIndex(ledId, topOrBottom);
+  vector<KeyFrameRgb> kfs = rgbKeyFrames[index];
+  return kfs;
 }
 
 int Animation::getNumRgbKeyframes(int ledId, LedPosition topOrBottom) {
-  return numRgbFrames[getIndex(ledId, topOrBottom)];
+  int index = getIndex(ledId, topOrBottom);
+  vector<KeyFrameRgb> kfs = rgbKeyFrames[index];
+  return kfs.size();
 }
 
-void Animation::addRgbKeyFrames(int ledId, KeyFrameRgb& kf, LedPosition topOrBottom, int numKeyFrames) {
-  rgbKeyFrames[getIndex(ledId, topOrBottom)] = kf;
-  numRgbFrames[getIndex(ledId, topOrBottom)] = numKeyFrames;
+void Animation::addRgbKeyFrame(int ledId, KeyFrameRgb kf, LedPosition topOrBottom) {
+  int index = getIndex(ledId, topOrBottom);
+  vector<KeyFrameRgb> kfs = rgbKeyFrames[index];
+  kfs.push_back(kf);
 }
 
 int Animation::getIndex(int ledId, LedPosition topOrBottom){
