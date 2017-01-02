@@ -90,6 +90,8 @@ KeyFrameStepper  kfstepper1 = KeyFrameStepper(steppermotor1, astepper1, 1, mkfs1
 vector<KeyFrame> mkfs4 =  a1.getMotorKeyframes(4);
 KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, mkfs4, 47, true);
 
+long startTime = 0;
+
 /************
     Setup
  ************/
@@ -103,6 +105,8 @@ void setup()
   AFMS_b.begin();
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
+
+  startTime = millis();
 
   //kfstepper1.init();
   //kfstepper2.init();
