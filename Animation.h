@@ -3,6 +3,7 @@
 
 #include <ArduinoSTL.h>
 #include <map>
+
 #include "KeyFrame.h"
 
 using namespace std;
@@ -16,18 +17,22 @@ public:
   Animation();
 
   vector<KeyFrame> getMotorKeyframes(int motorId);
-  int getNumMotorKeyframes(int motorId); 
-  void addMotorKeyFrame(int motorId, KeyFrame kf);
+  // add single key frames
+  void addMotorKeyFrame(int motorId, KeyFrame new_kf);
+  // add many key frames for one motor
+  void addMotorKeyFrames(int motorId, vector<KeyFrame> new_kfs);
+  // add many key frames for arbitrary motors defined as first value
+  void addMotorKeyFrames(vector<KeyFrame> new_kfs);
 
   vector<KeyFrameRgb> getRgbKeyframes(int ledId, LedPosition topOrBottom);
-  int getNumRgbKeyframes(int ledId, LedPosition topOrBottom);  
-  void addRgbKeyFrame(int ledId, KeyFrameRgb kf, LedPosition topOrBottom);
+  void addRgbKeyFrame(int ledId, KeyFrameRgb new_kf, LedPosition topOrBottom);
+  void addRgbKeyFrames(int ledId, vector<KeyFrameRgb> new_kfs, LedPosition topOrBottom);
 
 private:
-  int getIndex(int ledId, LedPosition topOrBottom);
+  int getLedIndex(int ledId, LedPosition topOrBottom);
 
-  map<int, vector<KeyFrame> > motorKeyFrames;
-  map<int, vector<KeyFrameRgb> > rgbKeyFrames;
+  std:: map<int, vector<KeyFrame> > motorKeyFrames;
+  std:: map<int, vector<KeyFrameRgb> > rgbKeyFrames;
   
 };
 

@@ -5,9 +5,9 @@ bool debug = false;
 #define MAX_SPEED 600
 
 KeyFrameStepper::KeyFrameStepper(Adafruit_StepperMotor *motor,  AccelStepper &astepper, int id,
-                                 KeyFrame keyFrame[], int numFrames, int endStopPin, bool reverseDirection)
-  : _motor(motor), _astepper(astepper), _keyFrame(keyFrame), _numFrames(numFrames), _id(id),
-    _endStopPin(endStopPin), _reverseDirection(reverseDirection)
+                                 vector<KeyFrame> keyFrame, int endStopPin, bool reverseDirection)
+  : _motor(motor), _astepper(astepper), _keyFrame(keyFrame), _id(id),
+    _endStopPin(endStopPin), _reverseDirection(reverseDirection), _numFrames(keyFrame.size())
 {
   _startTime = 0;
   _animationActive = false;

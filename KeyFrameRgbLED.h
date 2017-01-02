@@ -3,17 +3,20 @@
 #ifndef KeyFrameRgbLED_h
 #define KeyFrameRgbLED_h
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <ArduinoSTL.h>
 
 #include "Helpers.h"
 #include "KeyFrame.h"
 #include "RgbLED.h"
 #include "RGB.h"
 
+using namespace std;
+
 class KeyFrameRgbLED
 {
 public:
-     KeyFrameRgbLED(int rgbId, KeyFrameRgb keyFrame[], int numFrames);
+     KeyFrameRgbLED(int rgbId, vector<KeyFrameRgb>& keyFrame);
 
     void start();
     void loop();
@@ -36,7 +39,7 @@ private:
 
     RgbLED _rgbLed;
     int _ledId;
-    KeyFrameRgb* _keyFrame;
+    vector<KeyFrameRgb> _keyFrame;
     int _numFrames;
     int _currentFrameIdx;
     

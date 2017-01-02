@@ -9,10 +9,12 @@
 class KeyFrame
 {
   public:
+    KeyFrame(int id, long time_ms, int target) 
+     : _id(id), _time_ms(time_ms), _target(target){}
     KeyFrame(long time_ms, int target) 
-     : _time_ms(time_ms), _target(target){}
+     : _id(0), _time_ms(time_ms), _target(target){}
     KeyFrame() 
-     : _time_ms(0), _target(0){}
+     : _id(0), _time_ms(0), _target(0){}
     
     long getTimeMs() {
       return _time_ms;
@@ -22,9 +24,14 @@ class KeyFrame
       return _target;
     }
 
+    int getId() {
+      return _id;
+    }
+
   private:
     long _time_ms;
     int _target;
+    int _id;
 };
 
 class KeyFrameRgb

@@ -1,5 +1,8 @@
+#include <Arduino.h>
+#include <ArduinoSTL.h>
 #include <Adafruit_MotorShield.h>
 #include <AccelStepper.h>
+
 #include "Adafruit_TLC5947.h"
 
 #include "KeyFrameStepper.h"
@@ -15,21 +18,25 @@
 #define LED_DATA   4
 #define LED_CLOCK  5
 #define LED_LATCH  6
-// these are hardwired in the lib using fast data write
+// these are hard-wired in the lib using fast data write
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, LED_CLOCK, LED_DATA, LED_LATCH);
 
 AnimationStore animationStore = AnimationStore();
 Animation a1 = animationStore.getAnimation(1);
 
-KeyFrameRgbLED rgb1o = KeyFrameRgbLED (4, a1.getRgbKeyframes(1, BOTTOM), a1.getNumRgbKeyframes(1, BOTTOM));
-KeyFrameRgbLED rgb1u = KeyFrameRgbLED (5, a1.getRgbKeyframes(1, TOP), a1.getNumRgbKeyframes(1, TOP));
+vector<KeyFrameRgb> lkfs1 = a1.getRgbKeyframes(1, BOTTOM);
+KeyFrameRgbLED rgb1o = KeyFrameRgbLED (4, lkfs1);
+vector<KeyFrameRgb> lkfs2 = a1.getRgbKeyframes(1, TOP);
+KeyFrameRgbLED rgb1u = KeyFrameRgbLED (5, lkfs2);
 /*KeyFrameRgbLED rgb2o = KeyFrameRgbLED (7, rgb2u_kf, 3);
   KeyFrameRgbLED rgb2u = KeyFrameRgbLED (8, rgb2o_kf, 3);
   KeyFrameRgbLED rgb3o = KeyFrameRgbLED (5, rgb3u_kf, 3);
   KeyFrameRgbLED rgb3u = KeyFrameRgbLED (6, rgb3o_kf, 3);
 */
-KeyFrameRgbLED rgb4o = KeyFrameRgbLED (6, a1.getRgbKeyframes(4, BOTTOM), a1.getNumRgbKeyframes(4, BOTTOM));
-KeyFrameRgbLED rgb4u = KeyFrameRgbLED (7,a1.getRgbKeyframes(4, TOP), a1.getNumRgbKeyframes(4, TOP));
+vector<KeyFrameRgb> lkfs7 = a1.getRgbKeyframes(1, BOTTOM);
+KeyFrameRgbLED rgb4o = KeyFrameRgbLED (6, lkfs7);
+vector<KeyFrameRgb> lkfs8 = a1.getRgbKeyframes(1, BOTTOM);
+KeyFrameRgbLED rgb4u = KeyFrameRgbLED (7, lkfs8);
 
 /*************************
     create Stepper objects
@@ -76,10 +83,12 @@ void backwardstep4() {
 }
 AccelStepper astepper4(forwardstep4, backwardstep4); // use functions to step
 
-KeyFrameStepper  kfstepper1 = KeyFrameStepper(steppermotor1, astepper1, 1, a1.getMotorKeyframes(1), a1.getNumMotorKeyframes(4), 53, true);
+vector<KeyFrame> mkfs1 =  a1.getMotorKeyframes(1);
+KeyFrameStepper  kfstepper1 = KeyFrameStepper(steppermotor1, astepper1, 1, mkfs1, 53, true);
 //KeyFrameStepper  kfstepper2 = KeyFrameStepper(steppermotor2, astepper2, 2, motor2_kf, 2, 49, false);
 //KeyFrameStepper  kfstepper3 = KeyFrameStepper(steppermotor3, astepper3, 3, motor3_kf, 2, 51, false);
-KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, a1.getMotorKeyframes(4), a1.getNumMotorKeyframes(4), 47, true);
+vector<KeyFrame> mkfs4 =  a1.getMotorKeyframes(4);
+KeyFrameStepper  kfstepper4 = KeyFrameStepper(steppermotor4, astepper4, 4, mkfs4, 47, true);
 
 /************
     Setup

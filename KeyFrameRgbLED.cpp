@@ -2,8 +2,8 @@
 
 bool debug1 = false;
 
-KeyFrameRgbLED::KeyFrameRgbLED(int ledId, KeyFrameRgb keyFrame[], int numFrames)
-  : _rgbLed(ledId), _keyFrame(keyFrame), _numFrames(numFrames), _ledId(ledId)
+KeyFrameRgbLED::KeyFrameRgbLED(int ledId, vector<KeyFrameRgb>& keyFrame)
+  : _rgbLed(ledId), _keyFrame(keyFrame), _ledId(ledId), _numFrames(keyFrame.size())
 {
   _startTime = 0;
   _animationActive = false;
@@ -16,7 +16,6 @@ KeyFrameRgbLED::KeyFrameRgbLED(int ledId, KeyFrameRgb keyFrame[], int numFrames)
 
   _needsUpdateDelta = 16;
 
-  //_rgbLed.doFineSerialOutput(true);
 }
 
 int KeyFrameRgbLED::getId() {

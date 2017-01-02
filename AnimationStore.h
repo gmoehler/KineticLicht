@@ -17,7 +17,7 @@ public:
   Animation& getAnimation(int id);
 
 private:
-  Animation animation1;
+  vector<Animation> animation;
 
 };
 
