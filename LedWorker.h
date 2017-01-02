@@ -20,7 +20,7 @@ public:
 
     void loop(long elapsedTime);
     // update current key frames
-    void updateKeyFrame(KeyFrameRgb& kf);
+    void updateKeyFrame(KeyFrameRgb& kf, long elapsedTime);
     bool needsUpdate();
     RGB getCurrentColor();
     int getId();

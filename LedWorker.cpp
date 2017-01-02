@@ -73,12 +73,12 @@ void LedWorker::loop(long elapsedTime) {
       Serial.println(expectedBlue);
     }
 
-    RGB expectedColor = RGB(expectedRed, expectedGreen, expectedBlue, expectedBrightness);
+    RGB expectedColor = RGB(expectedRed, expectedGreen, expectedBlue);
     _needsUpdate = abs(expectedColor.red() - _currentColor.red()) > _needsUpdateDelta ||
                    abs(expectedColor.green() - _currentColor.green()) > _needsUpdateDelta ||
                    abs(expectedColor.blue() - _currentColor.blue()) > _needsUpdateDelta;
       serPrintln("###### CUR %d %d %d %d", getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
-      serPrintln("###### EXP %d %d %d %d B: %d", getId(), expectedColor.red(), expectedColor.green(), expectedColor.blue(), expectedBrightness);
+      serPrintln("###### EXP %d %d %d %d", getId(), expectedColor.red(), expectedColor.green(), expectedColor.blue());
     if (_needsUpdate) {
       _currentColor = expectedColor;
       serPrintln("###### UPDATE %d %d %d %d", getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
@@ -103,7 +103,7 @@ void LedWorker::calculateCurrentSpeed() {
                         / (_currentKeyFrame.getTimeMs() - elapsedTime);
   _currentBlueSpeed =  ((double)(_currentKeyFrame.getBlue() - _previousKeyFrame.getBlue()))
                        / (_currentKeyFrame.getTimeMs() - elapsedTime);
-  serPrintln("LED%d Update Current Speed: %f, %f, %f, %f", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed, _currentBrightnessSpeed, 0);
+  serPrintln("LED%d Update Current Speed: %f, %f, %f", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed, 0);
 }
 
 

@@ -54,7 +54,6 @@ void KeyFrameRgbLED::loop() {
     int expectedRed   = _previousKeyFrame.getRed() + _currentRedSpeed * delta;
     int expectedGreen = _previousKeyFrame.getGreen() + _currentGreenSpeed * delta;
     int expectedBlue  = _previousKeyFrame.getBlue() + _currentBlueSpeed * delta;
-    int expectedBrightness  = _previousKeyFrame.getBrightness() + _currentBrightnessSpeed * delta;
 
     if (debug1) {
       Serial.print("***RGB Loop***");
@@ -68,12 +67,12 @@ void KeyFrameRgbLED::loop() {
       Serial.println(expectedBlue);
     }
 
-    RGB expectedColor = _rgbLed.getRGB(expectedRed, expectedGreen, expectedBlue, expectedBrightness);
+    RGB expectedColor = _rgbLed.getRGB(expectedRed, expectedGreen, expectedBlue);
     _needsUpdate = abs(expectedColor.red() - _currentColor.red()) > _needsUpdateDelta ||
                    abs(expectedColor.green() - _currentColor.green()) > _needsUpdateDelta ||
                    abs(expectedColor.blue() - _currentColor.blue()) > _needsUpdateDelta;
       serPrintln("###### CUR %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
-      serPrintln("###### EXP %d %d %d %d B: %d", _rgbLed.getId(), expectedColor.red(), expectedColor.green(), expectedColor.blue(), expectedBrightness);
+      serPrintln("###### EXP %d %d %d %d", _rgbLed.getId(), expectedColor.red(), expectedColor.green(), expectedColor.blue());
     if (_needsUpdate) {
       _currentColor = expectedColor;
       serPrintln("###### UPDATE %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
@@ -152,9 +151,7 @@ void KeyFrameRgbLED::calculateCurrentSpeed() {
                         / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
   _currentBlueSpeed =  ((double)(_currentKeyFrame.getBlue() - _previousKeyFrame.getBlue()))
                        / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
-  _currentBrightnessSpeed =  ((double)(_currentKeyFrame.getBrightness() - _previousKeyFrame.getBrightness()))
-                       / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
-  serPrintln("LED%d Update Current Speed: %f, %f, %f, %f", _ledId, _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed, _currentBrightnessSpeed, 0);
+  serPrintln("LED%d Update Current Speed: %f, %f, %f", _ledId, _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed, 0);
 }
 
 unsigned long KeyFrameRgbLED::getRuntime() {

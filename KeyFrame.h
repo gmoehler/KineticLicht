@@ -1,6 +1,8 @@
 #ifndef KeyFrame_h
 #define KeyFrame_h
 
+#include "RGB.h"
+
 /////////////////////////////////////////////////////////////////////
 /// \class KeyFrame
 /// \brief Target Key Frame consisting of a target time and a target value
@@ -38,38 +40,35 @@ class KeyFrameRgb
 {
   public:
     KeyFrameRgb(long time_ms, int red, int green, int blue, int brightness) 
-      : _time_ms(time_ms), _red(red), _green(green), _blue(blue), _brightness(brightness){}
+      : _time_ms(time_ms), _color(red, green, blue, brightness){}
     KeyFrameRgb(long time_ms, int red, int green, int blue) 
-      : _time_ms(time_ms), _red(red), _green(green), _blue(blue), _brightness(100){}
+      : _time_ms(time_ms), _color(red, green, blue) {}
     KeyFrameRgb() 
-      : _time_ms(0), _red(0), _green(0), _blue(0), _brightness(0){}
+      : _color(0,0,0) {}
     
     long getTimeMs() {
       return _time_ms;
     }
 
+    RGB getColor(){
+        return _color;
+    }
+
     int getRed() {
-      return _red;
+      return _color.red();
     }
 
     int getGreen() {
-      return _green;
+      return _color.green();
     }
 
     int getBlue() {
-      return _blue;
+      return _color.blue();
     }
-    int getBrightness() {
-      return _brightness;
-    }
-
 
   private:
     long _time_ms;
-    int _red;
-    int _green;
-    int _blue;
-    int _brightness;
+    RGB _color;
 };
 
 #endif
