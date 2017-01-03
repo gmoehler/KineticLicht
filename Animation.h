@@ -16,6 +16,10 @@ public:
 
   Animation();
 
+  bool isAnimationFinished(long elapsedTime);
+  bool hasNextTargetKeyFrame(long elapsedTime);
+  KeyFrame getNextTargetKeyFrame(long elapsedTime);
+
   vector<KeyFrame> getMotorKeyframes(int motorId);
   // add single key frames
   void addMotorKeyFrame(int motorId, KeyFrame new_kf);

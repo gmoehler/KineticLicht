@@ -10,6 +10,7 @@
 #include "KeyFrame.h"
 #include "Helpers.h"
 
+enum StepperWorkerState {ACTIVE, CALIBRATING, CALIBRATION_FINISHED, ENDSTOP_HIT, PAST_TARGET, PASSIVE};
 
 class StepperWorker
 {
@@ -23,19 +24,18 @@ class StepperWorker
     // to be called in loop()
     void loop(long elapsedTime);
 
+    // to be called in loop() during calibration
+    void loopCalibration();
+
     // set a new target keyFrame
     void updateTargetKeyFrame(long elapsedTime, KeyFrame& kf);
 
-    // did we pass the last key frame
-    bool isAnimationFinished();
+    StepperWorkerState getState();
+
+  private:
 
     // did the end stop switch detect the light
     bool isEndStopHit();
-
-    // initial routine: tear up lights until they hit the end stop - call this 0 and go down a bit
-    void calibrate();
-
-  private:
 
     void checkAnimation(long elapsedTime);
 
@@ -67,12 +67,12 @@ class StepperWorker
 
     long _currentPosition;
     double _currentSpeed;
+    
     int _endStopPin;
     bool _reverseDirection;
     int _calibrateSpeed;
 
-    bool _pastTargetKeyFrame;
-    bool _atEndStop;
+    StepperWorkerState _state;
 
     KeyFrame _previousKeyFrame;
     KeyFrame _targetKeyFrame;

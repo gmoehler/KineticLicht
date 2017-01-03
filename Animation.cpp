@@ -4,6 +4,20 @@ Animation::Animation() {
   // nothing to be done
 }
 
+bool Animation::isAnimationFinished(long elapsedTime) {
+  //TODO
+  return false;
+}
+bool Animation::hasNextTargetKeyFrame(long elapsedTime) {
+  //TODO
+  return false;
+}
+
+KeyFrame Animation::getNextTargetKeyFrame(long elapsedTime) {
+  //TODO
+}
+
+
 vector<KeyFrame> Animation::getMotorKeyframes(int motorId) {
   vector<KeyFrame> kfs = motorKeyFrames[motorId];
   return kfs;

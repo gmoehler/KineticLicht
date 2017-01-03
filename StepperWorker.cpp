@@ -3,16 +3,21 @@
 #define ARDBUFFER 80
 #define MAX_SPEED 600
 
+
 StepperWorker::StepperWorker(Adafruit_StepperMotor *motor,  AccelStepper &astepper,
                              int id, int endStopPin, bool reverseDirection)
   : _motor(motor), _astepper(astepper), _id(id),
     _endStopPin(endStopPin), _reverseDirection(reverseDirection),
-    _pastTargetKeyFrame(false), _currentPosition(0), _currentSpeed(0.0), _calibrateSpeed(400),
+    _state(PASSIVE), _currentPosition(0), _currentSpeed(0.0), _calibrateSpeed(-400),
     _targetTimeDelta(250), _debug(false)
 { }
 
 void StepperWorker::init() {
   pinMode(_endStopPin, INPUT_PULLUP);
+}
+
+StepperWorkerState StepperWorker::getState(){
+  return _state;
 }
 
 void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
@@ -21,8 +26,23 @@ void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
   _targetKeyFrame  = kf;
   long curPos = _astepper.currentPosition();
   updateSpeed(curPos, elapsedTime);
-  _pastTargetKeyFrame = false;
 }
+
+void StepperWorker::loopCalibration() {
+  
+  if (isEndStopHit()) {
+    operateOnEndStopHit();
+    return;
+  }
+
+  serPrintln("%d ***CALIBRATING...", _id);
+  _state == CALIBRATING;
+
+  // go up until end stop is hit
+  updateSpeed(_calibrateSpeed);
+  runStepper();
+}
+
 
 void StepperWorker::loop(long elapsedTime) {
 
@@ -32,7 +52,8 @@ void StepperWorker::loop(long elapsedTime) {
 
   checkAnimation(elapsedTime);
 
-  if (!_pastTargetKeyFrame) {
+  if (_state == ACTIVE || (_state == ENDSTOP_HIT && _currentSpeed >0)) {
+    _state = ACTIVE;
     runStepper();
   }
 }
@@ -58,7 +79,7 @@ void StepperWorker::operateOnEndStopHit() {
 
   // call this 0
   resetPosition();
-  _atEndStop = true;
+  _state = ENDSTOP_HIT;
 
   serPrintln("%d Reset finished.", _id);
 }
@@ -72,7 +93,7 @@ void StepperWorker::resetPosition() {
 
 void StepperWorker::checkAnimation(long elapsedTime) {
 
-  if (!_pastTargetKeyFrame) {
+  if (_state == ACTIVE) {
     unsigned long targetTime = _targetKeyFrame.getTimeMs();
 
     // did we run past the target key frame
@@ -82,7 +103,7 @@ void StepperWorker::checkAnimation(long elapsedTime) {
       int curPos = (int) getCurrentPosition();
       int tgtPos = _targetKeyFrame.getTarget();
 
-      _pastTargetKeyFrame = true;
+      _state = PAST_TARGET;
       // stop motor
       updateSpeed(0);
 
@@ -97,24 +118,6 @@ void StepperWorker::checkAnimation(long elapsedTime) {
       serPrintln("%d     Exp pos: %d Act: %d", _id, tgtPos, curPos, 0);
     }
   }
-}
-
-void StepperWorker::calibrate() {
-
-  pinMode(_endStopPin, INPUT_PULLUP);
-
-  serPrintln("%d ***CALIBRATING...", _id);
-
-  // go up until end stop is hit
-  updateSpeed(_calibrateSpeed);
-
-  while (! isEndStopHit()) {
-    _astepper.runSpeed();
-  }
-
-  serPrintln("%d ...reached end stop...", _id);
-
-  operateOnEndStopHit();
 }
 
 void StepperWorker::updateSpeed(double speed) {
