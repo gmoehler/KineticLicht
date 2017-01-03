@@ -1,53 +1,45 @@
 #include "StepperWorker.h"
 
-bool debug = false;
 #define ARDBUFFER 80
 #define MAX_SPEED 600
 
-StepperWorker::StepperWorker(Adafruit_StepperMotor *motor,  AccelStepper &astepper, int id,
-                             int endStopPin, bool reverseDirection)
+StepperWorker::StepperWorker(Adafruit_StepperMotor *motor,  AccelStepper &astepper,
+                             int id, int endStopPin, bool reverseDirection)
   : _motor(motor), _astepper(astepper), _id(id),
     _endStopPin(endStopPin), _reverseDirection(reverseDirection),
-    _pastKeyFrame(false), _currentPosition(0), _currentSpeed(0.0), _calibrateSpeed(400)
+    _pastTargetKeyFrame(false), _currentPosition(0), _currentSpeed(0.0), _calibrateSpeed(400),
+    _targetTimeDelta(250), _debug(false)
 { }
 
-void StepperWorker::start() {
-
+void StepperWorker::init() {
   pinMode(_endStopPin, INPUT_PULLUP);
 }
 
+void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 
-void KeyFrameStepper::updateCurrentKeyFrame(KeyFrame& kf) {
-
-            _previousKeyFrame = _currentKeyFrame;
-            _currentKeyFrame  = _keyFrame[_currentFrameIdx];
-            updateSpeed(curPos, runtime);
-
-
+  _previousKeyFrame = _targetKeyFrame;
+  _targetKeyFrame  = kf;
+  long curPos = _astepper.currentPosition();
+  updateSpeed(curPos, elapsedTime);
+  _pastTargetKeyFrame = false;
 }
 
+void StepperWorker::loop(long elapsedTime) {
 
-
-void KeyFrameStepper::init() {
-  
-  updateSpeed(0);
-  _astepper.runSpeed();
-}
-
-void KeyFrameStepper::calibrate() {
-
-  pinMode(_endStopPin, INPUT_PULLUP);
-  
-  serPrintln("%d ***CALIBRATING...", _id);
-
-  // go up until end stop is hit
-  updateSpeed(_calibrateSpeed);
-
-  while (! isEndStopHit()) {
-    _astepper.runSpeed();
+  if (isEndStopHit()) {
+    operateOnEndStopHit();
   }
 
-  serPrintln("%d ...reached end stop...", _id);
+  checkAnimation(elapsedTime);
+
+  if (!_pastTargetKeyFrame) {
+    runStepper();
+  }
+}
+
+
+void StepperWorker::operateOnEndStopHit() {
+  serPrintln("%d Endstop", _id);
   delay(300);
 
   // go down 200ms and then until end stop is released again
@@ -58,7 +50,7 @@ void KeyFrameStepper::calibrate() {
   while (millis() - now < 200) {
     _astepper.runSpeed();
   }
-  
+
   serPrintln("%d ...going down - phase 2...", _id);
   while (isEndStopHit()) {
     _astepper.runSpeed();
@@ -66,75 +58,66 @@ void KeyFrameStepper::calibrate() {
 
   // call this 0
   resetPosition();
-  //release();
-  serPrintln("%d Calibrating finished.", _id);
+  _atEndStop = true;
+
+  serPrintln("%d Reset finished.", _id);
 }
 
-void KeyFrameStepper::loop() {
-
-  if (isEndStopHit()) {
-    operateOnEndStop();
-    _animationActive = false;
-    return;
-  }
-
-  updateCurrentKeyFrame();
-
-  if (_animationActive) {
-
-    runStepper();
-  }
+void StepperWorker::resetPosition() {
+  serPrintln("%d Reset Position", _id);
+  _astepper.setCurrentPosition(0);
+  long curPos = _astepper.currentPosition();
+  serPrintln("%d Current Position: %d", _id, curPos, 0);
 }
 
-void KeyFrameStepper::updateCurrentKeyFrame() {
+void StepperWorker::checkAnimation(long elapsedTime) {
 
-  if (_animationActive) {
-    long runtime = getRuntime();
-    long currentTargetTime = _currentKeyFrame.getTimeMs();
+  if (!_pastTargetKeyFrame) {
+    unsigned long targetTime = _targetKeyFrame.getTimeMs();
 
-    if (0) {
-      Serial.print(_id);
-      Serial.print(" **Update**");
-      Serial.print("Runtime:");
-      Serial.print(runtime);
-      Serial.print(" TarTime:");
-      Serial.print(currentTargetTime);
-      Serial.print(" CurIdx:");
-      Serial.print(_currentFrameIdx);
-      Serial.print(" NumFrames:");
-      Serial.println(_numFrames);
-    }
-
-    // update current key frame if required
-    while (_currentKeyFrame.getTimeMs() <= runtime) {
+    // did we run past the target key frame
+    // allow for a bit of overshooting (_targetTimeDelta)
+    if (elapsedTime >= targetTime + _targetTimeDelta) {
 
       int curPos = (int) getCurrentPosition();
-      int  tgtPos = _currentKeyFrame.getTarget();
+      int tgtPos = _targetKeyFrame.getTarget();
 
-      // we have passed the last key frame: end animation
-      if (_currentFrameIdx == _numFrames - 1) {
-        serPrintln("%d ***FINISH Exp t: %d t: %l", _id, currentTargetTime, runtime, 0);
-        if (debug) Serial.println(runtime);
-        serPrintln("%d Finish Exp pos: %d Act: %d", _id, tgtPos, curPos, 0);
-        _animationActive = false;
-        updateSpeed(0);
-        break;
+      _pastTargetKeyFrame = true;
+      // stop motor
+      updateSpeed(0);
+
+      if (_debug) {
+        Serial.print("Passed KeyFrame:");
+        Serial.print(_id);
+        Serial.print(" Elapsed Time:");
+        Serial.println(elapsedTime);
       }
-      else {
-        serPrint("%d UPDATE Exp t: %d t: ", _id, currentTargetTime );
-        Serial.println(runtime);
-        serPrintln("%d Update Exp pos: %d Act: %d", _id, tgtPos, curPos, 0);
-        // read next key frame and update speed
-        _currentFrameIdx++;
-        _previousKeyFrame = _currentKeyFrame;
-        _currentKeyFrame  = _keyFrame[_currentFrameIdx];
-        updateSpeed(curPos, runtime);
-      }
+      serPrintln("%d *** Exp t: %d t: %l", _id, targetTime, elapsedTime, 0);
+      if (_debug) Serial.println(elapsedTime);
+      serPrintln("%d     Exp pos: %d Act: %d", _id, tgtPos, curPos, 0);
     }
   }
 }
 
-void KeyFrameStepper::updateSpeed(double speed) {
+void StepperWorker::calibrate() {
+
+  pinMode(_endStopPin, INPUT_PULLUP);
+
+  serPrintln("%d ***CALIBRATING...", _id);
+
+  // go up until end stop is hit
+  updateSpeed(_calibrateSpeed);
+
+  while (! isEndStopHit()) {
+    _astepper.runSpeed();
+  }
+
+  serPrintln("%d ...reached end stop...", _id);
+
+  operateOnEndStopHit();
+}
+
+void StepperWorker::updateSpeed(double speed) {
 
   if (speed != _currentSpeed) {
     if (abs(speed) > MAX_SPEED) {
@@ -143,7 +126,7 @@ void KeyFrameStepper::updateSpeed(double speed) {
     _currentSpeed =  speed;
     double act_speed = _reverseDirection ? - _currentSpeed : _currentSpeed;
     // bug: 0 is not possible
-    if (speed == 0){
+    if (speed == 0) {
       _astepper.setSpeed(1);
     }
     else {
@@ -153,48 +136,34 @@ void KeyFrameStepper::updateSpeed(double speed) {
   }
 }
 
-void KeyFrameStepper::updateSpeed(int curPos, long runTime) {
-//  double newSpeed =  1000 * ((double)(_currentKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
-//                     / (_currentKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
-  double newSpeed =  1000 * ((double)(_currentKeyFrame.getTarget() - curPos))
-                     / (_currentKeyFrame.getTimeMs() - runTime);
+void StepperWorker::updateSpeed(int curPos, long elapsedTime) {
+  //  double newSpeed =  1000 * ((double)(_targetKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
+  //                     / (_targetKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
+  double newSpeed =  1000 * ((double)(_targetKeyFrame.getTarget() - curPos))
+                     / (_targetKeyFrame.getTimeMs() - elapsedTime);
   updateSpeed(newSpeed);
 }
 
-long KeyFrameStepper::getRuntime() {
-  return millis() - _startTime;
-}
-
-long KeyFrameStepper::getCurrentPosition() {
+long StepperWorker::getCurrentPosition() {
   long curPos = _astepper.currentPosition();
   //serPrintln("%d Current Position: %d", _id, curPos);
   return _reverseDirection ? -curPos : curPos;
 }
 
-void KeyFrameStepper::resetPosition() {
-  serPrintln("%d Reset Position", _id);
-  _astepper.setCurrentPosition(0);
-  long curPos = _astepper.currentPosition();
-  serPrintln("%d Current Position: %d", _id, curPos, 0);
-}
 
-void KeyFrameStepper::release() {
+void StepperWorker::release() {
   serPrintln("%d Release", _id);
   _motor->release();
 }
 
-bool KeyFrameStepper::isEndStopHit() {
+bool StepperWorker::isEndStopHit() {
 
   int endStop = digitalRead(_endStopPin);
   return (endStop == LOW);
 }
 
-void KeyFrameStepper::operateOnEndStop() {
-  serPrintln("%d Endstop", _id);
-  calibrate();
-}
 
-void KeyFrameStepper::runStepper() {
+void StepperWorker::runStepper() {
   _astepper.runSpeed();
 }
 

@@ -20,9 +20,9 @@ public:
 
     void loop(long elapsedTime);
     // update current key frames
-    void updateKeyFrame(KeyFrameRgb& kf, long elapsedTime);
+    void updateTargetKeyFrame(long elapsedTime, KeyFrameRgb& kf);
     bool needsUpdate();
-    RGB getCurrentColor();
+    RGB getColorForUpdate();
     int getId();
 
 protected:
@@ -34,20 +34,24 @@ private:
     void checkAnimation(long elapsedTime);
 
     int _ledId;
-    
+
+    // actual color on the LED
     RGB    _currentColor;
+    // expected color on the LED
+    RGB    _expectedColor;
+
     double _currentRedSpeed;
     double _currentGreenSpeed;
     double _currentBlueSpeed;
 
-    bool _pastKeyFrame;
+    bool _pastTargetKeyFrame;
     bool _needsUpdate;
 
     int _needsUpdateDelta;
     bool _debug;
 
     KeyFrameRgb _previousKeyFrame;
-    KeyFrameRgb _currentKeyFrame;
+    KeyFrameRgb _targetKeyFrame;
      
 };
 

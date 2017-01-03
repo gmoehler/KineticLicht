@@ -14,14 +14,17 @@
 class StepperWorker
 {
   public:
-    StepperWorker(Adafruit_StepperMotor *motor, AccelStepper &astepper, int id, 
-                    int endStopPin, bool reverseDirection);
+    StepperWorker(Adafruit_StepperMotor *motor, AccelStepper &astepper, int id,
+                  int endStopPin, bool reverseDirection);
 
     // to be called in setup()
-    void start();
+    void init();
 
     // to be called in loop()
-    void loop();
+    void loop(long elapsedTime);
+
+    // set a new target keyFrame
+    void updateTargetKeyFrame(long elapsedTime, KeyFrame& kf);
 
     // did we pass the last key frame
     bool isAnimationFinished();
@@ -32,17 +35,9 @@ class StepperWorker
     // initial routine: tear up lights until they hit the end stop - call this 0 and go down a bit
     void calibrate();
 
-    void init();
-
-
-  protected:
-
   private:
-    // current time from start time to now
-    long getRuntime();
 
-    // update current and previous key frames
-    void updateCurrentKeyFrame();
+    void checkAnimation(long elapsedTime);
 
     // update to a specified speed
     void updateSpeed(double newSpeed);
@@ -53,12 +48,6 @@ class StepperWorker
     // where we actually do the stepping work
     void runStepper();
 
-    // one step forward
-    void forwardStep();
-
-    // one step backward
-    void backwardStep();
-
     // release the motor
     void release();
 
@@ -68,29 +57,28 @@ class StepperWorker
     // reset the current position to 0
     void resetPosition();
 
-    // what to do when an end stop is reached
-    void operateOnEndStop();
+    // what to do when an end stop is reached (during calibration or at any other time)
+    void operateOnEndStopHit();
 
     Adafruit_StepperMotor *_motor;
     AccelStepper _astepper;
 
     int _id;
-    vector<KeyFrame> _keyFrame;
-    int _numFrames;
-    int _currentFrameIdx;
+
     long _currentPosition;
     double _currentSpeed;
     int _endStopPin;
     bool _reverseDirection;
     int _calibrateSpeed;
 
-    long _startTime;
-
-    bool _animationActive;
+    bool _pastTargetKeyFrame;
+    bool _atEndStop;
 
     KeyFrame _previousKeyFrame;
-    KeyFrame _currentKeyFrame;
+    KeyFrame _targetKeyFrame;
 
+    int _targetTimeDelta;
+    bool _debug;
 };
 
 #endif
