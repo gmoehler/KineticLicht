@@ -3,7 +3,6 @@
 
 #include "RGB.h"
 #include "Adafruit_TLC5947.h"
-#include "KeyFrameRgbLED.h"
 
 void serPrintln(char* const str, ...);
 void serPrint(char* const str, ...);

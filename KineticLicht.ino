@@ -22,9 +22,6 @@ enum AnimationState {ANIMATION_ACTIVE, ANIMATION_INIT, ANIMATION_CALIBRATING, AN
 // these are hard-wired in the lib using fast data write
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, LED_CLOCK, LED_DATA, LED_LATCH);
 
-AnimationStore animationStore = AnimationStore();
-Animation a1 = animationStore.getAnimation(0);
-
 LedWorker rgb1o = LedWorker (4);
 LedWorker rgb1u = LedWorker (5);
 /*LedWorker rgb2o = LedWorker (7);
@@ -86,14 +83,17 @@ StepperWorker  sworker1 = StepperWorker(steppermotor1, astepper1, 1, 53, true);
 //StepperWorker  sworker3 = StepperWorker(steppermotor3, astepper3, 3, 51, false);
 StepperWorker  sworker4 = StepperWorker(steppermotor4, astepper4, 4, 47, true);
 
+/************
+    Setup
+ ************/
 
 long startTime = 0;
 long elapsedTime = 0;
 AnimationState state = ANIMATION_INIT;
 
-/************
-    Setup
- ************/
+AnimationStore animationStore = AnimationStore();
+int animationID = 0;
+Animation animation = animationStore.getAnimation(animationID);
 
 void setup()
 {
@@ -121,44 +121,44 @@ void setup()
 
 void loop()
 {
-
   switch (state) {
     case ANIMATION_ACTIVE:
 
       elapsedTime = millis() - startTime;
 
-      if (a1.isAnimationFinished()) {
+      if (animation.isAnimationFinished()) {
         state = ANIMATION_FINISHED;
+        break;
       }
-      
-      else {
-        if (a1.hasNextTargetKeyFrame(elapsedTime)) {
-          vector<KeyFrame> kfs = a1.getNextTargetKeyFrames(elapsedTime);
-          for (vector<KeyFrame>::iterator kf_it=kfs.begin(); kf_it != kfs.end(); kf_it++) {
-              KeyFrame kf = *kf_it;
-              switch (kf_it->getId()) {
-                case STEPPER1:
-                  sworker1.updateTargetKeyFrame(elapsedTime, kf);
-                  break;
-                case STEPPER4:
-                  sworker4.updateTargetKeyFrame(elapsedTime, kf);
-                  break;
-                case LED1TOP:
-                  rgb1o.updateTargetKeyFrame(elapsedTime, kf);
-                  break;
-                case LED1BOT:
-                  rgb1u.updateTargetKeyFrame(elapsedTime, kf);
-                  break;
-                case LED4TOP:
-                  rgb4o.updateTargetKeyFrame(elapsedTime, kf);
-                  break;
-                case LED4BOT:
-                  rgb4u.updateTargetKeyFrame(elapsedTime, kf);
-                  break;
-              }
-            }
+
+      // update workers with new key frames
+      if (animation.hasNextTargetKeyFrame(elapsedTime)) {
+        vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedTime);
+        for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
+          KeyFrame kf = *kf_it;
+          switch (kf_it->getId()) {
+            case STEPPER1:
+              sworker1.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+            case STEPPER4:
+              sworker4.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+            case LED1TOP:
+              rgb1o.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+            case LED1BOT:
+              rgb1u.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+            case LED4TOP:
+              rgb4o.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+            case LED4BOT:
+              rgb4u.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+          }
         }
 
+        // do the work
         sworker1.loop(elapsedTime);
         //sworker2.loop(elapsedTime);
         //sworker3.loop(elapsedTime);
@@ -196,6 +196,14 @@ void loop()
       break;
 
     case ANIMATION_FINISHED:
+
+      animationID++;
+      if (animationID >= animationStore.getNumAnimations()) {
+        animationID = 0;
+      }
+      animation = animationStore.getAnimation(animationID);
+      delay(1000);
+      state = ANIMATION_CALIBRATING;
       break;
   }
 }

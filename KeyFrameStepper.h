@@ -6,9 +6,13 @@
 #include "Arduino.h"
 #include <Adafruit_MotorShield.h>
 #include <AccelStepper.h>
+#include <ArduinoSTL.h>
+#include <vector>
 
 #include "KeyFrame.h"
 #include "helpers.h"
+
+using namespace std;
 
 
 class KeyFrameStepper

@@ -16,8 +16,10 @@ public:
 
   Animation& getAnimation(int id);
 
+  int getNumAnimations();
+
 private:
-  vector<Animation> animation;
+  vector<Animation> _animation;
 
 };
 

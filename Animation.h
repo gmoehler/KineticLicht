@@ -5,6 +5,7 @@
 #include <map>
 
 #include "KeyFrame.h"
+#include <algorithm>    // std::sort
 
 using namespace std;
 
@@ -29,6 +30,7 @@ public:
 private:
   vector<KeyFrame> _keyFrames;
   vector<KeyFrame>::iterator _currentKeyFrameIter;
+  bool _isSorted;
 
 
 };

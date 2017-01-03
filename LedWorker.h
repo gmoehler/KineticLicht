@@ -25,10 +25,7 @@ public:
     RGB  getColorForUpdate();
     int  getId();
 
-protected:
-
 private:
-
     // calculates the current Speed
     void calculateCurrentSpeed(long elapsedTime);
     void checkAnimation(long elapsedTime);

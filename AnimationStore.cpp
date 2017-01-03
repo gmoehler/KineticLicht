@@ -3,13 +3,13 @@
 // full height: 4200 = 2100mm
 
 Animation& AnimationStore::getAnimation(int id){
-  return animation[id];
+  return _animation[id];
 }
 
 AnimationStore::AnimationStore()
 {
   Animation a1;
-  animation.push_back(a1); 
+  _animation.push_back(a1);
   
   a1.addKeyFrames({
     {STEPPER1, 0, 0},
@@ -126,7 +126,7 @@ AnimationStore::AnimationStore()
 //animation 2
 
   Animation a2;
-  animation.push_back(a2);
+  _animation.push_back(a2);
 
   a2.addKeyFrames(
   {
@@ -179,4 +179,8 @@ AnimationStore::AnimationStore()
   {LED4BOT, 22000, BLACK, 0},
   });
 
+}
+
+int AnimationStore::getNumAnimations(){
+    return _animation.size();
 }
