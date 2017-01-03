@@ -9,6 +9,8 @@
 using namespace std;
 
 enum LedPosition { TOP, BOTTOM };
+enum Activators {STEPPER1, STEPPER2, STEPPER3, STEPPER4, LED1TOP, LED1BOT, LED2TOP, LED2BOT, LED3TOP, LED3BOT, LED4TOP, LED4BOT};
+
 
 class Animation
 {
@@ -16,28 +18,18 @@ public:
 
   Animation();
 
-  bool isAnimationFinished(long elapsedTime);
+  bool isAnimationFinished();
   bool hasNextTargetKeyFrame(long elapsedTime);
-  KeyFrame getNextTargetKeyFrame(long elapsedTime);
+  vector<KeyFrame> getNextTargetKeyFrames(long elapsedTime);
 
-  vector<KeyFrame> getMotorKeyframes(int motorId);
-  // add single key frames
-  void addMotorKeyFrame(int motorId, KeyFrame new_kf);
-  // add many key frames for one motor
-  void addMotorKeyFrames(int motorId, vector<KeyFrame> new_kfs);
-  // add many key frames for arbitrary motors defined as first value
-  void addMotorKeyFrames(vector<KeyFrame> new_kfs);
-
-  vector<KeyFrameRgb> getRgbKeyframes(int ledId, LedPosition topOrBottom);
-  void addRgbKeyFrame(int ledId, KeyFrameRgb new_kf, LedPosition topOrBottom);
-  void addRgbKeyFrames(int ledId, vector<KeyFrameRgb> new_kfs, LedPosition topOrBottom);
+  // add new key frames - assuming that they are time sorted for now
+  void addKeyFrames(vector<KeyFrame> new_kfs);
 
 private:
-  int getLedIndex(int ledId, LedPosition topOrBottom);
+  vector<KeyFrame> keyFrames;
+  vector<KeyFrame>::iterator _currentKeyFrameIter;
 
-  std:: map<int, vector<KeyFrame> > motorKeyFrames;
-  std:: map<int, vector<KeyFrameRgb> > rgbKeyFrames;
-  
+
 };
 
 

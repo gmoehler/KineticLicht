@@ -11,29 +11,52 @@
 class KeyFrame
 {
   public:
-    KeyFrame(int id, long time_ms, int target) 
-     : _id(id), _time_ms(time_ms), _target(target){}
-    KeyFrame(long time_ms, int target) 
-     : _id(0), _time_ms(time_ms), _target(target){}
-    KeyFrame() 
-     : _id(0), _time_ms(0), _target(0){}
+    // legacy
+    KeyFrame(long timeMs, int targetPosition)
+     : _id(0), _timeMs(timeMs), _targetPosition(targetPosition){}
+
+    // keyframe for motor movement
+    KeyFrame(int id, long timeMs, int targetPosition)
+     : _id(id), _timeMs(timeMs), _targetPosition(targetPosition){}
+
+    // keyframe for led colors
+    KeyFrame(int id, long timeMs, RGB targetColor)
+      : _timeMs(timeMs), _targetColor(targetColor) {}
+    KeyFrame(int id, long timeMs, int red, int green, int blue, int brightness)
+      : _timeMs(timeMs), _targetColor(red, green, blue, brightness){}
+    KeyFrame(int id, long timeMs, int red, int green, int blue)
+      : _timeMs(timeMs), _targetColor(red, green, blue) {}
+
+
+    KeyFrame()
+     : _id(0), _timeMs(0), _targetPosition(0), _targetColor(0,0,0) {}
     
-    long getTimeMs() {
-      return _time_ms;
-    }
-
-    int getTarget() {
-      return _target;
-    }
-
     int getId() {
       return _id;
     }
 
+    long getTimeMs() {
+      return _timeMs;
+    }
+
+    int getTarget() {
+      return _targetPosition;
+    }
+
+    int getTargetPosition() {
+      return _targetPosition;
+    }
+
+    RGB getTargetColor(){
+        return _targetColor;
+    }
+
   private:
-    long _time_ms;
-    int _target;
     int _id;
+    long _timeMs;
+    int _targetPosition;
+    RGB _targetColor;
+
 };
 
 class KeyFrameRgb

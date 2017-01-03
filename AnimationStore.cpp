@@ -11,12 +11,12 @@ AnimationStore::AnimationStore()
   Animation a1;
   animation.push_back(a1); 
   
-  a1.addMotorKeyFrames(1, {
-    {0, 0},
-    {2000, 0},
-    {9000, 2600},
-    {12000, 2600},
-    {26000, 10}    
+  a1.addMotorKeyFrames({
+    {STEPPER1, 0, 0},
+    {STEPPER1, 2000, 0},
+    {STEPPER1, 9000, 2600},
+    {STEPPER1, 12000, 2600},
+    {STEPPER1, 26000, 10}
   });
 
   /*
@@ -31,30 +31,28 @@ AnimationStore::AnimationStore()
     });
   */
 
-  a1.addMotorKeyFrames(4, 
-  {
-    {0, 0},
-    {3000, 0},
-    {10000, 2800},
-    {13000, 2800},
-    {27000, 10},
+  a1.addMotorKeyFrames({
+    {STEPPER2,0, 0},
+    {STEPPER2,3000, 0},
+    {STEPPER2,10000, 2800},
+    {STEPPER2,13000, 2800},
+    {STEPPER2,27000, 10},
   });
 
 
-  a1.addRgbKeyFrames(1, 
-  {
-    {0,    YELLOW, 0},
-    {1500, YELLOW, 50},
-    {2000, YELLOW, 50},
-    {9000, RED, 100}, 
-    {9500, RED, 100},
-    {11000, BLUE, 100},
-    {12000, BLUE, 100},
-    {26000, GREEN, 50},
-    {27000, GREEN, 50},
-    {28000, YELLOW, 50},
-    {33000, YELLOW, 0},
-  }, TOP);
+  a1.addKeyFrames({
+    {LED1TOP, 0,    YELLOW, 0},
+    {LED1TOP, 1500, YELLOW, 50},
+    {LED1TOP, 2000, YELLOW, 50},
+    {LED1TOP, 9000, RED, 100},
+    {LED1TOP, 9500, RED, 100},
+    {LED1TOP, 11000, BLUE, 100},
+    {LED1TOP, 12000, BLUE, 100},
+    {LED1TOP, 26000, GREEN, 50},
+    {LED1TOP, 27000, GREEN, 50},
+    {LED1TOP, 28000, YELLOW, 50},
+    {LED1TOP, 33000, YELLOW, 0},
+  });
 
   a1.addRgbKeyFrames(1, {
     {0,    YELLOW, 0},
