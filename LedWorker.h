@@ -20,10 +20,10 @@ public:
 
     void loop(long elapsedTime);
     // update current key frames
-    void updateTargetKeyFrame(long elapsedTime, KeyFrameRgb& kf);
+    void updateTargetKeyFrame(long elapsedTime, KeyFrame& kf);
     bool needsUpdate();
-    RGB getColorForUpdate();
-    int getId();
+    RGB  getColorForUpdate();
+    int  getId();
 
 protected:
 
@@ -33,6 +33,7 @@ private:
     void calculateCurrentSpeed(long elapsedTime);
     void checkAnimation(long elapsedTime);
 
+    // currently the id used for the TLC5947
     int _ledId;
 
     // actual color on the LED
@@ -50,8 +51,8 @@ private:
     int _needsUpdateDelta;
     bool _debug;
 
-    KeyFrameRgb _previousKeyFrame;
-    KeyFrameRgb _targetKeyFrame;
+    KeyFrame _previousKeyFrame;
+    KeyFrame _targetKeyFrame;
      
 };
 

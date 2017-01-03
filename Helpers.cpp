@@ -14,9 +14,7 @@ void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, 
     //printRGB(rgb1uId, rgb1uColor);
     tlc.setLED(rgb1uId, rgb1uColor.red(), rgb1uColor.green(), rgb1uColor.blue());
     /*
-    RGB rgb2oColor = rgb2o.getCurrentColor();
     tlc.setLED(rgb2o.getId(), rgb2oColor.red(), rgb2oColor.green(), rgb2oColor.blue());
-    RGB rgb2uColor = rgb2u.getCurrentColor();
     tlc.setLED(rgb2u.getId(), rgb2uColor.red(), rgb2uColor.green(), rgb2uColor.blue());
     RGB rgb3oColor = rgb3o.getCurrentColor();
     tlc.setLED(rgb3o.getId(), rgb3oColor.red(), rgb3oColor.green(), rgb3oColor.blue());

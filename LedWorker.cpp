@@ -11,7 +11,7 @@ int LedWorker::getId() {
   return _ledId;
 }
 
-void LedWorker::updateTargetKeyFrame(long elapsedTime, KeyFrameRgb& kf) {
+void LedWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 
     _previousKeyFrame = _targetKeyFrame;
     _targetKeyFrame  = kf;
@@ -38,7 +38,7 @@ void LedWorker::checkAnimation(long elapsedTime) {
    // did we run past the target key frame
     if (elapsedTime >= targetTime) {
       if (_debug) {
-        Serial.print("Passed KeyFrame:");
+        Serial.print("!!! Passed KeyFrame:");
         Serial.print(getId());
         Serial.print(" Elapsed Time:");
         Serial.println(elapsedTime);
@@ -56,11 +56,12 @@ void LedWorker::loop(long elapsedTime) {
 
   if (!_pastTargetKeyFrame) {
 
+    RGB prevColor = _previousKeyFrame.getTargetColor();
     int delta = elapsedTime - _previousKeyFrame.getTimeMs();
 
-    int expectedRed   = _previousKeyFrame.getRed()   + _currentRedSpeed   * delta;
-    int expectedGreen = _previousKeyFrame.getGreen() + _currentGreenSpeed * delta;
-    int expectedBlue  = _previousKeyFrame.getBlue()  + _currentBlueSpeed  * delta;
+    int expectedRed   = prevColor.red()   + _currentRedSpeed   * delta;
+    int expectedGreen = prevColor.green() + _currentGreenSpeed * delta;
+    int expectedBlue  = prevColor.blue()  + _currentBlueSpeed  * delta;
 
     _expectedColor = RGB(expectedRed, expectedGreen, expectedBlue);
 
@@ -87,11 +88,14 @@ RGB LedWorker::getColorForUpdate() {
 
 
 void LedWorker::calculateCurrentSpeed(long elapsedTime) {
-  _currentRedSpeed =  ((double)(_targetKeyFrame.getRed() - _previousKeyFrame.getRed()))
+  RGB targetColor = _targetKeyFrame.getTargetColor();
+  RGB prevColor = _previousKeyFrame.getTargetColor();
+  
+  _currentRedSpeed =  ((double)(targetColor.red() - prevColor.red()))
                       / (_targetKeyFrame.getTimeMs() - elapsedTime);
-  _currentGreenSpeed =  ((double)(_targetKeyFrame.getGreen() - _previousKeyFrame.getGreen()))
+  _currentGreenSpeed =  ((double)(targetColor.green() - prevColor.green()))
                         / (_targetKeyFrame.getTimeMs() - elapsedTime);
-  _currentBlueSpeed =  ((double)(_targetKeyFrame.getBlue() - _previousKeyFrame.getBlue()))
+  _currentBlueSpeed =  ((double)(targetColor.blue() - prevColor.blue()))
                        / (_targetKeyFrame.getTimeMs() - elapsedTime);
 
   serPrintln("LED%d Update Current Speed: %f, %f, %f", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed, 0);

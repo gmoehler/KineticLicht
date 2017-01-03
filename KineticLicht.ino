@@ -5,11 +5,10 @@
 
 #include "Adafruit_TLC5947.h"
 
-#include "StepperWorker.h"
-#include "KeyFrameRgbLED.h"
-
-#include "AnimationStore.h"
 #include "RGB.h"
+#include "AnimationStore.h"
+#include "StepperWorker.h"
+#include "LedWorker.h"
 
 enum AnimationState {ANIMATION_ACTIVE, ANIMATION_INIT, ANIMATION_CALIBRATING, ANIMATION_FINISHED, ANIMATION_ERROR};
 
@@ -26,19 +25,15 @@ Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, LED_CLOCK, LED_DATA, LED_LATCH);
 AnimationStore animationStore = AnimationStore();
 Animation a1 = animationStore.getAnimation(0);
 
-vector<KeyFrameRgb> lkfs1 = a1.getRgbKeyframes(1, BOTTOM);
-KeyFrameRgbLED rgb1o = KeyFrameRgbLED (4, lkfs1);
-vector<KeyFrameRgb> lkfs2 = a1.getRgbKeyframes(1, TOP);
-KeyFrameRgbLED rgb1u = KeyFrameRgbLED (5, lkfs2);
-/*KeyFrameRgbLED rgb2o = KeyFrameRgbLED (7, rgb2u_kf, 3);
-  KeyFrameRgbLED rgb2u = KeyFrameRgbLED (8, rgb2o_kf, 3);
-  KeyFrameRgbLED rgb3o = KeyFrameRgbLED (5, rgb3u_kf, 3);
-  KeyFrameRgbLED rgb3u = KeyFrameRgbLED (6, rgb3o_kf, 3);
+LedWorker rgb1o = LedWorker (4);
+LedWorker rgb1u = LedWorker (5);
+/*LedWorker rgb2o = LedWorker (7);
+  LedWorker rgb2u = LedWorker (8);
+  LedWorker rgb3o = LedWorker (5);
+  LedWorker rgb3u = LedWorker (6);
 */
-vector<KeyFrameRgb> lkfs7 = a1.getRgbKeyframes(1, BOTTOM);
-KeyFrameRgbLED rgb4o = KeyFrameRgbLED (6, lkfs7);
-vector<KeyFrameRgb> lkfs8 = a1.getRgbKeyframes(1, BOTTOM);
-KeyFrameRgbLED rgb4u = KeyFrameRgbLED (7, lkfs8);
+LedWorker rgb4o = LedWorker (6);
+LedWorker rgb4u = LedWorker (7);
 
 /*************************
     create Stepper objects
@@ -62,10 +57,10 @@ void backwardstep1() {
 AccelStepper astepper1(forwardstep1, backwardstep1); // use functions to step
 /*
   void forwardstep2() {
-  steppermotor2->onestep(FORWARD, DOUBLE);
+  steppermotor2->onestep(FORWARD, INTERLEAVE);
   }
   void backwardstep2() {
-  steppermotor2->onestep(BACKWARD, DOUBLE);
+  steppermotor2->onestep(BACKWARD, INTERLEAVE);
   }
   AccelStepper astepper2(forwardstep2, backwardstep2); // use functions to step
 
@@ -85,12 +80,12 @@ void backwardstep4() {
 }
 AccelStepper astepper4(forwardstep4, backwardstep4); // use functions to step
 
-vector<KeyFrame> mkfs1 =  a1.getMotorKeyframes(1);
+
 StepperWorker  sworker1 = StepperWorker(steppermotor1, astepper1, 1, 53, true);
 //StepperWorker  sworker2 = StepperWorker(steppermotor2, astepper2, 2, 49, false);
 //StepperWorker  sworker3 = StepperWorker(steppermotor3, astepper3, 3, 51, false);
-vector<KeyFrame> mkfs4 =  a1.getMotorKeyframes(4);
 StepperWorker  sworker4 = StepperWorker(steppermotor4, astepper4, 4, 47, true);
+
 
 long startTime = 0;
 long elapsedTime = 0;
@@ -118,17 +113,6 @@ void setup()
   sworker4.init();
 
   tlc.begin();
-
-  rgb1o.start();
-  rgb1u.start();
-  /*
-    rgb2o.start();
-    rgb2u.start();
-    rgb3o.start();
-    rgb3u.start();
-  */
-  rgb4o.start();
-  rgb4u.start();
 }
 
 /************
@@ -143,21 +127,36 @@ void loop()
 
       elapsedTime = millis() - startTime;
 
-      if (a1.isAnimationFinished(elapsedTime)) {
+      if (a1.isAnimationFinished()) {
         state = ANIMATION_FINISHED;
       }
       
       else {
         if (a1.hasNextTargetKeyFrame(elapsedTime)) {
-          KeyFrame kf = a1.getNextTargetKeyFrame(elapsedTime);
-          switch (kf.getId()) {
-            case STEPPER1:
-              sworker1.updateTargetKeyFrame(elapsedTime, kf);
-              break;
-            case STEPPER4:
-              sworker4.updateTargetKeyFrame(elapsedTime, kf);
-              break;
-          }
+          vector<KeyFrame> kfs = a1.getNextTargetKeyFrames(elapsedTime);
+          for (vector<KeyFrame>::iterator kf_it=kfs.begin(); kf_it != kfs.end(); kf_it++) {
+              KeyFrame kf = *kf_it;
+              switch (kf_it->getId()) {
+                case STEPPER1:
+                  sworker1.updateTargetKeyFrame(elapsedTime, kf);
+                  break;
+                case STEPPER4:
+                  sworker4.updateTargetKeyFrame(elapsedTime, kf);
+                  break;
+                case LED1TOP:
+                  rgb1o.updateTargetKeyFrame(elapsedTime, kf);
+                  break;
+                case LED1BOT:
+                  rgb1u.updateTargetKeyFrame(elapsedTime, kf);
+                  break;
+                case LED4TOP:
+                  rgb4o.updateTargetKeyFrame(elapsedTime, kf);
+                  break;
+                case LED4BOT:
+                  rgb4u.updateTargetKeyFrame(elapsedTime, kf);
+                  break;
+              }
+            }
         }
 
         sworker1.loop(elapsedTime);
@@ -165,18 +164,18 @@ void loop()
         //sworker3.loop(elapsedTime);
         sworker4.loop(elapsedTime);
 
-        rgb1o.loop();
-        rgb1u.loop();
-        //rgb2o.loop();
-        //rgb2u.loop();
-        //rgb3o.loop();
-        //rgb3u.loop();
-        rgb4o.loop();
-        rgb4u.loop();
+        rgb1o.loop(elapsedTime);
+        rgb1u.loop(elapsedTime);
+        //rgb2o.loop(elapsedTime);
+        //rgb2u.loop(elapsedTime);
+        //rgb3o.loop(elapsedTime);
+        //rgb3u.loop(elapsedTime);
+        rgb4o.loop(elapsedTime);
+        rgb4u.loop(elapsedTime);
 
         if (rgb1o.needsUpdate() || rgb1u.needsUpdate() || rgb4o.needsUpdate() || rgb4u.needsUpdate()) {
-          updateLEDs(tlc, rgb1o.getId(), rgb1o.getCurrentColor(), rgb1u.getId(), rgb1u.getCurrentColor(),
-                     rgb4o.getId(), rgb4o.getCurrentColor(), rgb4u.getId(), rgb4u.getCurrentColor());
+          updateLEDs(tlc, rgb1o.getId(), rgb1o.getColorForUpdate(), rgb1u.getId(), rgb1u.getColorForUpdate(),
+                     rgb4o.getId(), rgb4o.getColorForUpdate(), rgb4u.getId(), rgb4u.getColorForUpdate());
         }
       }
       break;
@@ -199,8 +198,5 @@ void loop()
     case ANIMATION_FINISHED:
       break;
   }
-
-
-
 }
 

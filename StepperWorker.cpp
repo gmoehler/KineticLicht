@@ -108,7 +108,7 @@ void StepperWorker::checkAnimation(long elapsedTime) {
       updateSpeed(0);
 
       if (_debug) {
-        Serial.print("Passed KeyFrame:");
+        Serial.print("!!! Passed KeyFrame:");
         Serial.print(_id);
         Serial.print(" Elapsed Time:");
         Serial.println(elapsedTime);

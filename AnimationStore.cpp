@@ -11,7 +11,7 @@ AnimationStore::AnimationStore()
   Animation a1;
   animation.push_back(a1); 
   
-  a1.addMotorKeyFrames({
+  a1.addKeyFrames({
     {STEPPER1, 0, 0},
     {STEPPER1, 2000, 0},
     {STEPPER1, 9000, 2600},
@@ -31,7 +31,7 @@ AnimationStore::AnimationStore()
     });
   */
 
-  a1.addMotorKeyFrames({
+  a1.addKeyFrames({
     {STEPPER2,0, 0},
     {STEPPER2,3000, 0},
     {STEPPER2,10000, 2800},
@@ -54,19 +54,19 @@ AnimationStore::AnimationStore()
     {LED1TOP, 33000, YELLOW, 0},
   });
 
-  a1.addRgbKeyFrames(1, {
-    {0,    YELLOW, 0},
-    {3500, YELLOW, 50},
-    {4000, YELLOW, 50},
-    {11000, RED, 100},
-    {11500, RED, 100}, 
-    {13000, BLUE, 100}, 
-    {14000, BLUE, 100},
-    {28000, GREEN, 50},
-    {29000, GREEN, 50},
-    {30000, YELLOW, 50},
-    {35000, YELLOW, 0},
-  }, BOTTOM);
+  a1.addKeyFrames({
+    {LED1BOT, 0,    YELLOW, 0},
+    {LED1BOT, 3500, YELLOW, 50},
+    {LED1BOT, 4000, YELLOW, 50},
+    {LED1BOT, 11000, RED, 100},
+    {LED1BOT, 11500, RED, 100}, 
+    {LED1BOT, 13000, BLUE, 100}, 
+    {LED1BOT, 14000, BLUE, 100},
+    {LED1BOT, 28000, GREEN, 50},
+    {LED1BOT, 29000, GREEN, 50},
+    {LED1BOT, 30000, YELLOW, 50},
+    {LED1BOT, 35000, YELLOW, 0},
+  });
 
   /*
     a1.addRgbKeyFrames(2, {
@@ -91,35 +91,35 @@ AnimationStore::AnimationStore()
     }, BOTTOM);
   */
 
-  a1.addRgbKeyFrames(4, {
-    {0,    YELLOW, 0},
-    {1000, YELLOW, 0},
-    {2500, YELLOW, 50},
-    {3000, YELLOW, 50},
-    {11000, RED, 100}, 
-    {11500, RED, 100}, 
-    {13000, BLUE, 100}, 
-    {14000, BLUE, 100}, 
-    {28000, GREEN, 50},
-    {29000, GREEN, 50},
-    {30000, YELLOW, 50},
-    {35000, YELLOW, 50},
-  }, TOP);
+  a1.addKeyFrames({
+    {LED4TOP, 0,    YELLOW, 0},
+    {LED4TOP, 1000, YELLOW, 0},
+    {LED4TOP, 2500, YELLOW, 50},
+    {LED4TOP, 3000, YELLOW, 50},
+    {LED4TOP, 11000, RED, 100}, 
+    {LED4TOP, 11500, RED, 100}, 
+    {LED4TOP, 13000, BLUE, 100}, 
+    {LED4TOP, 14000, BLUE, 100}, 
+    {LED4TOP, 28000, GREEN, 50},
+    {LED4TOP, 29000, GREEN, 50},
+    {LED4TOP, 30000, YELLOW, 50},
+    {LED4TOP, 35000, YELLOW, 50},
+  });
 
-  a1.addRgbKeyFrames(4, {
-    {0,    YELLOW, 0},
-    {1000,    YELLOW, 0},
-    {4500, YELLOW, 50},
-    {5000, YELLOW, 50},
-    {14000, RED, 100},
-    {13500, RED, 100},
-    {15000, BLUE, 100}, 
-    {16000, BLUE, 100}, 
-    {30000, GREEN, 50},
-    {31000, GREEN, 50},
-    {32000, YELLOW, 50},
-    {37000, YELLOW, 0},
-  }, TOP);
+  a1.addKeyFrames({
+    {LED4BOT, 0,    YELLOW, 0},
+    {LED4BOT, 1000,    YELLOW, 0},
+    {LED4BOT, 4500, YELLOW, 50},
+    {LED4BOT, 5000, YELLOW, 50},
+    {LED4BOT, 14000, RED, 100},
+    {LED4BOT, 13500, RED, 100},
+    {LED4BOT, 15000, BLUE, 100}, 
+    {LED4BOT, 16000, BLUE, 100}, 
+    {LED4BOT, 30000, GREEN, 50},
+    {LED4BOT, 31000, GREEN, 50},
+    {LED4BOT, 32000, YELLOW, 50},
+    {LED4BOT, 37000, YELLOW, 0},
+  });
 
 
 
@@ -128,55 +128,55 @@ AnimationStore::AnimationStore()
   Animation a2;
   animation.push_back(a2);
 
-  a2.addMotorKeyFrames(
+  a2.addKeyFrames(
   {
-    {1, 0, 0},
-    {4, 0, 0},
-    {4, 2000, 0},
-    {1, 4000, 3000},
-    {4, 6000, 3000},
-    {1, 8000, 0},
-    {4, 10000, 0},
+    {STEPPER1, 0, 0},
+    {STEPPER4, 0, 0},
+    {STEPPER4, 2000, 0},
+    {STEPPER1, 4000, 3000},
+    {STEPPER4, 6000, 3000},
+    {STEPPER1, 8000, 0},
+    {STEPPER4, 10000, 0},
   });
   
-  a1.addRgbKeyFrames(1, {
-  {400,  WHITE, 100},
-  {1000, BLACK, 0},
-  {2300,  BLACK, 0},
-  {2400,  WHITE, 100},
-  {3000, BLACK, 0},
-  {20000, WHITE, 100},
-  {22000, BLACK, 0},
-  }, TOP);
+  a2.addKeyFrames({
+  {LED1TOP, 400,  WHITE, 100},
+  {LED1TOP, 1000, BLACK, 0},
+  {LED1TOP, 2300,  BLACK, 0},
+  {LED1TOP, 2400,  WHITE, 100},
+  {LED1TOP, 3000, BLACK, 0},
+  {LED1TOP, 20000, WHITE, 100},
+  {LED1TOP, 22000, BLACK, 0},
+  });
 
-  a1.addRgbKeyFrames(1, {
-  {200,  WHITE, 100},
-  {800, BLACK, 0},
-  {2000,  BLACK, 0},
-  {2200,  WHITE, 100},
-  {2800, BLACK, 0},
-  {20000, WHITE, 100},
-  {22000, BLACK, 0},
-  }, BOTTOM);
+  a2.addKeyFrames({
+  {LED1BOT, 200,  WHITE, 100},
+  {LED1BOT, 800, BLACK, 0},
+  {LED1BOT, 2000,  BLACK, 0},
+  {LED1BOT, 2200,  WHITE, 100},
+  {LED1BOT, 2800, BLACK, 0},
+  {LED1BOT, 20000, WHITE, 100},
+  {LED1BOT, 22000, BLACK, 0},
+  });
 
-  a1.addRgbKeyFrames(4, {
-  {500,  WHITE, 100},
-  {1000, BLACK, 0},
-  {3600,  BLACK, 0},
-  {3700,  WHITE, 100},
-  {4100, BLACK, 0},
-  {20000, WHITE, 100},
-  {22000, BLACK, 0},
-  }, TOP);
+  a2.addKeyFrames({
+  {LED4TOP, 500,  WHITE, 100},
+  {LED4TOP, 1000, BLACK, 0},
+  {LED4TOP, 3600,  BLACK, 0},
+  {LED4TOP, 3700,  WHITE, 100},
+  {LED4TOP, 4100, BLACK, 0},
+  {LED4TOP, 20000, WHITE, 100},
+  {LED4TOP, 22000, BLACK, 0},
+  });
   
-  a1.addRgbKeyFrames(4, {
-  {300,  WHITE, 100},
-  {800, BLACK, 0},
-  {3500,  BLACK, 0},
-  {3600,  WHITE, 100},
-  {4200, BLACK, 0},
-  {20000, WHITE, 100},
-  {22000, BLACK, 0},
-  }, BOTTOM);
+  a2.addKeyFrames({
+  {LED4BOT, 300,  WHITE, 100},
+  {LED4BOT, 800, BLACK, 0},
+  {LED4BOT, 3500,  BLACK, 0},
+  {LED4BOT, 3600,  WHITE, 100},
+  {LED4BOT, 4200, BLACK, 0},
+  {LED4BOT, 20000, WHITE, 100},
+  {LED4BOT, 22000, BLACK, 0},
+  });
 
 }
