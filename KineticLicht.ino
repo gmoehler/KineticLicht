@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include <ArduinoSTL.h>
+#include <map>
 #include <Adafruit_MotorShield.h>
 #include <AccelStepper.h>
+#include <IRremote.h>
 
 #include "Adafruit_TLC5947.h"
 
@@ -83,6 +85,16 @@ StepperWorker  sworker1 = StepperWorker(steppermotor1, astepper1, 1, 53, true);
 //StepperWorker  sworker3 = StepperWorker(steppermotor3, astepper3, 3, 51, false);
 StepperWorker  sworker4 = StepperWorker(steppermotor4, astepper4, 4, 47, true);
 
+/****************************
+    Create IR remote objects
+ ****************************/
+
+int IR_RECV_PIN = 11;
+
+IRrecv irrecv(IR_RECV_PIN);
+decode_results irResults;
+std::map<int, int> numberButtons = create_NumberButtonMap();
+
 /************
     Setup
  ************/
@@ -112,7 +124,9 @@ void setup()
   //sworker3.init();
   sworker4.init();
 
-  tlc.begin();
+  tlc.begin(); // start LED PWM decoder
+
+  irrecv.enableIRIn(); // Start the IR receiver
 }
 
 /************
@@ -121,6 +135,19 @@ void setup()
 
 void loop()
 {
+  // react on IR anmiation selection
+  if (irrecv.decode(&irResults)) {
+    // pressed a number button: select animation with that id
+    int num = irResults.value;
+    if (numberButtons.count(num) == 1 && num < animationStore.getNumAnimations()) {
+      animation = animationStore.getAnimation(num);
+      delay(1000);
+      state = ANIMATION_CALIBRATING;
+    }
+    irrecv.resume(); // Receive the next value
+  }
+
+  // work on states
   switch (state) {
     case ANIMATION_ACTIVE:
 

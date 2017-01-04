@@ -6,6 +6,22 @@ void printRGB(int id, RGB col){
   serPrintln("LED%d, %d, %d, %d", id, col.red(), col.green(), col.blue());
 }
 
+std::map<int, int> create_NumberButtonMap()
+{
+  std::map<int, int> m;
+  m[16738455] = 0;
+  m[16724175] = 1;
+  m[16718055] = 2;
+  m[16743045] = 3;
+  m[16716015] = 4;
+  m[16726215] = 5;
+  m[16734885] = 6;
+  m[16728765] = 7;
+  m[16730805] = 8;
+  m[16732845] = 9;
+  return m;
+}
+
 void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor){
 
     //Serial.println ("***Update LEDs");
