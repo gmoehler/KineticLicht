@@ -3,17 +3,20 @@
 #define ARDBUFFER 80
 #define MAX_SPEED 600
 
-
 StepperWorker::StepperWorker(Adafruit_StepperMotor *motor,  AccelStepper &astepper,
                              int id, int endStopPin, bool reverseDirection)
   : _motor(motor), _astepper(astepper), _id(id),
-    _endStopPin(endStopPin), _reverseDirection(reverseDirection),
-    _state(PASSIVE), _currentPosition(0), _currentSpeed(0.0), _calibrateSpeed(-400),
+    _state(INIT), _currentPosition(0), _currentSpeed(0.0),
+    _endStopPin(endStopPin), _reverseDirection(reverseDirection), _calibrateSpeed(-400),
     _targetTimeDelta(250), _debug(false)
 { }
 
 void StepperWorker::init() {
   pinMode(_endStopPin, INPUT_PULLUP);
+}
+
+void StepperWorker::setDebug(bool debug){
+  _debug = debug;
 }
 
 StepperWorkerState StepperWorker::getState(){
@@ -22,6 +25,10 @@ StepperWorkerState StepperWorker::getState(){
 
 void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 
+  if(_debug){
+    printf("%d: New Key frame: ", _id);
+    kf.printKeyFrame();
+  }
   _previousKeyFrame = _targetKeyFrame;
   _targetKeyFrame  = kf;
   long curPos = _astepper.currentPosition();
@@ -29,17 +36,18 @@ void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 }
 
 void StepperWorker::loopCalibration() {
-  
+
   if (isEndStopHit()) {
     operateOnEndStopHit();
     return;
   }
 
-  serPrintln("%d ***CALIBRATING...", _id);
-  _state == CALIBRATING;
+  // on first call in each calibration cycle only
+  if (_state != CALIBRATING){
+    updateSpeed(_calibrateSpeed);
+    _state = CALIBRATING;
+  }
 
-  // go up until end stop is hit
-  updateSpeed(_calibrateSpeed);
   runStepper();
 }
 
@@ -47,6 +55,7 @@ void StepperWorker::loopCalibration() {
 void StepperWorker::loop(long elapsedTime) {
 
   if (isEndStopHit()) {
+    _state = ENDSTOP_HIT;
     operateOnEndStopHit();
   }
 
@@ -60,11 +69,11 @@ void StepperWorker::loop(long elapsedTime) {
 
 
 void StepperWorker::operateOnEndStopHit() {
-  serPrintln("%d Endstop", _id);
+  printf("%d Endstop", _id);
   delay(300);
 
-  // go down 200ms and then until end stop is released again
-  serPrintln("%d ...going down - phase 1...", _id);
+  // go down 200ms
+  printf("%d ...going down - phase 1...", _id);
   updateSpeed(60);
   long now = millis();
 
@@ -72,29 +81,27 @@ void StepperWorker::operateOnEndStopHit() {
     _astepper.runSpeed();
   }
 
-  serPrintln("%d ...going down - phase 2...", _id);
+  // then go down until end stop is released
+  printf("%d ...going down - phase 2...", _id);
   while (isEndStopHit()) {
     _astepper.runSpeed();
   }
 
-  // call this 0
+  // call this position 0
   resetPosition();
-  _state = ENDSTOP_HIT;
-
-  serPrintln("%d Reset finished.", _id);
 }
 
 void StepperWorker::resetPosition() {
-  serPrintln("%d Reset Position", _id);
+  printf("%d Reset Position", _id);
   _astepper.setCurrentPosition(0);
   long curPos = _astepper.currentPosition();
-  serPrintln("%d Current Position: %d", _id, curPos, 0);
+  printf("%d Current Position: %ld", _id, curPos);
 }
 
 void StepperWorker::checkAnimation(long elapsedTime) {
 
   if (_state == ACTIVE) {
-    unsigned long targetTime = _targetKeyFrame.getTimeMs();
+    long targetTime = _targetKeyFrame.getTimeMs();
 
     // did we run past the target key frame
     // allow for a bit of overshooting (_targetTimeDelta)
@@ -108,14 +115,10 @@ void StepperWorker::checkAnimation(long elapsedTime) {
       updateSpeed(0);
 
       if (_debug) {
-        Serial.print("!!! Passed KeyFrame:");
-        Serial.print(_id);
-        Serial.print(" Elapsed Time:");
-        Serial.println(elapsedTime);
+        printf("!!! Passed KeyFrame: %d", _id);
+        printf("%d *** Exp t:  %ld t:   %ld", _id, targetTime, elapsedTime);
+        printf("%d     Exp pos: %d Act: %d", _id, tgtPos, curPos);
       }
-      serPrintln("%d *** Exp t: %d t: %l", _id, targetTime, elapsedTime, 0);
-      if (_debug) Serial.println(elapsedTime);
-      serPrintln("%d     Exp pos: %d Act: %d", _id, tgtPos, curPos, 0);
     }
   }
 }
@@ -135,7 +138,9 @@ void StepperWorker::updateSpeed(double speed) {
     else {
       _astepper.setSpeed(act_speed);
     }
-    serPrintln("%d Update Speed: %f Act: %f", _id, _currentSpeed, act_speed, 0);
+    if (_debug){
+      printf("%d Update Speed: %f Act: %f", _id, _currentSpeed, act_speed);
+    }
   }
 }
 
@@ -153,9 +158,8 @@ long StepperWorker::getCurrentPosition() {
   return _reverseDirection ? -curPos : curPos;
 }
 
-
 void StepperWorker::release() {
-  serPrintln("%d Release", _id);
+  printf("%d Release", _id);
   _motor->release();
 }
 
@@ -169,5 +173,3 @@ bool StepperWorker::isEndStopHit() {
 void StepperWorker::runStepper() {
   _astepper.runSpeed();
 }
-
-

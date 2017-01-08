@@ -8,9 +8,8 @@
 #include <AccelStepper.h>
 
 #include "KeyFrame.h"
-#include "Helpers.h"
 
-enum StepperWorkerState {ACTIVE, CALIBRATING, CALIBRATION_FINISHED, ENDSTOP_HIT, PAST_TARGET, PASSIVE};
+enum StepperWorkerState {INIT, CALIBRATING, CALIBRATION_FINISHED, ACTIVE, PAST_TARGET, ENDSTOP_HIT};
 
 class StepperWorker
 {
@@ -31,6 +30,8 @@ class StepperWorker
     void updateTargetKeyFrame(long elapsedTime, KeyFrame& kf);
 
     StepperWorkerState getState();
+
+    void setDebug(bool debug);
 
   private:
 
@@ -65,14 +66,13 @@ class StepperWorker
 
     int _id;
 
+    StepperWorkerState _state;
     long _currentPosition;
     double _currentSpeed;
-    
+
     int _endStopPin;
     bool _reverseDirection;
     int _calibrateSpeed;
-
-    StepperWorkerState _state;
 
     KeyFrame _previousKeyFrame;
     KeyFrame _targetKeyFrame;

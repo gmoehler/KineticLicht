@@ -1,4 +1,4 @@
-// KeyFrameRgbLED.h
+//LedWorker.h
 
 #ifndef LedWorker_h
 #define LedWorker_h
@@ -6,7 +6,6 @@
 #include <Arduino.h>
 #include <ArduinoSTL.h>
 
-#include "Helpers.h"
 #include "KeyFrame.h"
 #include "RgbLED.h"
 #include "RGB.h"
@@ -25,6 +24,8 @@ public:
     RGB  getColorForUpdate();
     int  getId();
 
+    void setDebug(bool debug);
+
 private:
     // calculates the current Speed
     void calculateCurrentSpeed(long elapsedTime);
@@ -42,15 +43,15 @@ private:
     double _currentGreenSpeed;
     double _currentBlueSpeed;
 
+    int _needsUpdateDelta;
     bool _pastTargetKeyFrame;
     bool _needsUpdate;
 
-    int _needsUpdateDelta;
     bool _debug;
 
     KeyFrame _previousKeyFrame;
     KeyFrame _targetKeyFrame;
-     
+
 };
 
-#endif 
+#endif

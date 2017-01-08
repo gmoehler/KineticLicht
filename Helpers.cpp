@@ -2,13 +2,9 @@
 
 #define DEBUG false
 
-void printRGB(int id, RGB col){
-  serPrintln("LED%d, %d, %d, %d", id, col.red(), col.green(), col.blue());
-}
-
-std::map<int, int> create_NumberButtonMap()
+std::map<long, int> create_NumberButtonMap1()
 {
-  std::map<int, int> m;
+  std::map<long, int> m;
   m[16738455] = 0;
   m[16724175] = 1;
   m[16718055] = 2;
@@ -22,7 +18,7 @@ std::map<int, int> create_NumberButtonMap()
   return m;
 }
 
-void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor){
+void updateLEDs1(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor){
 
     //Serial.println ("***Update LEDs");
     //printRGB(rgb1oId, rgb1oColor);
@@ -46,7 +42,7 @@ void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, 
     //tlc.setLED(4, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
     //tlc.setLED(5, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
     //tlc.setLED(6, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
-    
+
     tlc.write();
 
 }
@@ -213,7 +209,6 @@ void serPrintln(char* const str, ...) {
       Serial.write(reinterpret_cast<const uint8_t*>(str + j), i - j);
     }
     Serial.println();
-  
-}
-}
 
+}
+}

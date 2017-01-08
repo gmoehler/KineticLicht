@@ -9,6 +9,7 @@ Animation::Animation() {
 bool Animation::isAnimationFinished() {
   return _currentKeyFrameIter == _keyFrames.end();
 }
+
 bool Animation::hasNextTargetKeyFrame(long elapsedTime) {
 
   if (isAnimationFinished()){
@@ -50,7 +51,12 @@ void Animation::addKeyFrames(vector<KeyFrame> kfs) {
   if (firstKeyFramesAdded){
     _currentKeyFrameIter = _keyFrames.begin();
   }
-  
+
   // trigger resorting
   _isSorted = false;
+}
+
+void Animation::printAnimation(){
+    printf("Animation contains %d frames. Current frame: ", _keyFrames.size());
+    _currentKeyFrameIter->printKeyFrame();
 }

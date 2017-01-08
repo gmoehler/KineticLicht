@@ -11,7 +11,7 @@
 void serPrintln(char* const str, ...);
 void serPrint(char* const str, ...);
 
-std::map<int, int> create_NumberButtonMap();
-void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor);
+std::map<long, int> create_NumberButtonMap1();
+void updateLEDs1(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor);
 
 #endif

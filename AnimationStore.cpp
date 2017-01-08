@@ -3,6 +3,8 @@
 // full height: 4200 = 2100mm
 
 Animation& AnimationStore::getAnimation(int id){
+  printf("AnimationStore: Selecting animation %d:\n", id);
+  _animation[id].printAnimation();
   return _animation[id];
 }
 
@@ -10,7 +12,7 @@ AnimationStore::AnimationStore()
 {
   Animation a1;
   _animation.push_back(a1);
-  
+
   a1.addKeyFrames({
     {STEPPER1, 0, 0},
     {STEPPER1, 2000, 0},
@@ -59,8 +61,8 @@ AnimationStore::AnimationStore()
     {LED1BOT, 3500, YELLOW, 50},
     {LED1BOT, 4000, YELLOW, 50},
     {LED1BOT, 11000, RED, 100},
-    {LED1BOT, 11500, RED, 100}, 
-    {LED1BOT, 13000, BLUE, 100}, 
+    {LED1BOT, 11500, RED, 100},
+    {LED1BOT, 13000, BLUE, 100},
     {LED1BOT, 14000, BLUE, 100},
     {LED1BOT, 28000, GREEN, 50},
     {LED1BOT, 29000, GREEN, 50},
@@ -96,10 +98,10 @@ AnimationStore::AnimationStore()
     {LED4TOP, 1000, YELLOW, 0},
     {LED4TOP, 2500, YELLOW, 50},
     {LED4TOP, 3000, YELLOW, 50},
-    {LED4TOP, 11000, RED, 100}, 
-    {LED4TOP, 11500, RED, 100}, 
-    {LED4TOP, 13000, BLUE, 100}, 
-    {LED4TOP, 14000, BLUE, 100}, 
+    {LED4TOP, 11000, RED, 100},
+    {LED4TOP, 11500, RED, 100},
+    {LED4TOP, 13000, BLUE, 100},
+    {LED4TOP, 14000, BLUE, 100},
     {LED4TOP, 28000, GREEN, 50},
     {LED4TOP, 29000, GREEN, 50},
     {LED4TOP, 30000, YELLOW, 50},
@@ -113,8 +115,8 @@ AnimationStore::AnimationStore()
     {LED4BOT, 5000, YELLOW, 50},
     {LED4BOT, 14000, RED, 100},
     {LED4BOT, 13500, RED, 100},
-    {LED4BOT, 15000, BLUE, 100}, 
-    {LED4BOT, 16000, BLUE, 100}, 
+    {LED4BOT, 15000, BLUE, 100},
+    {LED4BOT, 16000, BLUE, 100},
     {LED4BOT, 30000, GREEN, 50},
     {LED4BOT, 31000, GREEN, 50},
     {LED4BOT, 32000, YELLOW, 50},
@@ -138,7 +140,7 @@ AnimationStore::AnimationStore()
     {STEPPER1, 8000, 0},
     {STEPPER4, 10000, 0},
   });
-  
+
   a2.addKeyFrames({
   {LED1TOP, 400,  WHITE, 100},
   {LED1TOP, 1000, BLACK, 0},
@@ -168,7 +170,7 @@ AnimationStore::AnimationStore()
   {LED4TOP, 20000, WHITE, 100},
   {LED4TOP, 22000, BLACK, 0},
   });
-  
+
   a2.addKeyFrames({
   {LED4BOT, 300,  WHITE, 100},
   {LED4BOT, 800, BLACK, 0},

@@ -1,3 +1,4 @@
+// LedWorker.cpp
 #include "LedWorker.h"
 
 LedWorker::LedWorker(int ledId)
@@ -13,35 +14,30 @@ int LedWorker::getId() {
 
 void LedWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 
-    _previousKeyFrame = _targetKeyFrame;
-    _targetKeyFrame  = kf;
-    calculateCurrentSpeed(elapsedTime);
-    _pastTargetKeyFrame = false;
+  if(_debug){
+    printf("%d: New Key frame: ", _ledId);
+    kf.printKeyFrame();
+  }
 
-    if (_debug) {
-     Serial.print("Update frame ");
-      Serial.print(getId());
-      Serial.print(" Speed: ");
-      Serial.print(_currentRedSpeed);
-      Serial.print (" ");
-      Serial.print(_currentGreenSpeed);
-      Serial.print(" ");
-      Serial.println(_currentBlueSpeed);
-    }
+  _previousKeyFrame = _targetKeyFrame;
+  _targetKeyFrame  = kf;
+  calculateCurrentSpeed(elapsedTime);
+  _pastTargetKeyFrame = false;
+
+  if (_debug) {
+    printf("Update frame: %d, Speed: %f %f %f", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed);
+  }
 }
 
 void LedWorker::checkAnimation(long elapsedTime) {
 
   if (!_pastTargetKeyFrame) {
-    unsigned long targetTime = _targetKeyFrame.getTimeMs();
+    long targetTime = _targetKeyFrame.getTimeMs();
 
    // did we run past the target key frame
     if (elapsedTime >= targetTime) {
       if (_debug) {
-        Serial.print("!!! Passed KeyFrame:");
-        Serial.print(getId());
-        Serial.print(" Elapsed Time:");
-        Serial.println(elapsedTime);
+        printf("!!! Passed KeyFrame: %d, Target time: %ld, Elapsed time: %ld", getId(), targetTime, elapsedTime);
       }
       _pastTargetKeyFrame = true;
       _needsUpdate = true;
@@ -68,9 +64,10 @@ void LedWorker::loop(long elapsedTime) {
     _needsUpdate = abs(_expectedColor.red()   - _currentColor.red())   > _needsUpdateDelta ||
                    abs(_expectedColor.green() - _currentColor.green()) > _needsUpdateDelta ||
                    abs(_expectedColor.blue()  - _currentColor.blue())  > _needsUpdateDelta;
-
-    serPrintln("###### %l CUR %d %d %d %d", elapsedTime, getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
-    serPrintln("###### %l EXP %d %d %d %d", elapsedTime, getId(), _expectedColor.red(), _expectedColor.green(), _expectedColor.blue());
+    if (_debug) {
+      printf("###### %ld CUR %d %d %d %d", elapsedTime, getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
+      printf("###### %ld EXP %d %d %d %d", elapsedTime, getId(), _expectedColor.red(), _expectedColor.green(), _expectedColor.blue());
+    }
   }
 }
 
@@ -82,7 +79,7 @@ RGB LedWorker::getColorForUpdate() {
     // now that the color is realized we can set current Color
     _currentColor = _expectedColor;
     _needsUpdate = false;
-  //serPrintln("****** %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
+  //printf("****** %d %d %d %d", _rgbLed.getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
   return _expectedColor;
 }
 
@@ -90,15 +87,14 @@ RGB LedWorker::getColorForUpdate() {
 void LedWorker::calculateCurrentSpeed(long elapsedTime) {
   RGB targetColor = _targetKeyFrame.getTargetColor();
   RGB prevColor = _previousKeyFrame.getTargetColor();
-  
+
   _currentRedSpeed =  ((double)(targetColor.red() - prevColor.red()))
                       / (_targetKeyFrame.getTimeMs() - elapsedTime);
   _currentGreenSpeed =  ((double)(targetColor.green() - prevColor.green()))
                         / (_targetKeyFrame.getTimeMs() - elapsedTime);
   _currentBlueSpeed =  ((double)(targetColor.blue() - prevColor.blue()))
                        / (_targetKeyFrame.getTimeMs() - elapsedTime);
-
-  serPrintln("LED%d Update Current Speed: %f, %f, %f", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed, 0);
+  if (_debug) {
+    printf("LED%d Update Current Speed: %f, %f, %f", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed);
+  }
 }
-
-

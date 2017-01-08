@@ -12,7 +12,10 @@
 #include "StepperWorker.h"
 #include "LedWorker.h"
 
-enum AnimationState {ANIMATION_ACTIVE, ANIMATION_INIT, ANIMATION_CALIBRATING, ANIMATION_FINISHED, ANIMATION_ERROR};
+enum AnimationState {ANIMATION_ACTIVE, ANIMATION_INIT, ANIMATION_CALIBRATING, ANIMATION_FINISHED};
+std::map<long, int> create_NumberButtonMap();
+void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor);
+
 
 /*************************
     create LED objects
@@ -93,7 +96,7 @@ int IR_RECV_PIN = 11;
 
 IRrecv irrecv(IR_RECV_PIN);
 decode_results irResults;
-std::map<int, int> numberButtons = create_NumberButtonMap();
+std::map<long, int> numberButtons = create_NumberButtonMap();
 
 /************
     Setup
@@ -235,3 +238,48 @@ void loop()
   }
 }
 
+std::map<long, int> create_NumberButtonMap()
+{
+  std::map<long, int> m;
+  m[16738455] = 0;
+  m[16724175] = 1;
+  m[16718055] = 2;
+  m[16743045] = 3;
+  m[16716015] = 4;
+  m[16726215] = 5;
+  m[16734885] = 6;
+  m[16728765] = 7;
+  m[16730805] = 8;
+  m[16732845] = 9;
+  return m;
+}
+
+
+void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor){
+
+    //Serial.println ("***Update LEDs");
+    //printRGB(rgb1oId, rgb1oColor);
+    tlc.setLED(rgb1oId, rgb1oColor.red(), rgb1oColor.green(), rgb1oColor.blue());
+    //printRGB(rgb1uId, rgb1uColor);
+    tlc.setLED(rgb1uId, rgb1uColor.red(), rgb1uColor.green(), rgb1uColor.blue());
+    /*
+    tlc.setLED(rgb2o.getId(), rgb2oColor.red(), rgb2oColor.green(), rgb2oColor.blue());
+    tlc.setLED(rgb2u.getId(), rgb2uColor.red(), rgb2uColor.green(), rgb2uColor.blue());
+    RGB rgb3oColor = rgb3o.getCurrentColor();
+    tlc.setLED(rgb3o.getId(), rgb3oColor.red(), rgb3oColor.green(), rgb3oColor.blue());
+    RGB rgb3uColor = rgbu3u.getCurrentColor();
+    tlc.setLED(rgb3u.getId(), rgb3uColor.red(), rgb3uColor.green(), rgb3uColor.blue());
+    */
+    //printRGB(rgb4oId, rgb4oColor);
+    tlc.setLED(rgb4oId, rgb4oColor.red(), rgb4oColor.green(), rgb4oColor.blue());
+    //printRGB(rgb4uId, rgb4uColor);
+    tlc.setLED(rgb4uId, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+
+    //tlc.setLED(3, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+    //tlc.setLED(4, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+    //tlc.setLED(5, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+    //tlc.setLED(6, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+
+    tlc.write();
+
+}
