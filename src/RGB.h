@@ -17,10 +17,10 @@ class RGB {
     int _red;
     int _green;
     int _blue;
+
+    void _checkInput();
 };
 
 
 
 #endif
-
-
