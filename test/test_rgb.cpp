@@ -1,6 +1,4 @@
-#include "stdio.h"
-#include "gtest/gtest.h"
-#include "../src/RGB.h"
+#include "test.h"
 
 TEST(RGB_tests, red){
   RGB led = RGB(2000, 0 , 0);

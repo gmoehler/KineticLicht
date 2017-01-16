@@ -1,6 +1,4 @@
-#include "stdio.h"
-#include "gtest/gtest.h"
-#include "../src/KeyFrame.h"
+#include "test.h"
 
 TEST(KeyFrame_tests, test1){
 

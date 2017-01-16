@@ -1,12 +1,16 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
-#ifndef TEST
+
+#ifdef TEST
+#include <stdio.h>
+#else
 #include <ArduinoSTL.h>
 #endif
-#include <map>
+
+#include <vector>
+#include <algorithm>    // std::sort
 
 #include "KeyFrame.h"
-#include <algorithm>    // std::sort
 
 using namespace std;
 
@@ -27,6 +31,7 @@ public:
 
   // add new key frames - sort is done on first getNextTargetKeyFrames()
   void addKeyFrames(vector<KeyFrame> new_kfs);
+  int numberOfKeyFrames();
 
   void printAnimation();
 

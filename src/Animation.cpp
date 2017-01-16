@@ -2,8 +2,10 @@
 
 bool keyFrameCompare (KeyFrame i,KeyFrame j) { return (i.getTimeMs()<j.getTimeMs()); }
 
-Animation::Animation() {
-  // nothing to be done
+Animation::Animation() {}
+
+int Animation::numberOfKeyFrames(){
+  return _keyFrames.size();
 }
 
 bool Animation::isAnimationFinished() {
@@ -20,18 +22,19 @@ bool Animation::hasNextTargetKeyFrame(long elapsedTime) {
   vector<KeyFrame>::iterator nextKeyFrameIter = _currentKeyFrameIter;
   ++nextKeyFrameIter;
 
-  return (nextKeyFrameIter->getTimeMs() <= elapsedTime);
+  double nextTargetTime = nextKeyFrameIter->getTimeMs();
+  return (nextTargetTime >= elapsedTime);
 }
 
 vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
   // need resorting
-  if (!_isSorted){
+/*  if (!_isSorted){
     std::sort (_keyFrames.begin(), _keyFrames.end(), keyFrameCompare);
     _currentKeyFrameIter = _keyFrames.begin();
     _isSorted = true;
   }
-
+*/
   vector<KeyFrame> nextKeyFrames;
 
   while (hasNextTargetKeyFrame(elapsedTime)){
