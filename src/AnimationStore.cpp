@@ -144,8 +144,8 @@ AnimationStore::AnimationStore()
   a2.addKeyFrames({
   {LED1TOP, 400,  WHITE, 100},
   {LED1TOP, 1000, BLACK, 0},
-  {LED1TOP, 2300,  BLACK, 0},
-  {LED1TOP, 2400,  WHITE, 100},
+  {LED1TOP, 2300, BLACK, 0},
+  {LED1TOP, 2400, WHITE, 100},
   {LED1TOP, 3000, BLACK, 0},
   {LED1TOP, 20000, WHITE, 100},
   {LED1TOP, 22000, BLACK, 0},

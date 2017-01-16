@@ -1,7 +1,10 @@
 #ifndef KeyFrame_h
 #define KeyFrame_h
 
+#ifndef TEST
 #include <ArduinoSTL.h>
+#endif
+
 #include "RGB.h"
 
 
@@ -19,17 +22,15 @@ class KeyFrame
 
     // keyframe for motor movement
     KeyFrame(int id, long timeMs, int targetPosition)
-     : _id(id), _timeMs(timeMs), _targetPosition(targetPosition){}
+     : _id(id), _timeMs(timeMs), _targetPosition(targetPosition), _targetColor(BLACK){}
 
     // keyframe for led colors
     KeyFrame(int id, long timeMs, RGB targetColor)
-      : _timeMs(timeMs), _targetColor(targetColor) {}
+      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(targetColor) {}
     KeyFrame(int id, long timeMs, int red, int green, int blue, int brightness)
-      : _timeMs(timeMs), _targetColor(red, green, blue, brightness){}
+      : _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue, brightness){}
     KeyFrame(int id, long timeMs, int red, int green, int blue)
-      : _timeMs(timeMs), _targetColor(red, green, blue) {}
-
-
+      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue) {}
     KeyFrame()
      : _id(0), _timeMs(0), _targetPosition(0), _targetColor(0,0,0) {}
 

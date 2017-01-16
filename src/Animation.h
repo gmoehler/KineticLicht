@@ -1,7 +1,8 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
-
+#ifndef TEST
 #include <ArduinoSTL.h>
+#endif
 #include <map>
 
 #include "KeyFrame.h"

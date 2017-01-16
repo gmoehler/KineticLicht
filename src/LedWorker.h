@@ -7,7 +7,6 @@
 #include <ArduinoSTL.h>
 
 #include "KeyFrame.h"
-#include "RgbLED.h"
 #include "RGB.h"
 
 using namespace std;

@@ -5,7 +5,6 @@
 
 #include "KeyFrame.h"
 #include "Animation.h"
-#include "RgbLED.h"
 
 using namespace std;
 
