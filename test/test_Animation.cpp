@@ -9,10 +9,8 @@ TEST(Animation_tests, test1){
   a.addKeyFrames({
     {STEPPER1, 0, 0},
     {LED1TOP, 1500, YELLOW, 50},
-    {STEPPER1, 2000, 1000},
-    {STEPPER1, 9000, 2600},
-    {STEPPER1, 12000, 2600},
-    {STEPPER1, 26000, 10}
+    {STEPPER2, 2000, 1000},
+    {STEPPER3, 9000, 2600}
   });
   
   EXPECT_EQ(true, a.hasNextTargetKeyFrame());
@@ -37,12 +35,17 @@ TEST(Animation_tests, test1){
    
  KeyFrame kf =a.getNextTargetKeyFrame();
   
-    EXPECT_EQ(STEPPER1, kf.getId());
+    EXPECT_EQ(STEPPER2, kf.getId());
     EXPECT_EQ(2000, kf.getTimeMs());
     EXPECT_EQ(1000, kf.getTargetPosition());
     EXPECT_EQ(0, kf.getTargetColor().red());
     EXPECT_EQ(0, kf.getTargetColor().green());
     EXPECT_EQ(0, kf.getTargetColor().blue());
-
-
+    
+   EXPECT_EQ(true, a.hasNextTargetKeyFrame());
+   EXPECT_EQ(false,  isAnimationFinished());
+   
+   KeyFrame kf =a.getNextTargetKeyFrame();
+   EXPECT_EQ(false, a.hasNextTargetKeyFrame());
+   EXPECT_EQ(true,  isAnimationFinished());
   }
