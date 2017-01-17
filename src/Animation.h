@@ -26,7 +26,7 @@ public:
   Animation();
 
   bool isAnimationFinished();
-  bool hasNextTargetKeyFrame(long elapsedTime);
+  bool needsTargetFrameUpdate(long elapsedTime);
   vector<KeyFrame> getNextTargetKeyFrames(long elapsedTime);
 
   // add new key frames - sort is done on first getNextTargetKeyFrames()
@@ -39,6 +39,7 @@ private:
   vector<KeyFrame> _keyFrames;
   vector<KeyFrame>::iterator _currentKeyFrameIter;
   bool _isSorted;
+  bool _firstTargetFrameRead;
 };
 
 #endif

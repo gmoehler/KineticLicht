@@ -2,43 +2,50 @@
 
 bool keyFrameCompare (KeyFrame i,KeyFrame j) { return (i.getTimeMs()<j.getTimeMs()); }
 
-Animation::Animation() {}
+Animation::Animation() :
+_isSorted(true), _firstTargetFrameRead(false) {}
 
 int Animation::numberOfKeyFrames(){
   return _keyFrames.size();
 }
 
 bool Animation::isAnimationFinished() {
-  return _currentKeyFrameIter == _keyFrames.end();
+  // need -- because end() is actually passed the last element
+  return _currentKeyFrameIter == --_keyFrames.end();
 }
 
-bool Animation::hasNextTargetKeyFrame(long elapsedTime) {
+bool Animation::needsTargetFrameUpdate(long elapsedTime) {
 
   if (isAnimationFinished()){
     return false;
   }
+  if (! _firstTargetFrameRead){
+    return true;
+  }
 
-  // peak at next element
-  vector<KeyFrame>::iterator nextKeyFrameIter = _currentKeyFrameIter;
-  ++nextKeyFrameIter;
-
-  double nextTargetTime = nextKeyFrameIter->getTimeMs();
-  return (nextTargetTime >= elapsedTime);
+  double currentTargetTime = _currentKeyFrameIter->getTimeMs();
+  return (currentTargetTime < elapsedTime);
 }
 
 vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
   // need resorting
-/*  if (!_isSorted){
+  if (!_isSorted){
     std::sort (_keyFrames.begin(), _keyFrames.end(), keyFrameCompare);
     _currentKeyFrameIter = _keyFrames.begin();
     _isSorted = true;
   }
-*/
+
   vector<KeyFrame> nextKeyFrames;
 
-  while (hasNextTargetKeyFrame(elapsedTime)){
-    ++_currentKeyFrameIter;
+  while (needsTargetFrameUpdate(elapsedTime)){
+    // for first frame the iterator is already pointing to the correct frame
+    if (! _firstTargetFrameRead){
+      _firstTargetFrameRead = true;
+    }
+    else {
+      ++_currentKeyFrameIter;
+    }
     nextKeyFrames.push_back(*_currentKeyFrameIter);
   }
 
@@ -60,6 +67,7 @@ void Animation::addKeyFrames(vector<KeyFrame> kfs) {
 }
 
 void Animation::printAnimation(){
-    printf("Animation contains %d frames. Current frame: ", _keyFrames.size());
-    _currentKeyFrameIter->printKeyFrame();
+  printf("Animation contains %d frames. \nCurrent frame: ", _keyFrames.size());
+  _currentKeyFrameIter->printKeyFrame();
+  printf("\n");
 }
