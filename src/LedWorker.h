@@ -3,8 +3,13 @@
 #ifndef LedWorker_h
 #define LedWorker_h
 
-#include <Arduino.h>
-#include <ArduinoSTL.h>
+#ifdef WITHIN_UNITTEST
+  #include <stdlib.h>
+  #include <stdio.h>
+#else
+  #include <Arduino.h>
+  #include <ArduinoSTL.h>
+#endif
 
 #include "KeyFrame.h"
 #include "RGB.h"

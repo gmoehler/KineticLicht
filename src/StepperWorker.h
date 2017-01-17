@@ -3,9 +3,14 @@
 #ifndef StepperWorker_h
 #define StepperWorker_h
 
-#include "Arduino.h"
-#include <Adafruit_MotorShield.h>
-#include <AccelStepper.h>
+#ifdef WITHIN_UNITTEST
+//  #include <stdlib.h>
+  #include <stdio.h>
+#else
+  #include "Arduino.h"
+  #include <Adafruit_MotorShield.h>
+  #include <AccelStepper.h>
+#endif
 
 #include "KeyFrame.h"
 
