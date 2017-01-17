@@ -11,7 +11,9 @@ int Animation::numberOfKeyFrames(){
 
 bool Animation::isAnimationFinished() {
   // need -- because end() is actually passed the last element
-  return _currentKeyFrameIter == --_keyFrames.end();
+  vector<KeyFrame>::iterator lastKeyFrame = _keyFrames.end();
+  --lastKeyFrame;
+  return _currentKeyFrameIter == lastKeyFrame;
 }
 
 bool Animation::needsTargetFrameUpdate(long elapsedTime) {

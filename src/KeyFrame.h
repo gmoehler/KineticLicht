@@ -1,8 +1,8 @@
 #ifndef KeyFrame_h
 #define KeyFrame_h
 
-#ifndef TEST
-#include <ArduinoSTL.h>
+#ifndef WITHIN_UNITTEST
+  #include <ArduinoSTL.h>
 #endif
 
 #include "RGB.h"

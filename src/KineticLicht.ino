@@ -162,7 +162,7 @@ void loop()
       }
 
       // update workers with new key frames
-      if (animation.hasNextTargetKeyFrame(elapsedTime)) {
+      if (animation.needsTargetFrameUpdate(elapsedTime)) {
         vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedTime);
         for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
           KeyFrame kf = *kf_it;

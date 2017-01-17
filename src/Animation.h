@@ -1,10 +1,10 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#ifdef TEST
-#include <stdio.h>
+#ifdef WITHIN_UNITTEST
+  #include <stdio.h>
 #else
-#include <ArduinoSTL.h>
+  #include <ArduinoSTL.h>
 #endif
 
 #include <vector>

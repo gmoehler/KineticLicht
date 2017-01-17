@@ -1,5 +1,14 @@
 #include "test.h"
 
+void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, int green, int blue) {
+  EXPECT_EQ(id, kf.getId());
+  EXPECT_EQ(time, kf.getTimeMs());
+  EXPECT_EQ(pos, kf.getTargetPosition());
+  EXPECT_EQ(red, kf.getTargetColor().red());
+  EXPECT_EQ(green, kf.getTargetColor().green());
+  EXPECT_EQ(blue, kf.getTargetColor().blue());
+}
+
 TEST(Animation_tests, test1){
   Animation a;
 
@@ -19,37 +28,19 @@ TEST(Animation_tests, test1){
 
   ASSERT_EQ(1, (int) kfs.size());
   KeyFrame kf = kfs.front();
-
-  EXPECT_EQ(STEPPER1, kf.getId());
-  EXPECT_EQ(0, kf.getTimeMs());
-  EXPECT_EQ(0, kf.getTargetPosition());
-  EXPECT_EQ(0, kf.getTargetColor().red());
-  EXPECT_EQ(0, kf.getTargetColor().green());
-  EXPECT_EQ(0, kf.getTargetColor().blue());
+  expectAnimation(kf, STEPPER1, 0,0,0,0,0);
 
   EXPECT_TRUE(a.needsTargetFrameUpdate(1000));
   kfs =a.getNextTargetKeyFrames(1000);
   ASSERT_EQ(1, (int) kfs.size());
   kf = kfs.front();
-
-  EXPECT_EQ(LED1TOP, kf.getId());
-  EXPECT_EQ(1500, kf.getTimeMs());
-  EXPECT_EQ(0, kf.getTargetPosition());
-  EXPECT_EQ(RGB_MAX_VAL/2,kf.getTargetColor().red());
-  EXPECT_EQ(RGB_MAX_VAL/2,kf.getTargetColor().green());
-  EXPECT_EQ(0, kf.getTargetColor().blue());
+  expectAnimation(kf, LED1TOP, 1500,0,RGB_MAX_VAL/2,RGB_MAX_VAL/2,0);
 
   EXPECT_TRUE(a.needsTargetFrameUpdate(1600));
   kfs =a.getNextTargetKeyFrames(1600);
   ASSERT_EQ(1, (int)kfs.size());
   kf = kfs.front();
-
-  EXPECT_EQ(STEPPER2, kf.getId());
-  EXPECT_EQ(2000, kf.getTimeMs());
-  EXPECT_EQ(1000, kf.getTargetPosition());
-  EXPECT_EQ(0, kf.getTargetColor().red());
-  EXPECT_EQ(0, kf.getTargetColor().green());
-  EXPECT_EQ(0, kf.getTargetColor().blue());
+  expectAnimation(kf, STEPPER2, 2000, 1000, 0, 0, 0);
 
   EXPECT_FALSE(a.isAnimationFinished());
 

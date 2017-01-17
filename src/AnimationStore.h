@@ -1,7 +1,11 @@
 #ifndef ANIMATIONSTORE_H
 #define ANIMATIONSTORE_H
 
-#include <ArduinoSTL.h>
+#ifdef WITHIN_UNITTEST
+  #include <stdio.h>
+#else
+  #include <ArduinoSTL.h>
+#endif
 
 #include "KeyFrame.h"
 #include "Animation.h"
@@ -13,6 +17,7 @@ class AnimationStore{
 public:
   AnimationStore();
 
+  int addAnimation(Animation );
   Animation& getAnimation(int id);
 
   int getNumAnimations();
