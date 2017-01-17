@@ -4,6 +4,9 @@ CC          := g++
 #The Target Binary Program
 TARGET      := dotest
 
+# what platform we are running on
+PLATFORM    := $(shell uname -s)
+
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := src
 INCDIR      := src
@@ -14,10 +17,12 @@ TARGETDIR   := bin
 RESDIR      := res
 SRCEXT      := cpp
 OBJEXT      := obj
+LIBDIR      := test/lib/$(PLATFORM)
+
 
 #Flags, Libraries and Includes
 CFLAGS      := -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
-LIB         := -fopenmp -lm -L. -lgtest_main -lgtest
+LIB         := -fopenmp -lm -L$(LIBDIR) -lgtest_main -lgtest
 GOOGLETEST_DIR := /c/Users/gregor/Documents/GitHub/googletest/googletest
 INC         := -I$(INCDIR) -I$(TESTINCDIR) -I/usr/local/include -I$(GOOGLETEST_DIR)/include
 INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
