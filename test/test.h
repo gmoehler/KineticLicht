@@ -7,5 +7,6 @@
 #include "../src/KeyFrame.h"
 #include "../src/Animation.h"
 #include "../src/AnimationStore.h"
+#include "../src/LedWorker.h"
 
 #endif
