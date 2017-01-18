@@ -29,7 +29,8 @@ TEST(LedWorker_tests, test1){
 
     rgb1o.loop(elapsedTime);
     if (rgb1o.needsUpdate() ){
-    	printf("%ld %d %d %d\n", elapsedTime, rgb1oColor.red(), elapsedTime, rgb1oColor.green(),elapsedTime, rgb1oColor.blue());
+    	RGB rgb1oColor = rgb1o.getColorForUpdate();
+    	printf("%ld %d %d %d\n", elapsedTime, rgb1oColor.red(), rgb1oColor.green(), rgb1oColor.blue());
     }
 
     elapsedTime += 500;
