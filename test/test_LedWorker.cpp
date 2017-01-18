@@ -9,7 +9,7 @@ TEST(LedWorker_tests, test1){
     {LED1TOP, 0, 0},
     {LED1TOP, 2000, GREEN},
     {LED2TOP, 2000, GREEN},
-    {LED1TOP, 9000, BLUE},
+    {LED1TOP, 4000, BLUE},
     {LED1TOP, 1500, RED}
   });
 
@@ -32,7 +32,7 @@ TEST(LedWorker_tests, test1){
     	printf("%ld %d %d %d\n", elapsedTime, rgb1oColor.red(), elapsedTime, rgb1oColor.green(),elapsedTime, rgb1oColor.blue());
     }
 
-    elapsedTime += 200;
+    elapsedTime += 500;
 
   }
 }
