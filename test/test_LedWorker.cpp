@@ -27,6 +27,11 @@ TEST(LedWorker_tests, test1){
       }
     }
 
+    rgb1o.loop(elapsedTime);
+    if (rgb1o.needsUpdate() ){
+    	printf("%ld %d %d %d\n", elapsedTime, rgb1oColor.red(), elapsedTime, rgb1oColor.green(),elapsedTime, rgb1oColor.blue());
+    }
+
     elapsedTime += 200;
 
   }
