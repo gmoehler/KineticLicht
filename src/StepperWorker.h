@@ -3,13 +3,14 @@
 #ifndef StepperWorker_h
 #define StepperWorker_h
 
-#ifdef WITHIN_UNITTEST
-//  #include <stdlib.h>
-  #include <stdio.h>
-#else
+#ifndef WITHIN_UNITTEST
   #include "Arduino.h"
   #include <Adafruit_MotorShield.h>
   #include <AccelStepper.h>
+#else
+    #include <stdlib.h>
+    #include <stdio.h>
+    #include "../test/mock_Arduino.h"
 #endif
 
 #include "KeyFrame.h"

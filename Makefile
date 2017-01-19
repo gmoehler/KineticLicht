@@ -31,9 +31,11 @@ INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
 #SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-SOURCES      := src/RGB.cpp src/Animation.cpp src/AnimationStore.cpp src/LedWorker.cpp #src/StepperWorker.cpp
+SOURCES      := src/RGB.cpp src/Animation.cpp src/AnimationStore.cpp src/LedWorker.cpp \
+								src/StepperWorker.cpp
 TESTSOURCES  := test/test_rgb.cpp test/test_KeyFrame.cpp test/test_Animation.cpp \
-							  test/test_AnimationStore.cpp test/test_LedWorker.cpp
+							  test/test_AnimationStore.cpp test/test_LedWorker.cpp \
+								test/test_StepperWorker.cpp test/mock_Arduino.cpp
 
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) \
 							 $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.$(OBJEXT)))
