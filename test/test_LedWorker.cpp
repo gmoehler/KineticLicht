@@ -7,20 +7,20 @@ TEST(LedWorker_tests, test1){
   Animation animation;
   animation.addKeyFrames({
     {LED1TOP, 0, 0},
+    {LED1TOP, 1000, RED},
     {LED1TOP, 2000, GREEN},
-    {LED2TOP, 2000, GREEN},
-    {LED1TOP, 4000, BLUE},
-    {LED1TOP, 1500, RED}
+    {LED1TOP, 4000, BLUE}
   });
 
   long elapsedTime = 0;
-  while(elapsedTime < 10000){
-    vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedTime);
+  while(elapsedTime < 5000){
     if (animation.needsTargetFrameUpdate(elapsedTime)) {
-      for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
+    vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedTime);
+    for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
         KeyFrame kf = *kf_it;
         switch (kf_it->getId()) {
           case LED1TOP:
+          kf.printKeyFrame();
           rgb1o.updateTargetKeyFrame(elapsedTime, kf);
           break;
         }
@@ -33,7 +33,7 @@ TEST(LedWorker_tests, test1){
     	printf("%ld %d %d %d\n", elapsedTime, rgb1oColor.red(), rgb1oColor.green(), rgb1oColor.blue());
     }
 
-    elapsedTime += 500;
-
+    elapsedTime += 200;
   }
+
 }

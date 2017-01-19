@@ -55,7 +55,7 @@ class KeyFrame
     }
 
     void printKeyFrame(){
-      printf("KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d", _id, _timeMs,
+      printf("KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, _timeMs,
             _targetPosition, _targetColor.red(), _targetColor.green(), _targetColor.blue());
     }
 
