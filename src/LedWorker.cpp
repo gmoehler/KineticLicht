@@ -2,10 +2,10 @@
 #include "LedWorker.h"
 
 LedWorker::LedWorker(int ledId)
-  : _ledId(ledId),
-    _currentRedSpeed(0.0), _currentGreenSpeed(0.0), _currentBlueSpeed(0.0),
-    _needsUpdateDelta(16), _pastTargetKeyFrame(false), _needsUpdate(false),
-    _debug(true)
+: _ledId(ledId),
+_currentRedSpeed(0.0), _currentGreenSpeed(0.0), _currentBlueSpeed(0.0),
+_needsUpdateDelta(16), _pastTargetKeyFrame(false), _needsUpdate(false),
+_debug(true)
 { }
 
 int LedWorker::getId() {
@@ -15,17 +15,17 @@ int LedWorker::getId() {
 void LedWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 
   if(_debug){
-    printf("%d: New Key frame: \n", _ledId);
+    printf("LED%d %ld New Key frame: \n", _ledId, elapsedTime);
     kf.printKeyFrame();
   }
 
   _previousKeyFrame = _targetKeyFrame;
   _targetKeyFrame  = kf;
-  calculateCurrentSpeed(elapsedTime);
+  calculateCurrentSpeed();
   _pastTargetKeyFrame = false;
 
   if (_debug) {
-    printf("Update frame: LED%d, Speed: %.2f %.2f %.2f\n", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed);
+    printf("LED%d %ld Update frame Speed: %.2f %.2f %.2f\n", getId(), elapsedTime, _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed);
   }
 }
 
@@ -34,8 +34,8 @@ void LedWorker::checkAnimation(long elapsedTime) {
   if (!_pastTargetKeyFrame) {
     long targetTime = _targetKeyFrame.getTimeMs();
 
-   // did we run past the target key frame
-    if (elapsedTime >= targetTime) {
+    // did we run past the target key frame
+    if (elapsedTime > targetTime) {
       if (_debug) {
         printf("!!! Passed KeyFrame: LED%d, Target time: %ld, Elapsed time: %ld\n", getId(), targetTime, elapsedTime);
       }
@@ -43,6 +43,10 @@ void LedWorker::checkAnimation(long elapsedTime) {
       _needsUpdate = true;
     }
   }
+}
+
+bool LedWorker::hasPassedTargetKeyFrame(){
+    return _pastTargetKeyFrame;
 }
 
 
@@ -62,11 +66,11 @@ void LedWorker::loop(long elapsedTime) {
     _expectedColor = RGB(expectedRed, expectedGreen, expectedBlue);
 
     _needsUpdate = abs(_expectedColor.red()   - _currentColor.red())   > _needsUpdateDelta ||
-                   abs(_expectedColor.green() - _currentColor.green()) > _needsUpdateDelta ||
-                   abs(_expectedColor.blue()  - _currentColor.blue())  > _needsUpdateDelta;
+    abs(_expectedColor.green() - _currentColor.green()) > _needsUpdateDelta ||
+    abs(_expectedColor.blue()  - _currentColor.blue())  > _needsUpdateDelta;
     if (_debug) {
-      printf("###### %ld CUR LED%d %d %d %d\n", elapsedTime, getId(), _currentColor.red(), _currentColor.green(), _currentColor.blue());
-      printf("###### %ld EXP LED%d %d %d %d\n", elapsedTime, getId(), _expectedColor.red(), _expectedColor.green(), _expectedColor.blue());
+      printf("LED%d %ld CUR %d %d %d\n", getId(), elapsedTime, _currentColor.red(), _currentColor.green(), _currentColor.blue());
+      printf("LED%d %ld EXP %d %d %d\n", getId(), elapsedTime, _expectedColor.red(), _expectedColor.green(), _expectedColor.blue());
     }
   }
 }
@@ -76,28 +80,28 @@ bool LedWorker::needsUpdate() {
 }
 
 RGB LedWorker::getColorForUpdate() {
-    // now that the color is realized we can set current Color
-    _currentColor = _expectedColor;
-    _needsUpdate = false;
-    if (_debug) {
-      printf("LED%d Read color %d %d %d", _ledId, _currentColor.red(), _currentColor.green(), _currentColor.blue());
-    }
-    return _expectedColor;
+  // now that the color is realized we can set current Color
+  _currentColor = _expectedColor;
+  _needsUpdate = false;
+  if (_debug) {
+    printf("LED%d Read color %d %d %d\n", _ledId, _currentColor.red(), _currentColor.green(), _currentColor.blue());
+  }
+  return _expectedColor;
 }
 
 
-void LedWorker::calculateCurrentSpeed(long elapsedTime) {
+void LedWorker::calculateCurrentSpeed() {
   RGB targetColor = _targetKeyFrame.getTargetColor();
   RGB prevColor = _previousKeyFrame.getTargetColor();
   long targetTime = _targetKeyFrame.getTimeMs();
   long prevTime = _previousKeyFrame.getTimeMs();
 
   _currentRedSpeed =  ((double)(targetColor.red() - prevColor.red()))
-                      / (targetTime - prevTime);
+    / (targetTime - prevTime);
   _currentGreenSpeed =  ((double)(targetColor.green() - prevColor.green()))
-                        / (targetTime - prevTime);
+    / (targetTime - prevTime);
   _currentBlueSpeed =  ((double)(targetColor.blue() - prevColor.blue()))
-                       / (targetTime - prevTime);
+    / (targetTime - prevTime);
   if (_debug) {
     printf("LED%d Update Current Speed: %.2f, %.2f, %.2f\n", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed);
   }

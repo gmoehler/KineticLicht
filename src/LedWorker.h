@@ -27,12 +27,13 @@ public:
     bool needsUpdate();
     RGB  getColorForUpdate();
     int  getId();
+    bool hasPassedTargetKeyFrame();
 
     void setDebug(bool debug);
 
 private:
     // calculates the current Speed
-    void calculateCurrentSpeed(long elapsedTime);
+    void calculateCurrentSpeed();
     void checkAnimation(long elapsedTime);
 
     // currently the id used for the TLC5947
