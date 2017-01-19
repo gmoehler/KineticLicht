@@ -89,13 +89,15 @@ RGB LedWorker::getColorForUpdate() {
 void LedWorker::calculateCurrentSpeed(long elapsedTime) {
   RGB targetColor = _targetKeyFrame.getTargetColor();
   RGB prevColor = _previousKeyFrame.getTargetColor();
+  long targetTime = _targetKeyFrame.getTimeMs();
+  long prevTime = _previousKeyFrame.getTimeMs();
 
   _currentRedSpeed =  ((double)(targetColor.red() - prevColor.red()))
-                      / (_targetKeyFrame.getTimeMs() - elapsedTime);
+                      / (targetTime - prevTime);
   _currentGreenSpeed =  ((double)(targetColor.green() - prevColor.green()))
-                        / (_targetKeyFrame.getTimeMs() - elapsedTime);
+                        / (targetTime - prevTime);
   _currentBlueSpeed =  ((double)(targetColor.blue() - prevColor.blue()))
-                       / (_targetKeyFrame.getTimeMs() - elapsedTime);
+                       / (targetTime - prevTime);
   if (_debug) {
     printf("LED%d Update Current Speed: %.2f, %.2f, %.2f\n", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed);
   }
