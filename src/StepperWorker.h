@@ -15,6 +15,11 @@
 
 #include "KeyFrame.h"
 
+// Phase diagram:
+// INIT -> CALIBRATING_UP ->(endstop is hit)-> CALIBRATING_ENDSTOPHIT[going downward] ->(endstop is released)-> CALIBRATION_FINISHED
+// ACTIVE ->(endstop is hit)-> ENDSTOP_HIT[going downward] ->(endstop is released)-> AT_ENDSTOP_WAITING ->(speed is downward)-> ACTIVE
+//        ->(time is past target time)-> PAST_TARGET ->(new target provided)-> ACTIVE
+
 enum StepperWorkerState {INIT, CALIBRATING, CALIBRATION_FINISHED, ACTIVE, PAST_TARGET, ENDSTOP_HIT};
 
 class StepperWorker

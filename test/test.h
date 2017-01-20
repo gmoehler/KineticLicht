@@ -11,5 +11,6 @@
 #include "../src/AnimationStore.h"
 #include "../src/LedWorker.h"
 #include "../src/StepperWorker.h"
+#include "../src/FiniteStates.h"
 
 #endif

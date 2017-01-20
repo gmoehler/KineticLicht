@@ -4,7 +4,7 @@ TEST(KeyFrame_tests, test1){
 
 //    KeyFrame kf = KeyFrame(42, 3333, 2000, 1000, 1000);
     KeyFrame kf = KeyFrame();
-    EXPECT_EQ(0, kf.getId());
+    EXPECT_EQ(-1, kf.getId());
     EXPECT_EQ(0, kf.getTimeMs());
     EXPECT_EQ(0, kf.getTargetPosition());
     EXPECT_EQ(0, kf.getTargetColor().red());
