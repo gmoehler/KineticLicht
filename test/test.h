@@ -10,5 +10,6 @@
 #include "../src/Animation.h"
 #include "../src/AnimationStore.h"
 #include "../src/LedWorker.h"
+#include "../src/StepperWorker.h"
 
 #endif

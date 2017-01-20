@@ -32,7 +32,7 @@ class KeyFrame
     KeyFrame(int id, long timeMs, int red, int green, int blue)
       :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue) {}
     KeyFrame()
-     : _id(0), _timeMs(0), _targetPosition(0), _targetColor(0,0,0) {}
+     : _id(-1), _timeMs(0), _targetPosition(0), _targetColor(0,0,0) {}
 
     int getId() {
       return _id;

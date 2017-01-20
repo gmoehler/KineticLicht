@@ -4,7 +4,7 @@
 #define StepperWorker_h
 
 #ifndef WITHIN_UNITTEST
-  #include "Arduino.h"
+  #include <Arduino.h>
   #include <Adafruit_MotorShield.h>
   #include <AccelStepper.h>
 #else
@@ -20,7 +20,7 @@ enum StepperWorkerState {INIT, CALIBRATING, CALIBRATION_FINISHED, ACTIVE, PAST_T
 class StepperWorker
 {
   public:
-    StepperWorker(Adafruit_StepperMotor *motor, AccelStepper &astepper, int id,
+    StepperWorker(AccelStepper &astepper, int id,
                   int endStopPin, bool reverseDirection);
 
     // to be called in setup()
@@ -55,9 +55,6 @@ class StepperWorker
     // where we actually do the stepping work
     void runStepper();
 
-    // release the motor
-    void release();
-
     // get current position of stepper
     long getCurrentPosition();
 
@@ -67,8 +64,7 @@ class StepperWorker
     // what to do when an end stop is reached (during calibration or at any other time)
     void operateOnEndStopHit();
 
-    Adafruit_StepperMotor *_motor;
-    AccelStepper _astepper;
+    AccelStepper& _astepper;
 
     int _id;
 
