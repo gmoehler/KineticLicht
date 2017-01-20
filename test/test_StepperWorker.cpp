@@ -51,6 +51,7 @@ TEST(StepperWorker_test, endstopTest){
   int numResets = test_getNumEndpointResets();
   test_triggerEndStop();
   sw.loop(300);
+  // check whether there actually endpoint was hit and released again
   EXPECT_EQ(numResets+1, test_getNumEndpointResets());
 }
 
