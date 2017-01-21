@@ -23,16 +23,6 @@ StepperWorkerState StepperWorker::getState(){
   return _state;
 }
 
-void StepperWorker::startCalibration(){
-  // TODO: do we need a state transition instead?
-  _state=CALIBRATING;
-}
-
-void StepperWorker::startAnimation(){
-  // TODO: do we need a state transition instead?
-  _state=ACTIVE;
-}
-
 void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 
   if(_debug){
@@ -42,8 +32,6 @@ void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
   _previousKeyFrame = _targetKeyFrame;
   _targetKeyFrame  = kf;
   long curPos = _astepper.currentPosition();
-  //TODO: dont update the motor speed here, but in the state action
-  // maybe just remember it was set, so we do it only once
   updateSpeed(curPos, elapsedTime);
 }
 

@@ -89,9 +89,9 @@ TEST(FiniteStates_test, testWithClass){
 
 }
 
-class MyClass0 : public FiniteStateMachine<MyClass0>{
+class MyTransitionClass : public FiniteStateMachine<MyTransitionClass>{
 public:
-  MyClass0(int numberOfStates, int initialState) :
+  MyTransitionClass(int numberOfStates, int initialState) :
     FiniteStateMachine(numberOfStates, initialState, *this){
     addTransition(STATE0, STATE1, t1);
     addTransition(STATE1, STATE2, t2);
@@ -113,7 +113,7 @@ private:
 
 TEST(FiniteStates_test, testWithInheritedClass){
 
-  MyClass0 mc = MyClass0(3,STATE0);
+  MyTransitionClass mc = MyTransitionClass(3,STATE0);
   EXPECT_EQ(STATE0, mc.getState());
   mc.loop();
   EXPECT_EQ(STATE1, mc.getState());

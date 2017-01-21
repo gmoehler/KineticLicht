@@ -15,7 +15,7 @@
 
 #include "KeyFrame.h"
 
-// State diagram:
+// Phase diagram:
 // INIT -> CALIBRATING_UP ->(endstop is hit)-> CALIBRATING_ENDSTOPHIT[going downward] ->(endstop is released)-> CALIBRATION_FINISHED
 // ACTIVE ->(endstop is hit)-> ENDSTOP_HIT[going downward] ->(endstop is released)-> AT_ENDSTOP_WAITING ->(speed is downward)-> ACTIVE
 //        ->(time is past target time)-> PAST_TARGET ->(new target provided)-> ACTIVE
@@ -35,14 +35,7 @@ class StepperWorker
     void loop(long elapsedTime);
 
     // to be called in loop() during calibration
-    // deprecated: use loop()
     void loopCalibration();
-
-    // start calibration program
-    void startCalibration();
-
-    // sets internal state to ACTIVE and animates along the passed TargetKeyFrames
-    void startAnimation();
 
     // set a new target keyFrame
     void updateTargetKeyFrame(long elapsedTime, KeyFrame& kf);
