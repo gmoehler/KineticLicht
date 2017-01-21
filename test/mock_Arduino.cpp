@@ -1,4 +1,4 @@
-#include "mock_arduino.h"
+#include "mock_Arduino.h"
 
 AccelStepper::AccelStepper() : _speed(-999) {
 

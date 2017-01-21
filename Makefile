@@ -24,7 +24,7 @@ LIBDIR      := test/lib/$(PLATFORM)
 CFLAGS      := -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
 LIB         := -fopenmp -lm -L$(LIBDIR) -lgtest_main -lgtest
 GOOGLETEST_DIR := /c/Users/gregor/Documents/GitHub/googletest/googletest
-INC         := -I$(INCDIR) -I$(TESTINCDIR) -I/usr/local/include -I$(GOOGLETEST_DIR)/include
+INC         := -I$(INCDIR) -I$(TESTINCDIR) -Itest/include -I/usr/local/include -I$(GOOGLETEST_DIR)/include
 INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
 
 #---------------------------------------------------------------------------------

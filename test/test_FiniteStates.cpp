@@ -50,11 +50,11 @@ class MyClass{
 public:
   MyClass(int numberOfStates, int initialState) :
     _myFsm(numberOfStates, initialState, *this){
-    _myFsm.addTransition(STATE0, STATE1, MyClass::t1);
-    _myFsm.addTransition(STATE1, STATE2, MyClass::t2);
-    _myFsm.addStateAction(STATE0, s0);
-    _myFsm.addStateAction(STATE1, s1);
-    _myFsm.addStateAction(STATE2, s2);
+    _myFsm.addTransition(STATE0, STATE1, &MyClass::t1);
+    _myFsm.addTransition(STATE1, STATE2, &MyClass::t2);
+    _myFsm.addStateAction(STATE0,  &MyClass::s0);
+    _myFsm.addStateAction(STATE1,  &MyClass::s1);
+    _myFsm.addStateAction(STATE2,  &MyClass::s2);
   }
 
   bool t1(){return _x>0;}
@@ -93,11 +93,11 @@ class MyTransitionClass : public FiniteStateMachine<MyTransitionClass>{
 public:
   MyTransitionClass(int numberOfStates, int initialState) :
     FiniteStateMachine(numberOfStates, initialState, *this){
-    addTransition(STATE0, STATE1, t1);
-    addTransition(STATE1, STATE2, t2);
-    addStateAction(STATE0, s0);
-    addStateAction(STATE1, s1);
-    addStateAction(STATE2, s2);
+    addTransition(STATE0, STATE1, &MyTransitionClass::t1);
+    addTransition(STATE1, STATE2,&MyTransitionClass:: t2);
+    addStateAction(STATE0, &MyTransitionClass::s0);
+    addStateAction(STATE1, &MyTransitionClass::s1);
+    addStateAction(STATE2,&MyTransitionClass:: s2);
   }
 
   bool t1(){return _x>0;}
