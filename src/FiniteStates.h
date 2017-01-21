@@ -1,5 +1,7 @@
 #ifndef WITHIN_UNITTEST
   #include <ArduinoSTL.h>
+#else
+  #include "stdio.h"
 #endif
 
 #include <map>
@@ -34,7 +36,7 @@ private:
 
 template<class T>
 FiniteStateMachine<T>::FiniteStateMachine(int numberOfStates, int initialState, T& obj) :
-  _numStates(numberOfStates), _state(initialState), _obj(obj), _transitionMap() {
+_numStates(numberOfStates), _state(initialState), _obj(obj), _transitionMap() {
 }
 template<class T>
 void FiniteStateMachine<T>::addTransition(int fromState, int toState,  TransitionCondFunction transitionFunction){
@@ -61,8 +63,8 @@ bool FiniteStateMachine<T>::_checkStateMachine(){
   //TODO: do more extensive checking
   if ((int)_transitionMap.size() != _numStates-1 ||(int) _stateActionMap.size() != _numStates) {
     printf("The statemachine was not set up properly. Num states: %d, Num Transition Conditions: %d, Num State Actions: %d\n",
-      _numStates, _transitionMap.size(), _stateActionMap.size());
-      return false;
+    _numStates, _transitionMap.size(), _stateActionMap.size());
+    return false;
   }
 
   return true;
@@ -77,18 +79,24 @@ void FiniteStateMachine<T>::loop(){
 
   // check whether we have to move to new state
   // pick transition for current state
-  map<int,TransitionCondFunction> innerTransMap = _transitionMap[_state];
-  //TODO: use map.find()
-  for(typename map<int,TransitionCondFunction>::iterator iter = innerTransMap.begin(); iter != innerTransMap.end(); ++iter) {
+  auto it = _transitionMap.find(_state);
+  // transitionConfFunctions found
+  if (it != _transitionMap.end()){
+    map<int,TransitionCondFunction> innerTransMap = it->second;
+    for(typename map<int,TransitionCondFunction>::iterator iter = innerTransMap.begin(); iter != innerTransMap.end(); ++iter) {
 
-    bool (T::*tf)(void)  = iter->second;
-    // is transition function  fullfilled?
-    if ((_obj.*tf)()) {
-      int toState =  iter->first;
-      // transition to next state
-      _state = toState;
-      break;
+      bool (T::*tf)(void)  = iter->second;
+      // is transition function  fullfilled?
+      if ((_obj.*tf)()) {
+        int toState =  iter->first;
+        // transition to next state
+        _state = toState;
+        break;
+      }
     }
+  }
+  else {
+    printf("Cannot find transition condition function for state %d\n", _state);
   }
 
   // work on current state action function
