@@ -25,8 +25,8 @@ private:
   int _state;
 
   T& _obj;   // the object to apply the functions on
-  map<int,map<int, bool (T::*)(void)>> _transitionMap;
-  map<int,void (T::*)(void)> _stateActionMap;
+  map<int,map<int,TransitionCondFunction>> _transitionMap;
+  map<int,StateActionFunction> _stateActionMap;
 
   bool _checkStateMachine();
 };
@@ -58,6 +58,7 @@ int FiniteStateMachine<T>::getState(){
 template<class T>
 bool FiniteStateMachine<T>::_checkStateMachine(){
 
+  //TODO: do more extensive checking
   if ((int)_transitionMap.size() != _numStates-1 ||(int) _stateActionMap.size() != _numStates) {
     printf("The statemachine was not set up properly. Num states: %d, Num Transition Conditions: %d, Num State Actions: %d\n",
       _numStates, _transitionMap.size(), _stateActionMap.size());
