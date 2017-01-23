@@ -14,15 +14,21 @@
 #endif
 
 #include "KeyFrame.h"
+#include "FiniteStates.h"
 
 // State diagram:
 // INIT -> CALIBRATING_UP ->(endstop is hit)-> CALIBRATING_ENDSTOPHIT[going downward] ->(endstop is released)-> CALIBRATION_FINISHED
-// ACTIVE ->(endstop is hit)-> ENDSTOP_HIT[going downward] ->(endstop is released)-> AT_ENDSTOP_WAITING ->(speed is downward)-> ACTIVE
+// ACTIVE ->(endstop is hit)-> ENDSTOP_HIT[going downward] ->(300ms & endstop is released)-> AT_ENDSTOP_WAITING ->(speed is downward)-> ACTIVE
 //        ->(time is past target time)-> PAST_TARGET ->(new target provided)-> ACTIVE
 
-enum StepperWorkerState {INIT, CALIBRATING, CALIBRATION_FINISHED, ACTIVE, PAST_TARGET, ENDSTOP_HIT};
+enum StepperWorkerState {INIT, CALIBRATING_UP, CALIBRATING_ENDSTOPHIT,
+                         /*deprecated*/CALIBRATING , CALIBRATION_FINISHED,
+                         ACTIVE,
+                         AT_ENDSTOP_WAITING, ENDSTOP_HIT,
+                         PAST_TARGET,
+                         NUM_STATES};
 
-class StepperWorker
+class StepperWorker //: public FiniteStateMachine<StepperWorker>
 {
   public:
     StepperWorker(AccelStepper &astepper, int id,
@@ -76,6 +82,9 @@ class StepperWorker
     // what to do when an end stop is reached (during calibration or at any other time)
     void operateOnEndStopHit();
 
+    // state action on ENDSTOP_HIT
+    void runOnEndStopHit();
+
     AccelStepper& _astepper;
 
     int _id;
@@ -92,7 +101,10 @@ class StepperWorker
     KeyFrame _targetKeyFrame;
 
     int _targetTimeDelta;
+    long _time_endstophit;
     bool _debug;
+
+
 };
 
 #endif

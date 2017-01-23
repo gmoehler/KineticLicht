@@ -5,11 +5,17 @@
 
 StepperWorker::StepperWorker(AccelStepper &astepper,
                              int id, int endStopPin, bool reverseDirection)
-  :  _astepper(astepper), _id(id),
+  : //FiniteStateMachine(NUM_STATES, INIT, *this),
+    _astepper(astepper), _id(id),
     _state(INIT), _currentPosition(0), _currentSpeed(0.0),
     _endStopPin(endStopPin), _reverseDirection(reverseDirection), _calibrateSpeed(-400),
     _previousKeyFrame(KeyFrame()), _targetTimeDelta(250), _debug(true)
-{}
+{
+//  addStateAction(ACTIVE,  &StepperWorker::runStepper);
+//  addStateAction(ACTIVE,  &StepperWorker::runOnEndStopHit);
+
+//  addTransition(ACTIVE, ENDSTOP_HIT, &StepperWorker::isEndStopHit);
+}
 
 void StepperWorker::init() {
   pinMode(_endStopPin, INPUT_PULLUP);
@@ -84,6 +90,13 @@ void StepperWorker::loop(long elapsedTime) {
   }
 }
 
+void StepperWorker::runOnEndStopHit(){
+    // endstop just hit
+    if (_time_endstophit == -1){
+
+    }
+
+}
 
 void StepperWorker::operateOnEndStopHit() {
   printf("%d Endstop\n", _id);

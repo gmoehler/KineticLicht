@@ -1,6 +1,6 @@
 #include "test.h"
 
-enum MyState {STATE0, STATE1, STATE2, NUM_STATES};
+enum MyState {STATE0, STATE1, STATE2};
 /*
 int myNumber = 10;
 
@@ -96,15 +96,27 @@ public:
     addTransition(STATE0, STATE1, &MyTransitionClass::t1);
     addTransition(STATE1, STATE2,&MyTransitionClass:: t2);
     addStateAction(STATE0, &MyTransitionClass::s0);
+    addStateEntryAction(STATE0, &MyTransitionClass::s0_entry);
+    addStateExitAction(STATE0, &MyTransitionClass::s0_exit);
     addStateAction(STATE1, &MyTransitionClass::s1);
+    addStateEntryAction(STATE1, &MyTransitionClass::s1_entry);
+    addStateExitAction(STATE1, &MyTransitionClass::s1_exit);
     addStateAction(STATE2,&MyTransitionClass:: s2);
+    addStateEntryAction(STATE2, &MyTransitionClass::s2_entry);
+    addStateExitAction(STATE2, &MyTransitionClass::s2_exit);
   }
 
   bool t1(){return _x>0;}
   bool t2(){return _x>0;}
   void s0(){printf("action in state0: %d\n", _x);}
+  void s0_entry(){printf("entry to state0: %d\n", _x);}
+  void s0_exit(){printf("exit from state0: %d\n", _x);}
   void s1(){printf("action in state1: %d\n", _x);}
+  void s1_entry(){printf("entry to state1: %d\n", _x);}
+  void s1_exit(){printf("exit from state1: %d\n", _x);}
   void s2(){printf("action in state2: %d\n", _x);}
+  void s2_entry(){printf("entry to state2: %d\n", _x);}
+  void s2_exit(){printf("exit from state2: %d\n", _x);}
 
 private:
   int _x = 99;

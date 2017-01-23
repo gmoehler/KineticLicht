@@ -6,3 +6,4 @@ main
 *.exe
 *.o
 *.obj
+tmp/*

@@ -1,3 +1,6 @@
+#ifndef FINIITE_STATES_H
+#define FINIITE_STATES_H
+
 #ifndef WITHIN_UNITTEST
   #include <ArduinoSTL.h>
 #else
@@ -16,6 +19,8 @@ public:
   void addTransition(int fromState, int toState,  TransitionCondFunction transitionFunction);
   typedef void (T::*StateActionFunction)(void);
   void addStateAction(int state, StateActionFunction stateAction);
+  void addStateEntryAction(int state, StateActionFunction stateEntryAction);
+  void addStateExitAction(int state, StateActionFunction stateExitAction);
 
   void loop();
 
@@ -29,6 +34,8 @@ private:
   T& _obj;   // the object to apply the functions on
   map<int,map<int,TransitionCondFunction>> _transitionMap;
   map<int,StateActionFunction> _stateActionMap;
+  map<int,StateActionFunction> _stateEntryActionMap;
+  map<int,StateActionFunction> _stateExitActionMap;
 
   bool _checkStateMachine();
 };
@@ -46,6 +53,16 @@ void FiniteStateMachine<T>::addTransition(int fromState, int toState,  Transitio
 template<class T>
 void FiniteStateMachine<T>::addStateAction(int state,  StateActionFunction stateActionFunction){
   _stateActionMap[state] = stateActionFunction;
+}
+
+template<class T>
+void FiniteStateMachine<T>::addStateEntryAction(int state,  StateActionFunction stateEntryActionFunction){
+  _stateEntryActionMap[state] = stateEntryActionFunction;
+}
+
+template<class T>
+void FiniteStateMachine<T>::addStateExitAction(int state,  StateActionFunction stateExitActionFunction){
+  _stateExitActionMap[state] = stateExitActionFunction;
 }
 
 template<class T>
@@ -89,8 +106,20 @@ void FiniteStateMachine<T>::loop(){
       // is transition function  fullfilled?
       if ((_obj.*tf)()) {
         int toState =  iter->first;
+        // call exit function of last state
+        auto it1 = _stateExitActionMap.find(_state);
+        if (it1 != _stateExitActionMap.end()){
+          void (T::*sexitaf)(void)  = it1->second;
+          (_obj.*sexitaf)();
+        }
         // transition to next state
         _state = toState;
+        // call entry function of new state
+        auto it2 = _stateEntryActionMap.find(_state);
+        if (it2 != _stateEntryActionMap.end()){
+          void (T::*sentryaf)(void)  = it2->second;
+          (_obj.*sentryaf)();
+        }
         break;
       }
     }
@@ -100,6 +129,14 @@ void FiniteStateMachine<T>::loop(){
   }
 
   // work on current state action function
-  void (T::*saf)(void) = _stateActionMap[_state];
-  (_obj.*saf)();
+  auto iter = _stateActionMap.find(_state);
+  if (iter != _stateActionMap.end()){
+    void (T::*saf)(void)  = iter->second;
+    (_obj.*saf)();
+  }
+  else {
+    printf("No action function defined for state %d\n", _state);
+  }
 }
+
+#endif
