@@ -25,11 +25,11 @@
 enum StepperWorkerState {INIT, CALIBRATING_UP, CALIBRATING_ENDSTOPHIT,
                          /*deprecated*/CALIBRATING , CALIBRATION_FINISHED,
                          ACTIVE,
-                         AT_ENDSTOP_WAITING, ENDSTOP_HIT,
+                         ENDSTOP_WAITING, ENDSTOP_HIT,
                          PAST_TARGET,
                          NUM_STATES};
 
-class StepperWorker //: public FiniteStateMachine<StepperWorker>
+class StepperWorker : public FiniteStateMachine<StepperWorker>
 {
   public:
     StepperWorker(AccelStepper &astepper, int id,
@@ -51,7 +51,9 @@ class StepperWorker //: public FiniteStateMachine<StepperWorker>
     // sets internal state to ACTIVE and animates along the passed TargetKeyFrames
     void startAnimation();
 
-    // set a new target keyFrame
+    // set a new target keyFrame,
+    // not handled as extra state since it only affects ACTIVE &&
+    // AT_ENDSTOP_WAITING states
     void updateTargetKeyFrame(long elapsedTime, KeyFrame& kf);
 
     StepperWorkerState getState();
@@ -61,7 +63,9 @@ class StepperWorker //: public FiniteStateMachine<StepperWorker>
   private:
 
     // did the end stop switch detect the light
-    bool isEndStopHit();
+    bool _to_endstop_hit();
+
+    bool _to_endstop_waiting();
 
     void checkAnimation(long elapsedTime);
 
@@ -69,7 +73,7 @@ class StepperWorker //: public FiniteStateMachine<StepperWorker>
     void updateSpeed(double newSpeed);
 
     // calculate a new speed based on the next key frame
-    void updateSpeed(int curPos, long runTime);
+    void _updateSpeed(int curPos, long runTime);
 
     // where we actually do the stepping work
     void runStepper();
@@ -103,6 +107,8 @@ class StepperWorker //: public FiniteStateMachine<StepperWorker>
 
     int _targetTimeDelta;
     long _time_endstophit;
+    bool _speed_updated;
+    long _elapsedTime;
     bool _debug;
 
 

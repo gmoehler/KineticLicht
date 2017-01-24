@@ -5,20 +5,128 @@
 
 StepperWorker::StepperWorker(AccelStepper &astepper,
                              int id, int endStopPin, bool reverseDirection)
-  : //FiniteStateMachine(NUM_STATES, INIT, *this),
+  : FiniteStateMachine(NUM_STATES, INIT, *this),
     _astepper(astepper), _id(id),
     _state(INIT), _currentPosition(0), _currentSpeed(0.0),
     _endStopPin(endStopPin), _reverseDirection(reverseDirection), _calibrateSpeed(-400),
-    _previousKeyFrame(KeyFrame()), _targetTimeDelta(250), _debug(true)
+    _previousKeyFrame(KeyFrame()), _targetTimeDelta(250), _speed_updated (false),
+    _debug(true)
 {
-//  addStateAction(ACTIVE,  &StepperWorker::runStepper);
-//  addStateAction(ACTIVE,  &StepperWorker::runOnEndStopHit);
+  addStateAction(ACTIVE,  &StepperWorker::_action_active);
 
-//  addTransition(ACTIVE, ENDSTOP_HIT, &StepperWorker::isEndStopHit);
+  // first transition function, should be called first (?)
+  addTransition(ACTIVE, ENDSTOP_HIT, &StepperWorker::is_endstop_hit);
 }
 
 void StepperWorker::init() {
   pinMode(_endStopPin, INPUT_PULLUP);
+}
+
+void StepperWorker::loop(long elapsedTime) {
+  _elapsedTime = elapsedTime;
+  FiniteStateMachine::loop();
+}
+
+SteperWorker::_action_active(){
+  if (_speed_updated){
+    double newSpeed = calculateTargetSpeed();
+    updateSpeed(newSpeed);
+  }
+  _astepper.runSpeed();
+}
+
+bool StepperWorker::_to_endstop_hit() {
+  return _endStopActive();
+}
+
+bool StepperWorker::_endStopActive() {
+  int endStop = digitalRead(_endStopPin);
+  return (endStop == LOW);
+}
+
+
+StepperWorker::_entry_endstop_hit(){
+  updateSpeed(60);
+  _time_endstophit = millis();
+}
+
+StepperWorker::_action_endstop_hit(){
+  _astepper.runSpeed();
+}
+
+StepperWorker::_exit_endstop_hit(){
+  _astepper.setCurrentPosition(0);
+  if (_debug) {
+    long curPos = _astepper.currentPosition();
+    printf("%d Current Position: %ld\n", _id, curPos);
+  }
+}
+
+// when endstop is not pressed down anymore and more then 300 ms passed
+bool StepperWorker::_to_endstop_waiting() {
+    long now = millis();
+    return (now - _time_endstophit) > 300 && ! _endStopActive();
+}
+
+StepperWorker::_entry_endstop_waiting(){
+  updateSpeed(0);
+  _astepper.runSpeed(); // need this only once to stop
+  _time_endstophit = 0;
+}
+
+bool StepperWorker::_endstop_to_active() {
+    if (_targetChanged && calculateTargetSpeed() > 0.0){
+      _targetChanged = false;
+      return false;
+    }
+    return false;
+}
+
+StepperWorker::_entry_active(){
+  double newSpeed = calculateSpeed();
+  updateSpeed(newSpeed);
+}
+
+double StepperWorker::calculateTargetSpeed() {
+  long curPos = _astepper.currentPosition();
+  //  double newSpeed =  1000 * ((double)(_targetKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
+  //                     / (_targetKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
+  double deltaTime = _targetKeyFrame.getTimeMs() - _elapsedTime;
+  return deltaTime > 0 ? 1000 * ((double)(_targetKeyFrame.getTarget() - curPos)) / deltaTime : 0;
+}
+
+
+void StepperWorker::_updateSpeed(double speed) {
+  if (speed != _currentSpeed) {
+    if (fabs(speed) > MAX_SPEED) {
+      speed = speed > 0 ? MAX_SPEED : -MAX_SPEED;
+    }
+    _currentSpeed =  speed;
+
+    // bug: 0 is not possible
+    if (speed == 0) {
+      _astepper.setSpeed(1); // downward to be on the safe side
+    }
+    else {
+      _astepper.setSpeed(act_speed);
+    }
+
+    double act_speed = _reverseDirection ? - _currentSpeed : _currentSpeed;
+
+    if (_debug){
+      printf("%d Update Speed: %f Act: %f\n", _id, _currentSpeed, act_speed);
+    }
+  }
+}
+
+void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
+  if(_debug){
+    printf("%d: New Key frame:\n", _id);
+    kf.printKeyFrame();
+  }
+  _previousKeyFrame = _targetKeyFrame;
+  _targetKeyFrame  = kf;
+  _targetChanged = true;
 }
 
 void StepperWorker::setDebug(bool debug){
@@ -35,23 +143,11 @@ void StepperWorker::startCalibration(){
 }
 
 void StepperWorker::startAnimation(){
-  // TODO: do we need a state transition instead?
+  // TODO: need to make sure ACTION entry function is called
   _state=ACTIVE;
 }
 
-void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 
-  if(_debug){
-    printf("%d: New Key frame:\n", _id);
-    kf.printKeyFrame();
-  }
-  _previousKeyFrame = _targetKeyFrame;
-  _targetKeyFrame  = kf;
-  long curPos = _astepper.currentPosition();
-  //TODO: dont update the motor speed here, but in the state action
-  // maybe just remember it was set, so we do it only once
-  updateSpeed(curPos, elapsedTime);
-}
 
 void StepperWorker::loopCalibration() {
 
@@ -67,66 +163,12 @@ void StepperWorker::loopCalibration() {
     _state = CALIBRATING;
   }
 
-  runStepper();
+astepper.runSpeed();
 }
 
 
-void StepperWorker::loop(long elapsedTime) {
 
-  if (isEndStopHit()) {
-    _state = ENDSTOP_HIT;
-    operateOnEndStopHit();
-  }
 
-  checkAnimation(elapsedTime);
-
-  if (_state == ACTIVE || // already active
-     (_state == ENDSTOP_HIT && _currentSpeed > 0) || // going down again after endstop hit
-     (_state == CALIBRATION_FINISHED) || // calibration finished
-      _state == INIT  // we have skipped calibration (e.g. in unit test)
-     ) {
-    _state = ACTIVE;
-    runStepper();
-  }
-}
-
-void StepperWorker::runOnEndStopHit(){
-    // endstop just hit
-    if (_time_endstophit == -1){
-
-    }
-
-}
-
-void StepperWorker::operateOnEndStopHit() {
-  printf("%d Endstop\n", _id);
-  delay(300);
-
-  // go down 200ms
-  printf("%d ...going down - phase 1...\n", _id);
-  updateSpeed(60);
-  long now = millis();
-
-  while (millis() - now < 200) {
-    _astepper.runSpeed();
-  }
-
-  // then go down until end stop is released
-  printf("%d ...going down - phase 2...\n", _id);
-  while (isEndStopHit()) {
-    _astepper.runSpeed();
-  }
-
-  // call this position 0
-  resetPosition();
-}
-
-void StepperWorker::resetPosition() {
-  printf("%d Reset Position\n", _id);
-  _astepper.setCurrentPosition(0);
-  long curPos = _astepper.currentPosition();
-  printf("%d Current Position: %ld\n", _id, curPos);
-}
 
 void StepperWorker::checkAnimation(long elapsedTime) {
 
@@ -153,48 +195,8 @@ void StepperWorker::checkAnimation(long elapsedTime) {
   }
 }
 
-void StepperWorker::updateSpeed(double speed) {
-
-  if (speed != _currentSpeed) {
-    if (fabs(speed) > MAX_SPEED) {
-      speed = speed > 0 ? MAX_SPEED : -MAX_SPEED;
-    }
-    _currentSpeed =  speed;
-    double act_speed = _reverseDirection ? - _currentSpeed : _currentSpeed;
-    // bug: 0 is not possible
-    if (speed == 0) {
-      _astepper.setSpeed(1);
-    }
-    else {
-      _astepper.setSpeed(act_speed);
-    }
-    if (_debug){
-      printf("%d Update Speed: %f Act: %f\n", _id, _currentSpeed, act_speed);
-    }
-  }
-}
-
-void StepperWorker::updateSpeed(int curPos, long elapsedTime) {
-  //  double newSpeed =  1000 * ((double)(_targetKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
-  //                     / (_targetKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
-  double deltaTime = _targetKeyFrame.getTimeMs() - elapsedTime;
-  double newSpeed =  deltaTime > 0 ? 1000 * ((double)(_targetKeyFrame.getTarget() - curPos)) / deltaTime : 0;
-  updateSpeed(newSpeed);
-}
-
 long StepperWorker::getCurrentPosition() {
   long curPos = _astepper.currentPosition();
   //serPrintln("%d Current Position: %d", _id, curPos);
   return _reverseDirection ? -curPos : curPos;
-}
-
-bool StepperWorker::isEndStopHit() {
-
-  int endStop = digitalRead(_endStopPin);
-  return (endStop == LOW);
-}
-
-
-void StepperWorker::runStepper() {
-  _astepper.runSpeed();
 }
