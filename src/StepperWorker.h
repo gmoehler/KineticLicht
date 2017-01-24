@@ -13,6 +13,7 @@
     #include "../test/mock_Arduino.h"
 #endif
 
+#include <math.h>
 #include "KeyFrame.h"
 #include "FiniteStates.h"
 

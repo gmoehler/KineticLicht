@@ -32,10 +32,10 @@ private:
   int _state;
 
   T& _obj;   // the object to apply the functions on
-  map<int,map<int,TransitionCondFunction>> _transitionMap;
-  map<int,StateActionFunction> _stateActionMap;
-  map<int,StateActionFunction> _stateEntryActionMap;
-  map<int,StateActionFunction> _stateExitActionMap;
+  std::map<int,std::map<int,TransitionCondFunction>> _transitionMap;
+  std::map<int,StateActionFunction> _stateActionMap;
+  std::map<int,StateActionFunction> _stateEntryActionMap;
+  std::map<int,StateActionFunction> _stateExitActionMap;
 
   bool _checkStateMachine();
 };
@@ -99,8 +99,8 @@ void FiniteStateMachine<T>::loop(){
   auto it = _transitionMap.find(_state);
   // transitionConfFunctions found
   if (it != _transitionMap.end()){
-    map<int,TransitionCondFunction> innerTransMap = it->second;
-    for(typename map<int,TransitionCondFunction>::iterator iter = innerTransMap.begin(); iter != innerTransMap.end(); ++iter) {
+    std::map<int,TransitionCondFunction> innerTransMap = it->second;
+    for(typename std::map<int,TransitionCondFunction>::iterator iter = innerTransMap.begin(); iter != innerTransMap.end(); ++iter) {
 
       bool (T::*tf)(void)  = iter->second;
       // is transition function  fullfilled?

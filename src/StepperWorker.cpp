@@ -156,7 +156,7 @@ void StepperWorker::checkAnimation(long elapsedTime) {
 void StepperWorker::updateSpeed(double speed) {
 
   if (speed != _currentSpeed) {
-    if (abs(speed) > MAX_SPEED) {
+    if (fabs(speed) > MAX_SPEED) {
       speed = speed > 0 ? MAX_SPEED : -MAX_SPEED;
     }
     _currentSpeed =  speed;
