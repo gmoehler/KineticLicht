@@ -5,7 +5,7 @@ CC          := g++
 TARGET      := dotest
 
 # what platform we are running on
-PLATFORM    := $(shell uname -so | sed -r s'/[ /]/_/g')
+PLATFORM    := $(shell uname -so | sed -r s'/[^a-zA-Z0-9]/_/g')
 
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := src
