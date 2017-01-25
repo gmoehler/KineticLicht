@@ -28,7 +28,7 @@ void StepperWorker::loop(long elapsedTime) {
 }
 
 SteperWorker::_action_active(){
-  if (_speed_updated){
+  if (_targetChanged){
     double newSpeed = calculateTargetSpeed();
     updateSpeed(newSpeed);
   }
@@ -74,7 +74,12 @@ StepperWorker::_entry_endstop_waiting(){
   _time_endstophit = 0;
 }
 
+StepperWorker::_action_endstop_waiting {
+	// nothing to be done
+}
+
 bool StepperWorker::_endstop_to_active() {
+	// continue when it goes down again
     if (_targetChanged && calculateTargetSpeed() > 0.0){
       _targetChanged = false;
       return false;
@@ -82,17 +87,28 @@ bool StepperWorker::_endstop_to_active() {
     return false;
 }
 
-StepperWorker::_entry_active(){
+void StepperWorker::_entry_active(){
   double newSpeed = calculateSpeed();
   updateSpeed(newSpeed);
 }
+
+bool StepperWorker::_init_to_active(){
+	return _triggerActive
+}
+
+bool StepperWorker::_getResetTriggerActive {
+	if (_triggerActive) {
+		_triggerActive = false;
+		return true;
+	}
+	
 
 double StepperWorker::calculateTargetSpeed() {
   long curPos = _astepper.currentPosition();
   //  double newSpeed =  1000 * ((double)(_targetKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
   //                     / (_targetKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
   double deltaTime = _targetKeyFrame.getTimeMs() - _elapsedTime;
-  return deltaTime > 0 ? 1000 * ((double)(_targetKeyFrame.getTarget() - curPos)) / deltaTime : 0;
+  return deltaTime != 0 ? 1000 * ((double)(_targetKeyFrame.getTarget() - curPos)) / deltaTime : 0;
 }
 
 
@@ -143,8 +159,7 @@ void StepperWorker::startCalibration(){
 }
 
 void StepperWorker::startAnimation(){
-  // TODO: need to make sure ACTION entry function is called
-  _state=ACTIVE;
+  _triggerActive = true;
 }
 
 

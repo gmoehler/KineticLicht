@@ -24,7 +24,7 @@ public:
 
   void loop();
 
-  void setState(int state);
+  void triggerTransition(int fromState, int toState);
   int getState();
 
 private:
@@ -36,14 +36,16 @@ private:
   std::map<int,StateActionFunction> _stateActionMap;
   std::map<int,StateActionFunction> _stateEntryActionMap;
   std::map<int,StateActionFunction> _stateExitActionMap;
+  std::map<int,int> _transitionTriggerMap;
 
   bool _checkStateMachine();
+  void transit(int toState);
 };
 
 
 template<class T>
 FiniteStateMachine<T>::FiniteStateMachine(int numberOfStates, int initialState, T& obj) :
-_numStates(numberOfStates), _state(initialState), _obj(obj), _transitionMap() {
+_numStates(numberOfStates), _state(initialState), _obj(obj), _transitionMap() , _transitionTriggerMap(){
 }
 template<class T>
 void FiniteStateMachine<T>::addTransition(int fromState, int toState,  TransitionCondFunction transitionFunction){
@@ -66,9 +68,10 @@ void FiniteStateMachine<T>::addStateExitAction(int state,  StateActionFunction s
 }
 
 template<class T>
-void FiniteStateMachine<T>::setState(int state){
-  _state = state;
+void FiniteStateMachine<T>::triggerTransition(int fromState, int toState){
+  _transitionTriggerMap[fromState] =toState;
 }
+
 template<class T>
 int FiniteStateMachine<T>::getState(){
   return _state;
@@ -106,20 +109,7 @@ void FiniteStateMachine<T>::loop(){
       // is transition function  fullfilled?
       if ((_obj.*tf)()) {
         int toState =  iter->first;
-        // call exit function of last state
-        auto it1 = _stateExitActionMap.find(_state);
-        if (it1 != _stateExitActionMap.end()){
-          void (T::*sexitaf)(void)  = it1->second;
-          (_obj.*sexitaf)();
-        }
-        // transition to next state
-        _state = toState;
-        // call entry function of new state
-        auto it2 = _stateEntryActionMap.find(_state);
-        if (it2 != _stateEntryActionMap.end()){
-          void (T::*sentryaf)(void)  = it2->second;
-          (_obj.*sentryaf)();
-        }
+        transit(toState);
         break;
       }
     }
@@ -138,5 +128,24 @@ void FiniteStateMachine<T>::loop(){
     printf("No action function defined for state %d\n", _state);
   }
 }
+
+template<class T>
+void FiniteStateMachine<T>::transit(int toState){
+	// call exit function of last state
+        auto it1 = _stateExitActionMap.find(_state);
+        if (it1 != _stateExitActionMap.end()){
+          void (T::*sexitaf)(void)  = it1->second;
+          (_obj.*sexitaf)();
+        }
+        // transition to next state
+        _state = toState;
+        // call entry function of new state
+        auto it2 = _stateEntryActionMap.find(_state);
+        if (it2 != _stateEntryActionMap.end()){
+          void (T::*sentryaf)(void)  = it2->second;
+          (_obj.*sentryaf)();
+        }
+	
+	}
 
 #endif

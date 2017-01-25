@@ -107,7 +107,8 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
 
     int _targetTimeDelta;
     long _time_endstophit;
-    bool _speed_updated;
+    bool _targetChanged;
+    bool _triggerActive;
     long _elapsedTime;
     bool _debug;
 
