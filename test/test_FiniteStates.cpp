@@ -1,6 +1,6 @@
 #include "test.h"
 
-enum MyState {STATE0, STATE1, STATE2};
+enum MyState {STATE0, STATE1, STATE2, STATE3, STATE4};
 /*
 int myNumber = 10;
 
@@ -104,6 +104,12 @@ public:
     addStateAction(STATE2,&MyTransitionClass:: s2);
     addStateEntryAction(STATE2, &MyTransitionClass::s2_entry);
     addStateExitAction(STATE2, &MyTransitionClass::s2_exit);
+    addStateAction(STATE3,&MyTransitionClass:: s3);
+    addStateEntryAction(STATE3, &MyTransitionClass::s3_entry);
+    addStateExitAction(STATE3, &MyTransitionClass::s3_exit);
+    addStateAction(STATE4,&MyTransitionClass:: s4);
+    addStateEntryAction(STATE4, &MyTransitionClass::s4_entry);
+    addStateExitAction(STATE4, &MyTransitionClass::s4_exit);
   }
 
   bool t1(){return _x>0;}
@@ -117,6 +123,12 @@ public:
   void s2(){printf("action in state2: %d\n", _x);}
   void s2_entry(){printf("entry to state2: %d\n", _x);}
   void s2_exit(){printf("exit from state2: %d\n", _x);}
+  void s3(){printf("action in state3: %d\n", _x);}
+  void s3_entry(){printf("entry to state3: %d\n", _x);}
+  void s3_exit(){printf("exit from state3: %d\n", _x);}
+  void s4(){printf("action in state4: %d\n", _x);}
+  void s4_entry(){printf("entry to state4: %d\n", _x);}
+  void s4_exit(){printf("exit from state4: %d\n", _x);}
 
 private:
   int _x = 99;
@@ -125,7 +137,7 @@ private:
 
 TEST(FiniteStates_test, testWithInheritedClass){
 
-  MyTransitionClass mc = MyTransitionClass(3,STATE0);
+  MyTransitionClass mc = MyTransitionClass(4,STATE0);
   EXPECT_EQ(STATE0, mc.getState());
   mc.loop();
   EXPECT_EQ(STATE1, mc.getState());
@@ -133,5 +145,19 @@ TEST(FiniteStates_test, testWithInheritedClass){
   EXPECT_EQ(STATE2, mc.getState());
   mc.loop();
   EXPECT_EQ(STATE2, mc.getState());
+  mc.triggerTransition(STATE2, STATE3);
+  mc.loop();
+  EXPECT_EQ(STATE3, mc.getState());
+  mc.triggerTransition(STATE4, STATE2);
+  mc.loop();
+  EXPECT_EQ(STATE3, mc.getState());
+  mc.triggerTransition(STATE3, STATE4);
+  mc.loop();
+  EXPECT_EQ(STATE4, mc.getState());
+  mc.loop();
+  EXPECT_EQ(STATE2, mc.getState());
+  mc.loop(); // prev state transition 2->3 should no longer work
+  EXPECT_EQ(STATE2, mc.getState());
+
 
 }

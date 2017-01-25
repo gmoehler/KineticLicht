@@ -19,8 +19,18 @@ TEST(StepperWorker_test, test1){
   ASSERT_EQ(1,(int)kfs.size());
   sw.updateTargetKeyFrame(0, kfs[0]);
 
+  ASSERT_EQ(INIT, sw.getState());
+
+  sw.loop(100);
+  // still in INIT state
+  ASSERT_EQ(INIT, sw.getState());
+  sw.startAnimation();
+
   sw.loop(200);
-  EXPECT_EQ(100, as.test_getSpeed());
+  ASSERT_EQ(ACTIVE, sw.getState());
+
+  // speed = 100 / (1000-200)
+  EXPECT_EQ(125, as.test_getSpeed());
   EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
 
   sw.loop(1251); // we allow for 250ms overshoot time
@@ -47,10 +57,12 @@ TEST(StepperWorker_test, endstopTest){
   ASSERT_EQ(1,(int)kfs.size());
   sw.updateTargetKeyFrame(0, kfs[0]);
 
+  sw.startAnimation();
   sw.loop(200);
   int numResets = test_getNumEndpointResets();
   test_triggerEndStop();
   sw.loop(300);
+  sw.loop(501);
   // check whether there actually endpoint was hit and released again
   EXPECT_EQ(numResets+1, test_getNumEndpointResets());
 }

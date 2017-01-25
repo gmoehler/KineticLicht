@@ -2,12 +2,14 @@
 #define FINIITE_STATES_H
 
 #ifndef WITHIN_UNITTEST
-  #include <ArduinoSTL.h>
+#include <ArduinoSTL.h>
 #else
-  #include "stdio.h"
+#include "stdio.h"
 #endif
 
 #include <map>
+
+#define FSM_DEBUG
 
 using namespace std;
 
@@ -24,12 +26,16 @@ public:
 
   void loop();
 
+  // one time trigger from one state to another
   void triggerTransition(int fromState, int toState);
   int getState();
+
+  void setDebug(bool debug);
 
 private:
   int _numStates;
   int _state;
+  bool _debug;
 
   T& _obj;   // the object to apply the functions on
   std::map<int,std::map<int,TransitionCondFunction>> _transitionMap;
@@ -38,10 +44,13 @@ private:
   std::map<int,StateActionFunction> _stateExitActionMap;
   std::map<int,int> _transitionTriggerMap;
 
-  bool _checkStateMachine();
-  void transit(int toState);
+  void _transit(int toState);
 };
 
+template<class T>
+void FiniteStateMachine<T>::setDebug(bool debug){
+  _debug = debug;
+}
 
 template<class T>
 FiniteStateMachine<T>::FiniteStateMachine(int numberOfStates, int initialState, T& obj) :
@@ -78,74 +87,71 @@ int FiniteStateMachine<T>::getState(){
 }
 
 template<class T>
-bool FiniteStateMachine<T>::_checkStateMachine(){
-
-  //TODO: do more extensive checking
-  if ((int)_transitionMap.size() != _numStates-1 ||(int) _stateActionMap.size() != _numStates) {
-    printf("The statemachine was not set up properly. Num states: %d, Num Transition Conditions: %d, Num State Actions: %d\n",
-    _numStates, _transitionMap.size(), _stateActionMap.size());
-    return false;
-  }
-
-  return true;
-}
-
-template<class T>
 void FiniteStateMachine<T>::loop(){
 
-  if (!_checkStateMachine()){
-    return;
-  }
-
-  // check whether we have to move to new state
-  // pick transition for current state
-  auto it = _transitionMap.find(_state);
+  auto it1 = _transitionTriggerMap.find(_state);
   // transitionConfFunctions found
-  if (it != _transitionMap.end()){
-    std::map<int,TransitionCondFunction> innerTransMap = it->second;
-    for(typename std::map<int,TransitionCondFunction>::iterator iter = innerTransMap.begin(); iter != innerTransMap.end(); ++iter) {
-
-      bool (T::*tf)(void)  = iter->second;
-      // is transition function  fullfilled?
-      if ((_obj.*tf)()) {
-        int toState =  iter->first;
-        transit(toState);
-        break;
-      }
-    }
+  if (it1 != _transitionTriggerMap.end()){
+    int toState = it1->second;
+    _transit(toState);
+    _transitionTriggerMap.erase(it1);
   }
   else {
-    printf("Cannot find transition condition function for state %d\n", _state);
+    // check whether we have to move to new state
+    // pick transition for current state
+    auto it2 = _transitionMap.find(_state);
+    // transitionConfFunctions found
+    if (it2 != _transitionMap.end()){
+      std::map<int,TransitionCondFunction> innerTransMap = it2->second;
+      for(typename std::map<int,TransitionCondFunction>::iterator it3 = innerTransMap.begin();
+          it3 != innerTransMap.end(); ++it3) {
+
+        bool (T::*tf)(void)  = it3->second;
+        // is transition function  fullfilled?
+        if ((_obj.*tf)()) {
+          int toState =  it3->first;
+          _transit(toState);
+          break;
+        }
+      }
+    }
   }
 
   // work on current state action function
   auto iter = _stateActionMap.find(_state);
   if (iter != _stateActionMap.end()){
+#ifdef FSM_DEBUG
+    printf("FSM: state action %d\n", _state);
+#endif
     void (T::*saf)(void)  = iter->second;
     (_obj.*saf)();
-  }
-  else {
-    printf("No action function defined for state %d\n", _state);
   }
 }
 
 template<class T>
-void FiniteStateMachine<T>::transit(int toState){
-	// call exit function of last state
-        auto it1 = _stateExitActionMap.find(_state);
-        if (it1 != _stateExitActionMap.end()){
-          void (T::*sexitaf)(void)  = it1->second;
-          (_obj.*sexitaf)();
-        }
-        // transition to next state
-        _state = toState;
-        // call entry function of new state
-        auto it2 = _stateEntryActionMap.find(_state);
-        if (it2 != _stateEntryActionMap.end()){
-          void (T::*sentryaf)(void)  = it2->second;
-          (_obj.*sentryaf)();
-        }
-	
-	}
+void FiniteStateMachine<T>::_transit(int toState){
+  // call exit function of last state
+  auto it1 = _stateExitActionMap.find(_state);
+  if (it1 != _stateExitActionMap.end()){
+#ifdef FSM_DEBUG
+    printf("FSM: state exit %d\n", _state);
+#endif
+    void (T::*sexitaf)(void)  = it1->second;
+    (_obj.*sexitaf)();
+  }
+
+  // transition to next state
+  _state = toState;
+
+  // call entry function of new state
+  auto it2 = _stateEntryActionMap.find(_state);
+  if (it2 != _stateEntryActionMap.end()){
+#ifdef FSM_DEBUG
+        printf("FSM: state entry %d\n", _state);
+#endif
+    void (T::*sentryaf)(void)  = it2->second;
+    (_obj.*sentryaf)();
+  }
+}
 
 #endif

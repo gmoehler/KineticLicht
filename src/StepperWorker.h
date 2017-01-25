@@ -22,12 +22,15 @@
 // ACTIVE ->(endstop is hit)-> ENDSTOP_HIT[going downward] ->(300ms & endstop is released)-> AT_ENDSTOP_WAITING ->(speed is downward)-> ACTIVE
 //        ->(time is past target time)-> PAST_TARGET ->(new target provided)-> ACTIVE
 
-enum StepperWorkerState {INIT, CALIBRATING_UP, CALIBRATING_ENDSTOPHIT,
-                         /*deprecated*/CALIBRATING , CALIBRATION_FINISHED,
-                         ACTIVE,
-                         ENDSTOP_WAITING, ENDSTOP_HIT,
-                         PAST_TARGET,
-                         NUM_STATES};
+enum StepperWorkerState {INIT,                    // 0
+                         CALIBRATING_UP,          // 1
+                         CALIBRATING_ENDSTOPHIT,  // 2
+                         CALIBRATION_FINISHED,    // 3
+                         ACTIVE,                  // 4
+                         ENDSTOP_WAITING,         // 5
+                         ENDSTOP_HIT,             // 6
+                         PAST_TARGET,             // 7
+                         NUM_STATES};             // only used for nbr of states
 
 class StepperWorker : public FiniteStateMachine<StepperWorker>
 {
@@ -40,10 +43,6 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
 
     // to be called in loop()
     void loop(long elapsedTime);
-
-    // to be called in loop() during calibration
-    // deprecated: use loop()
-    void loopCalibration();
 
     // start calibration program
     void startCalibration();
@@ -61,58 +60,65 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
     void setDebug(bool debug);
 
   private:
+    // state functions
+    void _entry_active();
+    void _action_active();
 
-    // did the end stop switch detect the light
     bool _to_endstop_hit();
+
+    void _entry_endstop_hit();
+    void _action_endstop_hit();
+    void _exit_endstop_hit();
 
     bool _to_endstop_waiting();
 
-    void checkAnimation(long elapsedTime);
+    void _entry_endstop_waiting();
+    void _action_endstop_waiting();
+
+    bool _endstop_waiting_to_active();
+
+    void _entry_calibrating_up();
+    void _action_calibrating_up();
+
+    void _entry_calibration_finished();
+    void _action_calibration_finished();
+
+    bool _to_past_target();
+
+    void _entry_past_target();
+    void _action_past_target();
+
+    bool _past_target_to_active();
+
+    // whether the endstop switch was pressed
+    bool _endStopActive();
+
+    // calculate speed based on current position and target
+    double _calculateTargetSpeed();
 
     // update to a specified speed
-    void updateSpeed(double newSpeed);
+    void _updateSpeed(double newSpeed);
 
-    // calculate a new speed based on the next key frame
-    void _updateSpeed(int curPos, long runTime);
+    // get the current position from the accelstepper
+    int _getCurrentPosition();
 
-    // where we actually do the stepping work
-    void runStepper();
-
-    // get current position of stepper
-    long getCurrentPosition();
-
-    // reset the current position to 0
-    void resetPosition();
-
-    // what to do when an end stop is reached (during calibration or at any other time)
-    void operateOnEndStopHit();
-
-    // state action on ENDSTOP_HIT
-    void runOnEndStopHit();
-
+    int _id;                   // stepper id
     AccelStepper& _astepper;
 
-    int _id;
+    double _currentSpeed;     // cached current speed
 
-    StepperWorkerState _state;
-    long _currentPosition;
-    double _currentSpeed;
+    int _endStopPin;          // pin of endstop switch
 
-    int _endStopPin;
-    bool _reverseDirection;
-    int _calibrateSpeed;
+    bool _reverseDirection;   // direction counted in corect/reverse dir
 
-    KeyFrame _previousKeyFrame;
-    KeyFrame _targetKeyFrame;
+    KeyFrame _previousKeyFrame;// prev target frame
+    KeyFrame _targetKeyFrame;  // current target frame
 
-    int _targetTimeDelta;
-    long _time_endstophit;
-    bool _targetChanged;
-    bool _triggerActive;
-    long _elapsedTime;
-    bool _debug;
+    long _time_endstophit;    // time we hit the endstop
+    bool _targetChanged;      // whether we got a new target
+    long _elapsedTime;        // current elapsed time
 
-
+    bool _debug;              // print out debug information
 };
 
 #endif

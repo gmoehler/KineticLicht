@@ -27,7 +27,7 @@ void AccelStepper::setCurrentPosition(long pos){
 long _testCurrentTime=0L;
 unsigned long millis() {
   _testCurrentTime+=100;
-  printf("millis()\n" );
+  printf("millis() %ld\n",_testCurrentTime );
   return _testCurrentTime;
 }
 
@@ -52,6 +52,7 @@ int digitalRead(int pin){
   // automatically reset endstop hit after 10 calls
   if (_testIsEndStopHit){
     _testCountEndStopHits++;
+    millis();
     if (_testCountEndStopHits > 10){
       printf("RESET ENDSTOP_HIT\n");
       _testIsEndStopHit=false;
