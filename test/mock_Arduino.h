@@ -27,7 +27,6 @@ void delay(unsigned long ms);
 void pinMode(int, int);
 int digitalRead(int pin);
 
-void test_triggerEndStop();
-int test_getNumEndpointResets();
+void test_triggerEndStop(bool isHit);
 
 #endif

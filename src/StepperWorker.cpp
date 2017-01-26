@@ -75,6 +75,9 @@ void StepperWorker::_entry_active(){
 
 void StepperWorker::_action_active(){
   if (_targetChanged){
+    if (_debug){
+      printf("Target changed. Calc new speed.");
+    }
     double newSpeed = _calculateTargetSpeed();
     _updateSpeed(newSpeed);
   }
@@ -182,6 +185,8 @@ void StepperWorker::_updateSpeed(double speed) {
       printf("%d Update Speed: %f Act: %f\n", _id, _currentSpeed, act_speed);
     }
   }
+  // when speed was set then new target was used in anyway
+  _targetChanged = false;
 }
 
 void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
@@ -225,7 +230,7 @@ void StepperWorker::_action_past_target(){
 }
 
 bool StepperWorker::_past_target_to_active(){
-  // continue with next target
+  // continue with next target when we received one
     if (_targetChanged){
       _targetChanged = false;
       return true;

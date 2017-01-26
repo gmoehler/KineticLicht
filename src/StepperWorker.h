@@ -27,9 +27,9 @@ enum StepperWorkerState {INIT,                    // 0
                          CALIBRATING_ENDSTOPHIT,  // 2
                          CALIBRATION_FINISHED,    // 3
                          ACTIVE,                  // 4
-                         ENDSTOP_WAITING,         // 5
+                         PAST_TARGET,             // 5
                          ENDSTOP_HIT,             // 6
-                         PAST_TARGET,             // 7
+                         ENDSTOP_WAITING,         // 7
                          NUM_STATES};             // only used for nbr of states
 
 class StepperWorker : public FiniteStateMachine<StepperWorker>

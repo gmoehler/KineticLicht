@@ -40,35 +40,22 @@ void pinMode(int pin, int mode){
 }
 
 bool _testIsEndStopHit = false;
-int _testCountEndStopHits = 0;
-int _testNumEndStopResets=0;
 int digitalRead(int pin){
   if (_testIsEndStopHit){
-    printf("Endstop hit: ...%d\n", _testCountEndStopHits);
+    printf("Endstop hit.\n");
   }
   else {
     printf("Endstop not hit.\n");
   }
-  // automatically reset endstop hit after 10 calls
-  if (_testIsEndStopHit){
-    _testCountEndStopHits++;
-    millis();
-    if (_testCountEndStopHits > 10){
-      printf("RESET ENDSTOP_HIT\n");
-      _testIsEndStopHit=false;
-      _testCountEndStopHits=0;
-      _testNumEndStopResets++;
-    }
-  }
   return _testIsEndStopHit ? LOW : HIGH;
 }
 
-void test_triggerEndStop(){
-  printf("Triggering endstop...\n");
-  _testIsEndStopHit = true;
-  _testCountEndStopHits=0;
-}
-
-int test_getNumEndpointResets(){
-  return _testNumEndStopResets;
+void test_triggerEndStop(bool isHit){
+  if (isHit) {
+    printf("Triggering endstop...\n");
+  }
+  else {
+    printf("Untriggering endstop...\n");
+  }
+  _testIsEndStopHit = isHit;
 }

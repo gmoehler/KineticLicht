@@ -34,9 +34,9 @@ INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
 SOURCES      := src/RGB.cpp src/Animation.cpp src/AnimationStore.cpp \
 								src/LedWorker.cpp src/StepperWorker.cpp
 TESTSOURCES  := test/mock_Arduino.cpp test/test_StepperWorker.cpp
-#test/test_rgb.cpp test/test_KeyFrame.cpp test/test_Animation.cpp \
+#test/mock_Arduino.cpp  test/test_rgb.cpp test/test_KeyFrame.cpp test/test_Animation.cpp \
 							  test/test_AnimationStore.cpp test/test_LedWorker.cpp \
-								test/test_StepperWorker.cpp test/mock_Arduino.cpp \
+								test/test_StepperWorker.cpp  \
 								test/test_FiniteStates.cpp
 
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) \
