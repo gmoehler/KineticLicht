@@ -10,30 +10,40 @@ TEST(StepperWorker_test, test1){
     {STEPPER1, 0, 0},
     {STEPPER1, 1000, 100}
   });
-
+  
+  long elapsedtime = 0;
   vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(0);
   ASSERT_EQ(1,(int) kfs.size());
   sw.updateTargetKeyFrame(0, kfs[0]);
 
-  kfs = animation.getNextTargetKeyFrames(200);
+  kfs = animation.getNextTargetKeyFrames(elapsedtime);
   ASSERT_EQ(1,(int)kfs.size());
   sw.updateTargetKeyFrame(0, kfs[0]);
 
   ASSERT_EQ(INIT, sw.getState());
-
-  sw.loop(100);
+  
+  elapsedtime = 100;
+  sw.loop(elapsedtime);
   // still in INIT state
   ASSERT_EQ(INIT, sw.getState());
   sw.startAnimation();
 
-  sw.loop(200);
+  elapsedtime = 200;
+  sw.loop(elapsedtime);
   ASSERT_EQ(ACTIVE, sw.getState());
 
   // speed = 100 / (1000-200)
   EXPECT_EQ(125, as.test_getSpeed());
   EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
 
-  sw.loop(1251); // we allow for 250ms overshoot time
+  elapsedtime=1100;
+  sw.loop(elapsedtime); 
+  EXPECT_EQ(125, as.test_getSpeed());
+  // we allow for 250ms overshoot time, so still active
+  EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
+
+  elapsedtime=1251; // we allow for 250ms overshoot time
+  sw.loop(elapsedtime); 
   EXPECT_EQ(1, as.test_getSpeed()); // stopped: we use speed 1 instead of 0 due to lib bug
   EXPECT_EQ(StepperWorkerState::PAST_TARGET, sw.getState());
 }
@@ -46,25 +56,47 @@ TEST(StepperWorker_test, endstopTest){
   Animation animation;
   animation.addKeyFrames({
     {STEPPER1, 0, 0},
-    {STEPPER1, 1000, 100}
+    {STEPPER1, 1000, 100},
+    {STEPPER1, 2000, 100}
   });
 
-  vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(0);
+  long elapsedtime = 0;
+  vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedtime);
   ASSERT_EQ(1,(int) kfs.size());
   sw.updateTargetKeyFrame(0, kfs[0]);
 
-  kfs = animation.getNextTargetKeyFrames(200);
+  elapsedtime = 0;
+  kfs = animation.getNextTargetKeyFrames(elapsedtime);
   ASSERT_EQ(1,(int)kfs.size());
   sw.updateTargetKeyFrame(0, kfs[0]);
-
   sw.startAnimation();
-  sw.loop(200);
+  sw.loop(elapsedtime);
+
+  elapsedtime = 1200;
+  kfs = animation.getNextTargetKeyFrames(elapsedtime);
+  ASSERT_EQ(1,(int)kfs.size());
+  sw.updateTargetKeyFrame(0, kfs[0]);
+  
+  sw.loop(elapsedtime);
+  
   int numResets = test_getNumEndpointResets();
-  test_triggerEndStop();
-  sw.loop(300);
-  sw.loop(501);
-  // check whether there actually endpoint was hit and released again
-  EXPECT_EQ(numResets+1, test_getNumEndpointResets());
+  test_triggerEndStop(true);
+  elapsedtime = 1300;
+  sw.loop(elapsedtime);
+  EXPECT_EQ(StepperWorkerState::ENDSTOP_HIT, sw.getState());
+
+  test_triggerEndStop(false);
+  elapsedtime = 1599;
+  sw.loop(elapsedtime);
+  // 300ms have not passed yet
+  EXPECT_EQ(StepperWorkerState::ENDSTOP_HIT, sw.getState());
+
+  elapsedtime = 1601
+  sw.loop(elapsedtime);
+  // now we should be back waiting for a pos.  speed
+ EXPECT_EQ(StepperWorkerState::ENDSTOP_WAITING, sw.getState());
+
+  
 }
 
 TEST(StepperWorker_test, calibrationTest){
