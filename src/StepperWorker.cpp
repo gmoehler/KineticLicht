@@ -18,40 +18,40 @@ StepperWorker::StepperWorker(AccelStepper &astepper,
   addStateEntryAction(ACTIVE, &StepperWorker::_entry_active);
   addStateAction(ACTIVE,  &StepperWorker::_action_active);
 
-  addTransition (ACTIVE, ENDSTOP_HIT, _to_endstop_hit);
+  addTransition (ACTIVE, ENDSTOP_HIT, &StepperWorker::_to_endstop_hit);
 
-  addStateEntryAction(ENDSTOP_HIT, _entry_endstop_hit);
-  addStateAction(ENDSTOP_HIT, _action_endstop_hit);
-  addStateAction(ENDSTOP_HIT, _exit_endstop_hit);
+  addStateEntryAction(ENDSTOP_HIT, &StepperWorker::_entry_endstop_hit);
+  addStateAction(ENDSTOP_HIT, &StepperWorker::_action_endstop_hit);
+  addStateAction(ENDSTOP_HIT, &StepperWorker::_exit_endstop_hit);
 
-  addTransition(ENDSTOP_HIT, ENDSTOP_WAITING, _to_endstop_waiting);
+  addTransition(ENDSTOP_HIT, ENDSTOP_WAITING, &StepperWorker::_to_endstop_waiting);
 
-  addStateEntryAction(ENDSTOP_WAITING, _entry_endstop_waiting);
-  addStateAction(ENDSTOP_WAITING, _action_endstop_waiting);
+  addStateEntryAction(ENDSTOP_WAITING, &StepperWorker::_entry_endstop_waiting);
+  addStateAction(ENDSTOP_WAITING, &StepperWorker::_action_endstop_waiting);
 
-  addTransition(ENDSTOP_WAITING, ACTIVE, _endstop_waiting_to_active);
+  addTransition(ENDSTOP_WAITING, ACTIVE, &StepperWorker::_endstop_waiting_to_active);
 
-  addStateEntryAction(CALIBRATING_UP, _entry_calibrating_up);
-  addStateAction(CALIBRATING_UP, _action_calibrating_up);
+  addStateEntryAction(CALIBRATING_UP, &StepperWorker::_entry_calibrating_up);
+  addStateAction(CALIBRATING_UP, &StepperWorker::_action_calibrating_up);
 
   // same as for normal endstop hit
-  addTransition (CALIBRATING_UP, CALIBRATING_ENDSTOPHIT, _to_endstop_hit);
+  addTransition (CALIBRATING_UP, CALIBRATING_ENDSTOPHIT, &StepperWorker::_to_endstop_hit);
 
-  addStateEntryAction(CALIBRATING_ENDSTOPHIT, _entry_endstop_hit);
-  addStateAction(CALIBRATING_ENDSTOPHIT, _action_endstop_hit);
-  addStateAction(CALIBRATING_ENDSTOPHIT, _exit_endstop_hit);
+  addStateEntryAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_entry_endstop_hit);
+  addStateAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_action_endstop_hit);
+  addStateAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_exit_endstop_hit);
 
-  addTransition(CALIBRATING_ENDSTOPHIT, CALIBRATION_FINISHED, _to_endstop_waiting);
+  addTransition(CALIBRATING_ENDSTOPHIT, CALIBRATION_FINISHED, &StepperWorker::_to_endstop_waiting);
 
-  addStateEntryAction(CALIBRATION_FINISHED, _entry_calibration_finished);
-  addStateAction(CALIBRATION_FINISHED, _action_calibration_finished);
+  addStateEntryAction(CALIBRATION_FINISHED, &StepperWorker::_entry_calibration_finished);
+  addStateAction(CALIBRATION_FINISHED, &StepperWorker::_action_calibration_finished);
 
-  addTransition(ACTIVE, PAST_TARGET, _to_past_target);
+  addTransition(ACTIVE, PAST_TARGET, &StepperWorker::_to_past_target);
 
-  addStateEntryAction(PAST_TARGET, _entry_past_target);
-  addStateAction(PAST_TARGET, _action_past_target);
+  addStateEntryAction(PAST_TARGET, &StepperWorker::_entry_past_target);
+  addStateAction(PAST_TARGET, &StepperWorker::_action_past_target);
 
-  addTransition(PAST_TARGET, ACTIVE, _past_target_to_active);
+  addTransition(PAST_TARGET, ACTIVE, &StepperWorker::_past_target_to_active);
 
 }
 

@@ -144,18 +144,18 @@ TEST(StepperWorker_test, calibrationTest){
 
   sw.startCalibration();
   sw.loop(elapsedtime);
-  EXPECT_EQ(StepperWorkerState::CALIBRATION_UP, sw.getState());
+  EXPECT_EQ(StepperWorkerState::CALIBRATING_UP, sw.getState());
 
   test_triggerEndStop(true);
   sw.loop(elapsedtime);
-  EXPECT_EQ(StepperWorkerState::CALIBRATION_ENDSTOPHIT, sw.getState());
+  EXPECT_EQ(StepperWorkerState::CALIBRATING_ENDSTOPHIT, sw.getState());
 
   test_triggerEndStop(false);
   sw.loop(elapsedtime);
   // still below 300ms
-  EXPECT_EQ(StepperWorkerState::CALIBRATION_ENDSTOPHIT, sw.getState());
+  EXPECT_EQ(StepperWorkerState::CALIBRATING_ENDSTOPHIT, sw.getState());
 
-  elapsed_time = 301;
+  elapsedtime = 301;
   sw.loop(elapsedtime);
   EXPECT_EQ(StepperWorkerState::CALIBRATION_FINISHED, sw.getState());
 
