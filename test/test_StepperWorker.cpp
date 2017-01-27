@@ -114,7 +114,7 @@ TEST(StepperWorker_test, endstopTest){
   kfs = animation.getNextTargetKeyFrames(elapsedtime);
   ASSERT_EQ(1,(int)kfs.size());
   sw.updateTargetKeyFrame(elapsedtime, kfs[0]);
-  
+
   sw.loop(elapsedtime);
   // now we should be back in active state
   EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
@@ -157,9 +157,10 @@ TEST(StepperWorker_test, calibrationTest){
 
   elapsedtime = 301;
   sw.loop(elapsedtime);
+  printf("time: %ld\n", elapsedtime);
   EXPECT_EQ(StepperWorkerState::CALIBRATION_FINISHED, sw.getState());
 
- //start animation
+ //start animation (time reset)
   elapsedtime = 100;
   printf("time: %ld\n", elapsedtime);
   kfs = animation.getNextTargetKeyFrames(elapsedtime);
@@ -167,6 +168,5 @@ TEST(StepperWorker_test, calibrationTest){
   sw.updateTargetKeyFrame(elapsedtime, kfs[0]);
   sw.startAnimation();
   sw.loop(elapsedtime);
- EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
-
+  EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
 }

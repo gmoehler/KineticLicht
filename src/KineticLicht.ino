@@ -215,12 +215,13 @@ void loop()
       break;
 
     case ANIMATION_CALIBRATING:
-      sworker1.loopCalibration();
-      //sworker2.loopCalibration();
-      //sworker3.loopCalibration();
-      sworker4.loopCalibration();
+      sworker1.loop(elapsedTime);
+      //sworker2.loop(elapsedTime);
+      //sworker3.loop(elapsedTime);
+      sworker4.loop(elapsedTime);
 
       if (sworker1.getState() == CALIBRATION_FINISHED && sworker4.getState() == CALIBRATION_FINISHED) {
+        elapsedTime = millis(); // reset time
         state = ANIMATION_ACTIVE;
       }
       break;
