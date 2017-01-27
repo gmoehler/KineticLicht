@@ -1,6 +1,6 @@
 #include "test.h"
 
-TEST(StepperWorker_test, test1){
+TEST(StepperWorker_test, active_past_target){
   AccelStepper as = AccelStepper();
   int pin = 22;
   StepperWorker sw = StepperWorker (as, 1, pin, false);
@@ -64,7 +64,8 @@ TEST(StepperWorker_test, endstopTest){
   animation.addKeyFrames({
     {STEPPER1, 0, 0},
     {STEPPER1, 1000, 100},
-    {STEPPER1, 2000, 0}
+    {STEPPER1, 2000, 0},
+    {STEPPER1, 3000, 100},
   });
 
   long elapsedtime = 0;
@@ -80,7 +81,6 @@ TEST(StepperWorker_test, endstopTest){
   sw.updateTargetKeyFrame(elapsedtime, kfs[0]);
   sw.startAnimation();
   sw.loop(elapsedtime);
-
 
   elapsedtime = 1001;
   printf("time: %ld\n", elapsedtime);
@@ -108,10 +108,65 @@ TEST(StepperWorker_test, endstopTest){
   // now we should be back waiting for a pos.  speed
   EXPECT_EQ(StepperWorkerState::ENDSTOP_WAITING, sw.getState());
 
-  // TODO test transition to active 
+  // test transition to active, when speed gets positive again
+  elapsedtime = 2100;
+  printf("time: %ld\n", elapsedtime);
+  kfs = animation.getNextTargetKeyFrames(elapsedtime);
+  ASSERT_EQ(1,(int)kfs.size());
+  sw.updateTargetKeyFrame(elapsedtime, kfs[0]);
+  
+  sw.loop(elapsedtime);
+  // now we should be back in active state
+  EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
 
 }
 
 TEST(StepperWorker_test, calibrationTest){
-  //TODO
+  AccelStepper as = AccelStepper();
+  int pin = 22;
+  StepperWorker sw = StepperWorker (as, 1, pin, false);
+
+  Animation animation;
+  animation.addKeyFrames({
+    {STEPPER1, 0, 0},
+    {STEPPER1, 1000, 100}
+  });
+
+  long elapsedtime = 0;
+  printf("time: %ld\n", elapsedtime);
+  vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedtime);
+  ASSERT_EQ(1,(int) kfs.size());
+  sw.updateTargetKeyFrame(elapsedtime, kfs[0]);
+
+  //start calibration ... keep time 0
+  printf("time: %ld\n", elapsedtime);
+  EXPECT_EQ(StepperWorkerState::INIT, sw.getState());
+
+  sw.startCalibration();
+  sw.loop(elapsedtime);
+  EXPECT_EQ(StepperWorkerState::CALIBRATION_UP, sw.getState());
+
+  test_triggerEndStop(true);
+  sw.loop(elapsedtime);
+  EXPECT_EQ(StepperWorkerState::CALIBRATION_ENDSTOPHIT, sw.getState());
+
+  test_triggerEndStop(false);
+  sw.loop(elapsedtime);
+  // still below 300ms
+  EXPECT_EQ(StepperWorkerState::CALIBRATION_ENDSTOPHIT, sw.getState());
+
+  elapsed_time = 301;
+  sw.loop(elapsedtime);
+  EXPECT_EQ(StepperWorkerState::CALIBRATION_FINISHED, sw.getState());
+
+ //start animation
+  elapsedtime = 100;
+  printf("time: %ld\n", elapsedtime);
+  kfs = animation.getNextTargetKeyFrames(elapsedtime);
+  ASSERT_EQ(1,(int) kfs.size());
+  sw.updateTargetKeyFrame(elapsedtime, kfs[0]);
+  sw.startAnimation();
+  sw.loop(elapsedtime);
+ EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
+
 }

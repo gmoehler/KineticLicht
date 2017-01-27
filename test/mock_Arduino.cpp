@@ -26,13 +26,14 @@ void AccelStepper::setCurrentPosition(long pos){
 
 long _testCurrentTime=0L;
 unsigned long millis() {
-  _testCurrentTime+=100;
   printf("millis() %ld\n",_testCurrentTime );
+  _testCurrentTime+=100;
   return _testCurrentTime;
 }
 
 void delay(unsigned long ms) {
   printf("Waiting for %ld ms.", ms);
+    _testCurrentTime+=ms;
 }
 
 void pinMode(int pin, int mode){

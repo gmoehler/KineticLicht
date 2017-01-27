@@ -5,7 +5,6 @@
 
 #ifndef WITHIN_UNITTEST
   #include <Arduino.h>
-  #include <Adafruit_MotorShield.h>
   #include <AccelStepper.h>
 #else
     #include <stdlib.h>

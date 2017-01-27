@@ -76,7 +76,7 @@ void StepperWorker::_entry_active(){
 void StepperWorker::_action_active(){
   if (_targetChanged){
     if (_debug){
-      printf("Target changed. Calc new speed.");
+      printf("Target changed. Calc new speed. ");
     }
     double newSpeed = _calculateTargetSpeed();
     _updateSpeed(newSpeed);
