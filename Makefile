@@ -8,8 +8,8 @@ TARGET      := dotest
 PLATFORM    := $(shell uname -so | sed -r s'/[^a-zA-Z0-9]/_/g')
 
 #The Directories, Source, Includes, Objects, Binary and Resources
-SRCDIR      := src
-INCDIR      := src
+SRCDIR      := KineticLicht
+INCDIR      := KineticLicht
 TESTDIR     := test
 TESTINCDIR  := test
 BUILDDIR    := obj
@@ -31,12 +31,12 @@ INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
 #SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-SOURCES      := src/RGB.cpp src/Animation.cpp src/AnimationStore.cpp \
-								src/LedWorker.cpp src/StepperWorker.cpp
-TESTSOURCES  := test/mock_Arduino.cpp  test/test_rgb.cpp test/test_KeyFrame.cpp test/test_Animation.cpp \
-							  test/test_AnimationStore.cpp test/test_LedWorker.cpp \
-								test/test_StepperWorker.cpp  \
-								test/test_FiniteStates.cpp
+SOURCES      := $(SRCDIR)/RGB.cpp $(SRCDIR)/Animation.cpp $(SRCDIR)/AnimationStore.cpp \
+								$(SRCDIR)/LedWorker.cpp $(SRCDIR)/StepperWorker.cpp
+TESTSOURCES  := $(TESTDIR)/mock_Arduino.cpp  $(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
+					$(TESTDIR)/test_Animation.cpp  $(TESTDIR)/test_AnimationStore.cpp \
+					$(TESTDIR)/test_LedWorker.cpp $(TESTDIR)/test_StepperWorker.cpp \
+					$(TESTDIR)/test_FiniteStates.cpp
 
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) \
 							 $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.$(OBJEXT)))

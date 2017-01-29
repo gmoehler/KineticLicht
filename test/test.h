@@ -6,11 +6,11 @@
 
 #include "mock_Arduino.h"
 
-#include "../src/KeyFrame.h"
-#include "../src/Animation.h"
-#include "../src/AnimationStore.h"
-#include "../src/LedWorker.h"
-#include "../src/StepperWorker.h"
-#include "../src/FiniteStates.h"
+#include <KeyFrame.h>
+#include <Animation.h>
+#include <AnimationStore.h>
+#include <LedWorker.h>
+#include <StepperWorker.h>
+#include <FiniteStates.h>
 
 #endif
