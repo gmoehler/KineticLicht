@@ -13,9 +13,9 @@
 #include "LedWorker.h"
 
 enum AnimationState {ANIMATION_ACTIVE, ANIMATION_INIT, ANIMATION_CALIBRATING, ANIMATION_FINISHED};
-std::map<long, int> create_NumberButtonMap();
-void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor);
 
+std::map<long, int> create_NumberButtonMap();
+void updateLEDs(Adafruit_TLC5947 tlc, LedWorker rgb1o, LedWorker rgb1u, LedWorker rgb4o, LedWorker rgb4u);
 
 /*************************
     create LED objects
@@ -138,6 +138,7 @@ void setup()
 
 void loop()
 {
+  /*
   // react on IR anmiation selection
   if (irrecv.decode(&irResults)) {
     // pressed a number button: select animation with that id
@@ -149,6 +150,7 @@ void loop()
     }
     irrecv.resume(); // Receive the next value
   }
+*/
 
   // work on states
   switch (state) {
@@ -204,13 +206,19 @@ void loop()
         rgb4u.loop(elapsedTime);
 
         if (rgb1o.needsUpdate() || rgb1u.needsUpdate() || rgb4o.needsUpdate() || rgb4u.needsUpdate()) {
-          updateLEDs(tlc, rgb1o.getId(), rgb1o.getColorForUpdate(), rgb1u.getId(), rgb1u.getColorForUpdate(),
-                     rgb4o.getId(), rgb4o.getColorForUpdate(), rgb4u.getId(), rgb4u.getColorForUpdate());
+          updateLEDs(tlc, rgb1o, rgb1u, rgb4o, rgb4u);
         }
       }
       break;
 
     case ANIMATION_INIT:
+      // proceed to calibration
+      printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
+      sworker1.startCalibration();
+      //sworker2.startCalibration();
+      //sworker3.startCalibration();
+      sworker4.startCalibration();
+
       state = ANIMATION_CALIBRATING;
       break;
 
@@ -221,17 +229,23 @@ void loop()
       sworker4.loop(elapsedTime);
 
       if (sworker1.getState() == CALIBRATION_FINISHED && sworker4.getState() == CALIBRATION_FINISHED) {
+        printf("### Proceeding to state ANIMATION_ACTIVE. ###\n");
         elapsedTime = millis(); // reset time
+        sworker1.startAnimation();
+        //sworker2.startAnimation();
+        //sworker3.startAnimation();
+        sworker4.startAnimation();
+
         state = ANIMATION_ACTIVE;
       }
       break;
 
     case ANIMATION_FINISHED:
-
       animationID++;
       if (animationID >= animationStore.getNumAnimations()) {
         animationID = 0;
       }
+      printf("### Proceeding with Animation %d ###.\n", animationID);
       animation = animationStore.getAnimation(animationID);
       delay(1000);
       state = ANIMATION_CALIBRATING;
@@ -256,30 +270,18 @@ std::map<long, int> create_NumberButtonMap()
 }
 
 
-void updateLEDs(Adafruit_TLC5947 tlc, int rgb1oId, RGB rgb1oColor, int rgb1uId, RGB rgb1uColor, int rgb4oId, RGB rgb4oColor, int rgb4uId, RGB rgb4uColor){
+void updateLEDs(Adafruit_TLC5947 tlc, LedWorker rgb1o, LedWorker rgb1u,
+                LedWorker rgb4o, LedWorker rgb4u){
 
-    //Serial.println ("***Update LEDs");
-    //printRGB(rgb1oId, rgb1oColor);
-    tlc.setLED(rgb1oId, rgb1oColor.red(), rgb1oColor.green(), rgb1oColor.blue());
-    //printRGB(rgb1uId, rgb1uColor);
-    tlc.setLED(rgb1uId, rgb1uColor.red(), rgb1uColor.green(), rgb1uColor.blue());
-    /*
-    tlc.setLED(rgb2o.getId(), rgb2oColor.red(), rgb2oColor.green(), rgb2oColor.blue());
-    tlc.setLED(rgb2u.getId(), rgb2uColor.red(), rgb2uColor.green(), rgb2uColor.blue());
-    RGB rgb3oColor = rgb3o.getCurrentColor();
-    tlc.setLED(rgb3o.getId(), rgb3oColor.red(), rgb3oColor.green(), rgb3oColor.blue());
-    RGB rgb3uColor = rgbu3u.getCurrentColor();
-    tlc.setLED(rgb3u.getId(), rgb3uColor.red(), rgb3uColor.green(), rgb3uColor.blue());
-    */
-    //printRGB(rgb4oId, rgb4oColor);
-    tlc.setLED(rgb4oId, rgb4oColor.red(), rgb4oColor.green(), rgb4oColor.blue());
-    //printRGB(rgb4uId, rgb4uColor);
-    tlc.setLED(rgb4uId, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+    RGB rgb1oColor = rgb1o.getColorForUpdate();
+    tlc.setLED(rgb1o.getId(), rgb1oColor.red(), rgb1oColor.green(), rgb1oColor.blue());
+    RGB rgb1uColor = rgb1u.getColorForUpdate();
+    tlc.setLED(rgb1u.getId(), rgb1uColor.red(), rgb1uColor.green(), rgb1uColor.blue());
 
-    //tlc.setLED(3, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
-    //tlc.setLED(4, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
-    //tlc.setLED(5, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
-    //tlc.setLED(6, rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
+    RGB rgb4oColor = rgb4o.getColorForUpdate();
+    tlc.setLED(rgb4o.getId(), rgb4oColor.red(), rgb4oColor.green(), rgb4oColor.blue());
+    RGB rgb4uColor = rgb4u.getColorForUpdate();
+    tlc.setLED(rgb4u.getId(), rgb4uColor.red(), rgb4uColor.green(), rgb4uColor.blue());
 
     tlc.write();
 
