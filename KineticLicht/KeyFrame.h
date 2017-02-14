@@ -71,7 +71,6 @@ class KeyFrame
     int _targetPosition;
     RGB _targetColor;
     KeyFrameType _type;
-
 };
 
 #endif

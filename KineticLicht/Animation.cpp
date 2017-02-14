@@ -3,12 +3,12 @@
 bool keyFrameCompare (KeyFrame i,KeyFrame j) { return (i.getTimeMs()<j.getTimeMs()); }
 
 Animation::Animation() :
-_isSorted(true), _firstTargetFrameRead(false) {}
+  _isSorted(true), _firstTargetFrameRead(false), _withMotor(false) {}
 
 int Animation::numberOfKeyFrames(){
   return _keyFrames.size();
 }
- 
+
  bool Animation::containsMotorFrames(){
  	return _withMotor;
  }
