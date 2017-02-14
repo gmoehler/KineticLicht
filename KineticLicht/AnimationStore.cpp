@@ -10,7 +10,89 @@ Animation& AnimationStore::getAnimation(int id){
 
 AnimationStore::AnimationStore()
 {
+  // LED test: leds turn red and black again one after the other
+  Animation led_test1;
+  addAnimation(led_test1);
+
+  led_test1.addKeyFrames({
+  {LED1BOT, 500,  RED, 100},
+  {LED1TOP, 500,  BLACK, 100},
+
+  {LED1BOT, 1000, BLACK, 100},
+  {LED1TOP, 1000, RED, 100},
+  {LED2BOT, 1000, BLACK, 100},
+
+  {LED1TOP, 1500, BLACK, 100},
+  {LED2BOT, 1500, RED, 100},
+  {LED2TOP, 1500, BLACK, 100},
+
+  {LED2BOT, 2000, BLACK, 100},
+  {LED2TOP, 2000, RED, 100},
+  {LED3BOT, 2000, BLACK, 100},
+
+  {LED2TOP, 2500, BLACK, 100},
+  {LED3BOT, 2500, RED, 100},
+  {LED3TOP, 2500, BLACK, 100},
+
+  {LED3BOT, 3000, BLACK, 100},
+  {LED3TOP, 3000, RED, 100},
+  {LED4BOT, 3000, BLACK, 100},
+
+  {LED3TOP, 3500, BLACK, 100},
+  {LED4BOT, 3500, RED, 100},
+  {LED4TOP, 3500, BLACK, 100},
+
+  {LED4BOT, 4000, BLACK, 100},
+  {LED4TOP, 4000, RED, 100},
+
+  {LED4TOP, 4500, BLACK, 100},
+  });
+
+  // LED test: all LEDs change colors at the same time
+  Animation led_test2;
+  addAnimation(led_test2);
+
+  led_test2.addKeyFrames({
+  {LED1BOT, 3000, RED, 100},
+  {LED1TOP, 3000, RED, 100},
+  {LED2BOT, 3000, RED, 100},
+  {LED2TOP, 3000, RED, 100},
+  {LED3BOT, 3000, RED, 100},
+  {LED3TOP, 3000, RED, 100},
+  {LED4BOT, 3000, RED, 100},
+  {LED4TOP, 3000, RED, 100},
+
+  {LED1BOT, 6000, GREEN, 100},
+  {LED1TOP, 6000, GREEN, 100},
+  {LED2BOT, 6000, GREEN, 100},
+  {LED2TOP, 6000, GREEN, 100},
+  {LED3BOT, 6000, GREEN, 100},
+  {LED3TOP, 6000, GREEN, 100},
+  {LED4BOT, 6000, GREEN, 100},
+  {LED4TOP, 6000, GREEN, 100},
+
+  {LED1BOT, 9000, BLUE, 100},
+  {LED1TOP, 9000, BLUE, 100},
+  {LED2BOT, 9000, BLUE, 100},
+  {LED2TOP, 9000, BLUE, 100},
+  {LED3BOT, 9000, BLUE, 100},
+  {LED3TOP, 9000, BLUE, 100},
+  {LED4BOT, 9000, BLUE, 100},
+  {LED4TOP, 9000, BLUE, 100},
+
+  {LED1BOT, 12000, RED, 0},
+  {LED1TOP, 12000, RED, 0},
+  {LED2BOT, 12000, RED, 0},
+  {LED2TOP, 12000, RED, 0},
+  {LED3BOT, 12000, RED, 0},
+  {LED3TOP, 12000, RED, 0},
+  {LED4BOT, 12000, RED, 0},
+  {LED4TOP, 12000, RED, 0},
+
+  });
+
   Animation a1;
+  addAnimation(a1);
 
   a1.addKeyFrames({
     {STEPPER1, 0, 0},
@@ -20,18 +102,6 @@ AnimationStore::AnimationStore()
     {STEPPER1, 26000, 10}
   });
 
-  /*
-    a1.addMotorKeyFrames(2, {
-    {5000, 1000},
-    {7000, 200}
-    });
-
-    a1.addMotorKeyFrames(3, {
-    {5000, 2000},
-    {7000, 1500}
-    });
-  */
-
   a1.addKeyFrames({
     {STEPPER2,0, 0},
     {STEPPER2,3000, 0},
@@ -39,7 +109,6 @@ AnimationStore::AnimationStore()
     {STEPPER2,13000, 2800},
     {STEPPER2,27000, 10},
   });
-
 
   a1.addKeyFrames({
     {LED1TOP, 0,    YELLOW, 0},
@@ -99,11 +168,10 @@ AnimationStore::AnimationStore()
     {LED4BOT, 37000, YELLOW, 0},
   });
 
-  addAnimation(a1);
 
   //animation 2
   Animation a2;
-
+  addAnimation(a2);
   a2.addKeyFrames(
   {
     {STEPPER1, 0, 0},
@@ -154,8 +222,6 @@ AnimationStore::AnimationStore()
   {LED4BOT, 20000, WHITE, 100},
   {LED4BOT, 22000, BLACK, 0},
   });
-
-  addAnimation(a2);
 }
 
 int AnimationStore::addAnimation(Animation a){

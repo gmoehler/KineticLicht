@@ -15,7 +15,8 @@
 enum AnimationState {ANIMATION_ACTIVE, ANIMATION_INIT, ANIMATION_CALIBRATING, ANIMATION_FINISHED};
 
 std::map<long, int> create_NumberButtonMap();
-void updateLEDs(Adafruit_TLC5947 tlc, LedWorker rgb1o, LedWorker rgb1u, LedWorker rgb4o, LedWorker rgb4u);
+void updateLEDs(Adafruit_TLC5947 tlc, LedWorker rgb1o, LedWorker rgb1u, LedWorker rgb2o, LedWorker rgb2u,
+                LedWorker rgb3o, LedWorker rgb3u, LedWorker rgb4o, LedWorker rgb4u);
 
 /*************************
     create LED objects
@@ -27,13 +28,12 @@ void updateLEDs(Adafruit_TLC5947 tlc, LedWorker rgb1o, LedWorker rgb1u, LedWorke
 // these are hard-wired in the lib using fast data write
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, LED_CLOCK, LED_DATA, LED_LATCH);
 
-LedWorker rgb1o = LedWorker (4);
-LedWorker rgb1u = LedWorker (5);
-/*LedWorker rgb2o = LedWorker (7);
-  LedWorker rgb2u = LedWorker (8);
-  LedWorker rgb3o = LedWorker (5);
-  LedWorker rgb3u = LedWorker (6);
-*/
+LedWorker rgb1o = LedWorker (0);
+LedWorker rgb1u = LedWorker (1);
+LedWorker rgb2o = LedWorker (2);
+LedWorker rgb2u = LedWorker (3);
+LedWorker rgb3o = LedWorker (4);
+LedWorker rgb3u = LedWorker (5);
 LedWorker rgb4o = LedWorker (6);
 LedWorker rgb4u = LedWorker (7);
 
@@ -175,11 +175,24 @@ void loop()
             case STEPPER4:
               sworker4.updateTargetKeyFrame(elapsedTime, kf);
               break;
+
             case LED1TOP:
               rgb1o.updateTargetKeyFrame(elapsedTime, kf);
               break;
             case LED1BOT:
               rgb1u.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+            case LED2TOP:
+              rgb2o.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+            case LED2BOT:
+              rgb2u.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+            case LED3TOP:
+              rgb3o.updateTargetKeyFrame(elapsedTime, kf);
+              break;
+            case LED3BOT:
+              rgb3u.updateTargetKeyFrame(elapsedTime, kf);
               break;
             case LED4TOP:
               rgb4o.updateTargetKeyFrame(elapsedTime, kf);
@@ -198,15 +211,16 @@ void loop()
 
         rgb1o.loop(elapsedTime);
         rgb1u.loop(elapsedTime);
-        //rgb2o.loop(elapsedTime);
-        //rgb2u.loop(elapsedTime);
-        //rgb3o.loop(elapsedTime);
-        //rgb3u.loop(elapsedTime);
+        rgb2o.loop(elapsedTime);
+        rgb2u.loop(elapsedTime);
+        rgb3o.loop(elapsedTime);
+        rgb3u.loop(elapsedTime);
         rgb4o.loop(elapsedTime);
         rgb4u.loop(elapsedTime);
 
-        if (rgb1o.needsUpdate() || rgb1u.needsUpdate() || rgb4o.needsUpdate() || rgb4u.needsUpdate()) {
-          updateLEDs(tlc, rgb1o, rgb1u, rgb4o, rgb4u);
+        if (rgb1o.needsUpdate() || rgb1u.needsUpdate() || rgb2o.needsUpdate() || rgb2u.needsUpdate() ||
+            rgb3o.needsUpdate() || rgb3u.needsUpdate() || rgb4o.needsUpdate() || rgb4u.needsUpdate()) {
+          updateLEDs(tlc, rgb1o, rgb1u, rgb2o, rgb2u, rgb3o, rgb3u, rgb4o, rgb4u);
         }
       }
       break;
@@ -283,12 +297,22 @@ std::map<long, int> create_NumberButtonMap()
 
 
 void updateLEDs(Adafruit_TLC5947 tlc, LedWorker rgb1o, LedWorker rgb1u,
-                LedWorker rgb4o, LedWorker rgb4u){
+                LedWorker rgb2o, LedWorker rgb2u, LedWorker rgb3o, LedWorker rgb3u, LedWorker rgb4o, LedWorker rgb4u){
 
     RGB rgb1oColor = rgb1o.getColorForUpdate();
     tlc.setLED(rgb1o.getId(), rgb1oColor.red(), rgb1oColor.green(), rgb1oColor.blue());
     RGB rgb1uColor = rgb1u.getColorForUpdate();
     tlc.setLED(rgb1u.getId(), rgb1uColor.red(), rgb1uColor.green(), rgb1uColor.blue());
+
+    RGB rgb2oColor = rgb2o.getColorForUpdate();
+    tlc.setLED(rgb2o.getId(), rgb2oColor.red(), rgb2oColor.green(), rgb2oColor.blue());
+    RGB rgb2uColor = rgb2u.getColorForUpdate();
+    tlc.setLED(rgb2u.getId(), rgb2uColor.red(), rgb2uColor.green(), rgb2uColor.blue());
+
+    RGB rgb3oColor = rgb3o.getColorForUpdate();
+    tlc.setLED(rgb3o.getId(), rgb3oColor.red(), rgb3oColor.green(), rgb3oColor.blue());
+    RGB rgb3uColor = rgb3u.getColorForUpdate();
+    tlc.setLED(rgb3u.getId(), rgb3uColor.red(), rgb3uColor.green(), rgb3uColor.blue());
 
     RGB rgb4oColor = rgb4o.getColorForUpdate();
     tlc.setLED(rgb4o.getId(), rgb4oColor.red(), rgb4oColor.green(), rgb4oColor.blue());
