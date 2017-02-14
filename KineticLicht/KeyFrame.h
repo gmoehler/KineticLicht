@@ -60,7 +60,7 @@ class KeyFrame
       printf("KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, _timeMs,
             _targetPosition, _targetColor.red(), _targetColor.green(), _targetColor.blue());
     }
-    
+
     bool getType(){
     	return _type;
     }
@@ -72,41 +72,6 @@ class KeyFrame
     RGB _targetColor;
     KeyFrameType _type;
 
-};
-
-class KeyFrameRgb
-{
-  public:
-    KeyFrameRgb(long time_ms, int red, int green, int blue, int brightness)
-      : _time_ms(time_ms), _color(red, green, blue, brightness){}
-    KeyFrameRgb(long time_ms, int red, int green, int blue)
-      : _time_ms(time_ms), _color(red, green, blue) {}
-    KeyFrameRgb()
-      : _color(0,0,0) {}
-
-    long getTimeMs() {
-      return _time_ms;
-    }
-
-    RGB getColor(){
-        return _color;
-    }
-
-    int getRed() {
-      return _color.red();
-    }
-
-    int getGreen() {
-      return _color.green();
-    }
-
-    int getBlue() {
-      return _color.blue();
-    }
-
-  private:
-    long _time_ms;
-    RGB _color;
 };
 
 #endif

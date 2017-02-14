@@ -69,29 +69,6 @@ AnimationStore::AnimationStore()
     {LED1BOT, 35000, YELLOW, 0},
   });
 
-  /*
-    a1.addRgbKeyFrames(2, {
-    {2000, RED},
-    {4000, YELLOW},
-    {7000, BLUE}
-    }, TOP);
-    a1.addRgbKeyFrames(2, {
-    {2000, RED},
-    {4000, YELLOW},
-    {7000, BLUE}
-    }, BOTTOM);
-    a1.addRgbKeyFrames(3, {
-    {2000, RED},
-    {4000, YELLOW},
-    {7000, BLUE}
-    }, TOP);
-    a1.addRgbKeyFrames(3, {
-    {2000, RED},
-    {4000, YELLOW},
-    {7000, BLUE}
-    }, BOTTOM);
-  */
-
   a1.addKeyFrames({
     {LED4TOP, 0,    YELLOW, 0},
     {LED4TOP, 1000, YELLOW, 0},
