@@ -4,18 +4,23 @@
 #define KeyFrameRgbLED_h
 
 #include "Arduino.h"
-#include "Adafruit_TLC5947.h"
+
+#include "Helpers.h"
 #include "KeyFrame.h"
 #include "RgbLED.h"
+#include "RGB.h"
 
 class KeyFrameRgbLED
 {
 public:
-     KeyFrameRgbLED(Adafruit_TLC5947* tlc, int rgbId, KeyFrameRgb keyFrame[], int numFrames);
+     KeyFrameRgbLED(int rgbId, KeyFrameRgb keyFrame[], int numFrames);
 
     void start();
     void loop();
     bool isAnimationFinished();
+    bool needsUpdate();
+    RGB getCurrentColor();
+    int getId();
 
 protected:
 
@@ -30,16 +35,22 @@ private:
     void calculateCurrentSpeed();
 
     RgbLED _rgbLed;
+    int _ledId;
     KeyFrameRgb* _keyFrame;
     int _numFrames;
     int _currentFrameIdx;
+    
+    RGB    _currentColor;
     double _currentRedSpeed;
     double _currentGreenSpeed;
     double _currentBlueSpeed;
+    double _currentBrightnessSpeed;
 
     unsigned long _startTime;
 
     bool _animationActive;
+    bool _needsUpdate;
+    int _needsUpdateDelta;
 
     KeyFrameRgb _previousKeyFrame;
     KeyFrameRgb _currentKeyFrame;
