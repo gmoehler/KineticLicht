@@ -213,13 +213,25 @@ void loop()
 
     case ANIMATION_INIT:
       // proceed to calibration
-      printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
-      sworker1.startCalibration();
-      //sworker2.startCalibration();
-      //sworker3.startCalibration();
-      sworker4.startCalibration();
+      if (animation.containsMotorFrames()){
+        printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
+        sworker1.startCalibration();
+        //sworker2.startCalibration();
+        //sworker3.startCalibration();
+        sworker4.startCalibration();
 
-      state = ANIMATION_CALIBRATING;
+        state = ANIMATION_CALIBRATING;
+      }
+      else {
+        printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
+        elapsedTime = millis(); // reset time
+        sworker1.startAnimation();
+        //sworker2.startAnimation();
+        //sworker3.startAnimation();
+        sworker4.startAnimation();
+
+        state = ANIMATION_ACTIVE;
+      }
       break;
 
     case ANIMATION_CALIBRATING:

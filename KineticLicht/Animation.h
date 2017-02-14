@@ -34,12 +34,15 @@ public:
   int numberOfKeyFrames();
 
   void printAnimation();
+  
+  bool containsMotorFrames();
 
 private:
   vector<KeyFrame> _keyFrames;
   vector<KeyFrame>::iterator _currentKeyFrameIter;
   bool _isSorted;
   bool _firstTargetFrameRead;
+  bool _withMotor;
 };
 
 #endif

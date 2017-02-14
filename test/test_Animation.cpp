@@ -22,6 +22,8 @@ TEST(Animation_tests, test1){
   //a.printAnimation();
 
   EXPECT_EQ(4, a.numberOfKeyFrames());
+  EXPECT_EQ(true,a.containsMotorFrames());
+  
 
   EXPECT_TRUE(a.needsTargetFrameUpdate(0));
   vector<KeyFrame> kfs =a.getNextTargetKeyFrames(0);
@@ -51,3 +53,17 @@ TEST(Animation_tests, test1){
   EXPECT_TRUE(a.isAnimationFinished());
 
 }
+
+TEST(Animation_tests, noMotorFrames){
+  Animation a;
+
+  a.addKeyFrames({
+    {LED1TOP, 1500, YELLOW, 50}
+  });
+
+  //a.printAnimation();
+
+  EXPECT_EQ(1, a.numberOfKeyFrames());
+  EXPECT_EQ(false,a.containsMotorFrames());
+  
+  }

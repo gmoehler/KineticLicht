@@ -8,6 +8,11 @@ _isSorted(true), _firstTargetFrameRead(false) {}
 int Animation::numberOfKeyFrames(){
   return _keyFrames.size();
 }
+ 
+ bool Animation::containsMotorFrames(){
+ 	return _withMotor;
+ }
+
 
 bool Animation::isAnimationFinished() {
   // need -- because end() is actually passed the last element
@@ -58,7 +63,13 @@ void Animation::addKeyFrames(vector<KeyFrame> kfs) {
 
   bool firstKeyFramesAdded = _keyFrames.size() == 0 && kfs.size() > 0;
 
-  _keyFrames.insert(_keyFrames.end(), kfs.begin(), kfs.end());
+  for (std::vector<KeyFrame>::iterator it = kfs.begin() ; it != kfs.end(); ++it) {
+    _keyFrames.push_back(*it);
+    if (it->getType() == MOTOR) {
+    	_withMotor = true;
+    }
+  }
+ // _keyFrames.insert(_keyFrames.end(), kfs.begin(), kfs.end());
 
   if (firstKeyFramesAdded){
     _currentKeyFrameIter = _keyFrames.begin();

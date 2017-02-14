@@ -7,6 +7,8 @@
 
 #include "RGB.h"
 
+enum KeyFrameType {MOTOR, RGB_LED, NONE};
+
 
 /////////////////////////////////////////////////////////////////////
 /// \class KeyFrame
@@ -22,17 +24,17 @@ class KeyFrame
 
     // keyframe for motor movement
     KeyFrame(int id, long timeMs, int targetPosition)
-     : _id(id), _timeMs(timeMs), _targetPosition(targetPosition), _targetColor(BLACK){}
+     : _id(id), _timeMs(timeMs), _targetPosition(targetPosition), _targetColor(BLACK), _type(MOTOR){}
 
     // keyframe for led colors
     KeyFrame(int id, long timeMs, RGB targetColor)
-      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(targetColor) {}
+      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(targetColor), _type(RGB_LED) {}
     KeyFrame(int id, long timeMs, int red, int green, int blue, int brightness)
-      : _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue, brightness){}
+      : _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue, brightness),_type(RGB_LED){}
     KeyFrame(int id, long timeMs, int red, int green, int blue)
-      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue) {}
+      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue), _type(RGB_LED){}
     KeyFrame()
-     : _id(-1), _timeMs(0), _targetPosition(0), _targetColor(0,0,0) {}
+     : _id(-1), _timeMs(0), _targetPosition(0), _targetColor(0,0,0),_type(NONE) {}
 
     int getId() {
       return _id;
@@ -58,12 +60,17 @@ class KeyFrame
       printf("KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, _timeMs,
             _targetPosition, _targetColor.red(), _targetColor.green(), _targetColor.blue());
     }
+    
+    bool getType(){
+    	return _type;
+    }
 
   private:
     int _id;
     long _timeMs;
     int _targetPosition;
     RGB _targetColor;
+    KeyFrameType _type;
 
 };
 
