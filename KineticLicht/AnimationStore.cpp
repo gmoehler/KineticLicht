@@ -8,7 +8,13 @@ Animation& AnimationStore::getAnimation(int id){
   return _animation[id];
 }
 
-AnimationStore::AnimationStore()
+  void AnimationStore::addStepperWorker(StepperWorker sw){
+  	}
+  
+  void AnimationStore::addLedWorker(LedWorker lw){
+  	}
+
+AnimationStore::AnimationStore()  : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this)
 {
   // LED test: leds turn red and black again one after the other
   Animation led_test1;
