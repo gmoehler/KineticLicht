@@ -56,6 +56,8 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
 
     StepperWorkerState getState();
 
+    int getId();
+
     void setDebug(bool debug);
 
   private:

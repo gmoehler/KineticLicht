@@ -68,6 +68,10 @@ void StepperWorker::startAnimation(){
   triggerTransition(getState(), ACTIVE);
 }
 
+int StepperWorker::getId(){
+  return _id;
+}
+
 void StepperWorker::_entry_active(){
   double newSpeed = _calculateTargetSpeed();
   _updateSpeed(newSpeed);

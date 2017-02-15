@@ -4,7 +4,7 @@ extern void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, i
 
 TEST(AnimationStore_tests, test1){
   AnimationStore as;
-  EXPECT_EQ(2, as.getNumAnimations());
+  EXPECT_EQ(4, as.getNumAnimations());
 
   Animation a0;
   a0.addKeyFrames({
@@ -15,8 +15,8 @@ TEST(AnimationStore_tests, test1){
   });
 
   int id = as.addAnimation(a0);
-  EXPECT_EQ(3, as.getNumAnimations());
-  EXPECT_EQ(2, id);
+  EXPECT_EQ(5, as.getNumAnimations());
+  EXPECT_EQ(4, id);
 
   Animation a = as.getAnimation(id);
 
