@@ -174,7 +174,7 @@ void AnimationStore::_action_active(){
         keyFrameHandled = true;
       }
       if (!keyFrameHandled){
-        printf("### KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
+        printf("### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
 	  }
     }
   }

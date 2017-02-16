@@ -2,9 +2,19 @@
 
 extern void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, int green, int blue);
 
-TEST(AnimationStore_tests, test1){
+TEST(AnimationStore_tests, scenario){
   AnimationStore as;
-  EXPECT_EQ(4, as.getNumAnimations());
+
+  AccelStepper acs = AccelStepper();
+  int pin = 22;
+  StepperWorker sw = StepperWorker (acs, 1, pin, false);
+
+  LedWorker lw = LedWorker (0);
+  
+  as.addStepperWorker(sw);
+  as.addLedWorker(lw);
+
+  int num0 = as.getNumAnimations();
 
   Animation a0;
   a0.addKeyFrames({
@@ -15,8 +25,38 @@ TEST(AnimationStore_tests, test1){
   });
 
   int id = as.addAnimation(a0);
-  EXPECT_EQ(5, as.getNumAnimations());
-  EXPECT_EQ(4, id);
+  EXPECT_EQ(num0+1, as.getNumAnimations());
+  EXPECT_EQ(num0, id);
+  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+
+  as.init(tlc);
+  
+  for (int i=0;i<100;i++){
+  	
+    as.loop();
+  
+  }
+  
+  
+}
+
+
+TEST(AnimationStore_tests, storetest){
+  AnimationStore as;
+
+  int num0 = as.getNumAnimations();
+
+  Animation a0;
+  a0.addKeyFrames({
+    {STEPPER1, 0, 0},
+    {STEPPER2, 2000, 1000},
+    {STEPPER3, 9000, 2600},
+    {LED1TOP, 1500, YELLOW, 50}
+  });
+
+  int id = as.addAnimation(a0);
+  EXPECT_EQ(num0+1, as.getNumAnimations());
+  EXPECT_EQ(num0, id);
 
   Animation a = as.getAnimation(id);
 
@@ -70,3 +110,5 @@ TEST(AnimationStore_tests, test1){
   EXPECT_TRUE(a.isAnimationFinished());
 
 }
+
+
