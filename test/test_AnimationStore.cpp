@@ -35,11 +35,14 @@ TEST(AnimationStore_tests, scenario){
   as.init(tlc, SINGLE, id, false);
   EXPECT_EQ(as.getState(), ANIMATION_INIT);
 
-  for (int i=0;i<10;i++){
+  for (int i=0;i<15;i++){
 
     if (i==5) {
       test_triggerEndStop(true);
-      sw.startCalibration();
+    }
+
+    if (i==8) {
+      test_triggerEndStop(false);
     }
 
     as.loop();
