@@ -157,19 +157,25 @@ void AnimationStore::_action_active(){
     for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
       KeyFrame kf = *kf_it;
 
+      bool keyFrameHandled = false;
       // check whether this is an update for a stepper worker
       auto sit =_stepperWorkerMap.find(kf_it->getId());
       if(sit != _stepperWorkerMap.end()) {
         StepperWorker sw = sit->second;
         sw.updateTargetKeyFrame(_elapsedTime, kf);
-      }
+        keyFrameHandled = true;
+   }
 
       // check whether this is an update for a stepper worker
       auto lit =_ledWorkerMap.find(kf_it->getId());
       if(lit != _ledWorkerMap.end()) {
         LedWorker lw = lit->second;
         lw.updateTargetKeyFrame(_elapsedTime, kf);
+        keyFrameHandled = true;
       }
+      if (!keyFrameHandled){
+        printf("### KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
+	  }
     }
   }
 
