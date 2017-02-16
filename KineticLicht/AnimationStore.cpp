@@ -13,7 +13,7 @@ int AnimationStore::getNumAnimations(){
 
 Animation& AnimationStore::getAnimation(int id){
   printf("AnimationStore: Selecting animation %d:\n", id);
-  _animation[id].printAnimation();
+  _animation.at(id).printAnimation();
   return _animation.at(id);
 }
 
@@ -49,8 +49,6 @@ void AnimationStore::init(Adafruit_TLC5947& tlc, AnimationStrategy strategy,
     printf ("#### ERROR! Cannot start with animation id %d > %d.\n",
     _strategy_startWithAnimationId, getNumAnimations());
   }
-  printf("init: current id: %d %d %d.\n", _currentAnimationId,
-  _strategy_startWithAnimationId,getNumAnimations() );
 
 }
 

@@ -20,9 +20,9 @@ TEST(AnimationStore_tests, scenario){
   Animation a0;
   a0.addKeyFrames({
     {STEPPER1, 0, 0},
-    {STEPPER2, 2000, 1000},
-    {STEPPER3, 9000, 2600},
-    {LED1TOP, 1500, YELLOW, 50}
+    {STEPPER2, 300, 1000},
+    {STEPPER3, 500, 2600},
+    {LED1TOP, 800, YELLOW, 50}
   });
 
   int id = as.addAnimation(a0);
@@ -34,7 +34,11 @@ TEST(AnimationStore_tests, scenario){
   as.init(tlc, SINGLE, id, false);
   EXPECT_EQ(as.getState(), ANIMATION_INIT);
 
-  for (int i=0;i<5;i++){
+  for (int i=0;i<10;i++){
+
+    if (i==5) {
+      test_triggerEndStop(true);
+    }
 
     as.loop();
     EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);
