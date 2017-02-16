@@ -15,6 +15,10 @@ StepperWorker::StepperWorker(AccelStepper &astepper,
     _time_endstophit (0), _targetChanged (false), _elapsedTime(0),
     _debug(true)
 {
+  std::stringstream sstr;
+  sstr << "StepperWorker-" << _id;
+  setDebugString(sstr.str());
+
   addStateEntryAction(ACTIVE, &StepperWorker::_entry_active);
   addStateAction(ACTIVE,  &StepperWorker::_action_active);
 

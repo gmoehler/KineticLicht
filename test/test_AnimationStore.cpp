@@ -8,6 +8,7 @@ TEST(AnimationStore_tests, scenario){
   AccelStepper acs = AccelStepper();
   int pin = 22;
   StepperWorker sw = StepperWorker (acs, 1, pin, false);
+  sw.setDebug(true);
 
   LedWorker lw = LedWorker (0);
 
@@ -38,10 +39,12 @@ TEST(AnimationStore_tests, scenario){
 
     if (i==5) {
       test_triggerEndStop(true);
+      sw.startCalibration();
     }
 
     as.loop();
     EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);
+    printf("StepperWorkerState: %d\n", sw.getState());
 
 
   }

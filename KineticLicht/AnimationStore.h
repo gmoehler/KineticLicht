@@ -32,10 +32,10 @@ class AnimationStore : public FiniteStateMachine<AnimationStore> {
 public:
   AnimationStore();
 
-  void addStepperWorker(StepperWorker sw);
-  void addLedWorker(LedWorker lw);
+  void addStepperWorker(StepperWorker& sw);
+  void addLedWorker(LedWorker& lw);
 
-  int addAnimation(Animation );
+  int addAnimation(Animation& a );
   Animation& getAnimation(int id);
 
   int getNumAnimations();

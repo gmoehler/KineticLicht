@@ -2,7 +2,7 @@
 
 // full height: 4200 = 2100mm
 
-int AnimationStore::addAnimation(Animation a){
+int AnimationStore::addAnimation(Animation& a){
   _animation.push_back(a);
   return _animation.size() -1;
 }
@@ -33,12 +33,12 @@ void AnimationStore::init(Adafruit_TLC5947& tlc, AnimationStrategy strategy,
   _strategy_repeat = repeat;
 
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-    StepperWorker sw = it->second;
+    StepperWorker& sw = it->second;
     sw.init();
   }
 
   for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
-    LedWorker lw = it->second;
+    LedWorker& lw = it->second;
     lw.init();
   }
 
@@ -56,15 +56,15 @@ void AnimationStore::loop(){
     FiniteStateMachine::loop();
 }
 
-void AnimationStore::addStepperWorker(StepperWorker sw){
+void AnimationStore::addStepperWorker(StepperWorker& sw){
   int id = sw.getId();
-  // cannot use operator[] since we do not have an empty constructor or StepperWorker
+  // cannot use operator[] since we do not have an empty constructor of StepperWorker
   _stepperWorkerMap.insert( std::map<int, StepperWorker>::value_type ( id, sw ));
 }
 
-void AnimationStore::addLedWorker(LedWorker lw){
+void AnimationStore::addLedWorker(LedWorker& lw){
   int id = lw.getId();
-  // cannot use operator[] since we do not have an empty constructor or StepperWorker
+  // cannot use operator[] since we do not have an empty constructor of LedWorker
   _ledWorkerMap.insert( std::map< int, LedWorker >::value_type ( id, lw ));
 }
 
@@ -77,7 +77,7 @@ bool AnimationStore::_calibrating_to_active(){
   // return true if all calibrations are finished
   for (std::map<int, StepperWorker>::iterator it = _stepperWorkerMap.begin() ;
   it != _stepperWorkerMap.end(); ++it) {
-    StepperWorker sw = it->second;
+    StepperWorker& sw = it->second;
     if (sw.getState() != CALIBRATION_FINISHED){
       return false;
     }
@@ -90,7 +90,8 @@ void AnimationStore::_entry_calibrating(){
   _startTime = millis(); // reset time
   for (std::map<int, StepperWorker>::iterator it = _stepperWorkerMap.begin() ;
   it != _stepperWorkerMap.end(); ++it) {
-    StepperWorker sw = it->second;
+    StepperWorker& sw = it->second;
+    printf("+++ Starting calibration for sw %d\n", sw.getId());
     sw.startCalibration();
   }
 }
@@ -100,7 +101,7 @@ void AnimationStore::_action_calibrating(){
   _elapsedTime = millis() - _startTime;
 
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-    StepperWorker sw = it->second;
+    StepperWorker& sw = it->second;
     sw.loop(_elapsedTime);
   }
 }
@@ -113,7 +114,7 @@ void AnimationStore::_entry_active(){
   printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
   _startTime = millis(); // reset time
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-    StepperWorker sw = it->second;
+    StepperWorker& sw = it->second;
     sw.startAnimation();
   }
 }
@@ -168,7 +169,7 @@ void AnimationStore::_action_active(){
       // check whether this is an update for a stepper worker
       auto sit =_stepperWorkerMap.find(kf_it->getId());
       if(sit != _stepperWorkerMap.end()) {
-        StepperWorker sw = sit->second;
+        StepperWorker& sw = sit->second;
         sw.updateTargetKeyFrame(_elapsedTime, kf);
         keyFrameHandled = true;
    }
@@ -176,7 +177,7 @@ void AnimationStore::_action_active(){
       // check whether this is an update for a stepper worker
       auto lit =_ledWorkerMap.find(kf_it->getId());
       if(lit != _ledWorkerMap.end()) {
-        LedWorker lw = lit->second;
+        LedWorker& lw = lit->second;
         lw.updateTargetKeyFrame(_elapsedTime, kf);
         keyFrameHandled = true;
       }
@@ -187,14 +188,14 @@ void AnimationStore::_action_active(){
   }
 
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-    StepperWorker sw = it->second;
+    StepperWorker& sw = it->second;
     sw.loop(_elapsedTime);
   }
 
   bool needLedUpdate = false;
 
   for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
-    LedWorker lw = it->second;
+    LedWorker& lw = it->second;
     lw.loop(_elapsedTime);
     if (lw.needsUpdate()){
       needLedUpdate = true;
@@ -203,7 +204,7 @@ void AnimationStore::_action_active(){
 
   if (needLedUpdate) {
     for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
-      LedWorker lw = it->second;
+      LedWorker& lw = it->second;
       RGB rgbColor = lw.getColorForUpdate();
       _tlc.setLED(lw.getId(), rgbColor.red(), rgbColor.green(), rgbColor.blue());
     }
@@ -218,6 +219,8 @@ AnimationStore::AnimationStore()
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
 _currentAnimationId(-1), _elapsedTime(0)
 {
+
+  setDebugString(string("AnimationStore"));
 
   addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationStore::_init_to_calibrating);
   addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationStore::_init_to_active);

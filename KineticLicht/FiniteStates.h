@@ -31,11 +31,13 @@ public:
   int getState();
 
   void setDebug(bool debug);
+  void setDebugString(const string s);
 
 private:
   int _numStates;
   int _state;
   bool _debug;
+  string _debugString;
 
   T& _obj;   // the object to apply the functions on
   std::map<int,std::map<int,TransitionCondFunction>> _transitionMap;
@@ -53,8 +55,14 @@ void FiniteStateMachine<T>::setDebug(bool debug){
 }
 
 template<class T>
+void FiniteStateMachine<T>::setDebugString(const string debugString){
+  _debugString = debugString;
+}
+
+template<class T>
 FiniteStateMachine<T>::FiniteStateMachine(int numberOfStates, int initialState, T& obj) :
-_numStates(numberOfStates), _state(initialState), _obj(obj), _transitionMap() , _transitionTriggerMap(){
+_numStates(numberOfStates), _state(initialState), _debug(true),
+_obj(obj), _transitionMap(), _transitionTriggerMap(){
 }
 template<class T>
 void FiniteStateMachine<T>::addTransition(int fromState, int toState,  TransitionCondFunction transitionFunction){
@@ -78,7 +86,7 @@ void FiniteStateMachine<T>::addStateExitAction(int state,  StateActionFunction s
 
 template<class T>
 void FiniteStateMachine<T>::triggerTransition(int fromState, int toState){
-  _transitionTriggerMap[fromState] =toState;
+  _transitionTriggerMap[fromState] = toState;
 }
 
 template<class T>
@@ -121,7 +129,7 @@ void FiniteStateMachine<T>::loop(){
   auto iter = _stateActionMap.find(_state);
   if (iter != _stateActionMap.end()){
 #ifdef FSM_DEBUG
-    printf("FSM: state action %d\n", _state);
+    printf("FSM<%s>: state action %d\n" , _debugString.c_str(), _state);
 #endif
     void (T::*saf)(void)  = iter->second;
     (_obj.*saf)();
@@ -134,7 +142,7 @@ void FiniteStateMachine<T>::_transit(int toState){
   auto it1 = _stateExitActionMap.find(_state);
   if (it1 != _stateExitActionMap.end()){
 #ifdef FSM_DEBUG
-    printf("FSM: state exit %d\n", _state);
+    printf("FSM<%s>: state exit %d\n", _debugString.c_str(), _state);
 #endif
     void (T::*sexitaf)(void)  = it1->second;
     (_obj.*sexitaf)();
@@ -147,7 +155,7 @@ void FiniteStateMachine<T>::_transit(int toState){
   auto it2 = _stateEntryActionMap.find(_state);
   if (it2 != _stateEntryActionMap.end()){
 #ifdef FSM_DEBUG
-        printf("FSM: state entry %d\n", _state);
+        printf("FSM<%s>: state entry %d\n", _debugString.c_str(), _state);
 #endif
     void (T::*sentryaf)(void)  = it2->second;
     (_obj.*sentryaf)();
