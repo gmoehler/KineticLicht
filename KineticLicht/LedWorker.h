@@ -21,7 +21,8 @@ class LedWorker
 public:
     LedWorker(int rgbId);
 
-    void loop(long elapsedTime);
+    void init(); // to be called at setup()
+    void loop(long elapsedTime); // to be called in loop();
     // update current key frames
     void updateTargetKeyFrame(long elapsedTime, KeyFrame& kf);
     bool needsUpdate();

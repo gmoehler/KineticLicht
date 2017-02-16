@@ -30,6 +30,24 @@ void AnimationStore::setAnimationStrategy(AnimationStrategy strategy, int startW
   _strategy_repeat = repeat;
 }
 
+void AnimationStore::init(Adafruit_TLC5947& tlc){
+
+  _tlc = tlc;
+
+  for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
+    StepperWorker sw = it->second;
+    sw.init();
+  }
+
+  for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
+    LedWorker lw = it->second;
+    lw.init();
+  }
+}
+
+void AnimationStore::loop(){
+
+}
 
 void AnimationStore::addStepperWorker(StepperWorker sw){
   int id = sw.getId();
@@ -50,12 +68,12 @@ bool AnimationStore::_init_to_calibrating(){
 bool AnimationStore::_calibrate_to_active(){
   // return true if all calibrations are finished
   for (std::map<int, StepperWorker>::iterator it = _stepperWorkerMap.begin() ;
-        it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker sw = it->second;
-      if (sw.getState() != CALIBRATION_FINISHED){
-        return false;
-      }
+  it != _stepperWorkerMap.end(); ++it) {
+    StepperWorker sw = it->second;
+    if (sw.getState() != CALIBRATION_FINISHED){
+      return false;
     }
+  }
   return true;
 }
 
@@ -63,30 +81,33 @@ void AnimationStore::_entry_calibrating(){
   printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
   _startTime = millis(); // reset time
   for (std::map<int, StepperWorker>::iterator it = _stepperWorkerMap.begin() ;
-        it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker sw = it->second;
-      sw.startCalibration();
+  it != _stepperWorkerMap.end(); ++it) {
+    StepperWorker sw = it->second;
+    sw.startCalibration();
   }
 }
 
 void AnimationStore::_action_calibrating(){
+
+  _elapsedTime = millis() - _startTime;
+
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker sw = it->second;
-      sw.loop(_elapsedTime);
+    StepperWorker sw = it->second;
+    sw.loop(_elapsedTime);
   }
 }
 
 bool AnimationStore::_init_to_active(){
   return _animation.size() > 0 && (int) _animation.size() > _currentAnimationId &&
-    ! _animation[_currentAnimationId].containsMotorFrames();
+  ! _animation[_currentAnimationId].containsMotorFrames();
 }
 
 void AnimationStore::_entry_active(){
   printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
   _startTime = millis(); // reset time
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker sw = it->second;
-      sw.startAnimation();
+    StepperWorker sw = it->second;
+    sw.startAnimation();
   }
 }
 
@@ -153,18 +174,18 @@ void AnimationStore::_action_active(){
   }
 
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker sw = it->second;
-      sw.loop(_elapsedTime);
+    StepperWorker sw = it->second;
+    sw.loop(_elapsedTime);
   }
 
   bool needLedUpdate = false;
 
   for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
-      LedWorker lw = it->second;
-      lw.loop(_elapsedTime);
-      if (lw.needsUpdate()){
-        needLedUpdate = true;
-      }
+    LedWorker lw = it->second;
+    lw.loop(_elapsedTime);
+    if (lw.needsUpdate()){
+      needLedUpdate = true;
+    }
   }
 
   if (needLedUpdate) {
@@ -181,8 +202,8 @@ void AnimationStore::_action_active(){
 
 
 AnimationStore::AnimationStore()
-  : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
-  _currentAnimationId(-1), _elapsedTime(0)
+: FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
+_currentAnimationId(-1), _elapsedTime(0)
 {
   // LED test: leds turn red and black again one after the other
   Animation led_test1;

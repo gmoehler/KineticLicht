@@ -12,6 +12,10 @@ int LedWorker::getId() {
   return _ledId;
 }
 
+void LedWorker::init(){
+  // do nothing for now
+}
+
 void LedWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 
   if(_debug){
