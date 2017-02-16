@@ -3,8 +3,10 @@
 
 #ifdef WITHIN_UNITTEST
   #include <stdio.h>
+  #include "../test/mock_Arduino.h"
 #else
   #include <ArduinoSTL.h>
+  #include "Adafruit_TLC5947.h"
 #endif
 
 #include "FiniteStates.h"
@@ -14,6 +16,7 @@
 #include "LedWorker.h"
 
 
+
 using namespace std;
 
 enum AnimationState { ANIMATION_INIT,
@@ -21,6 +24,8 @@ enum AnimationState { ANIMATION_INIT,
                       ANIMATION_ACTIVE,
                       ANIMATION_FINISHED,
                       NUM_ANIMATION_STATES};
+
+enum AnimationStrategy { SINGLE, LOOP };
 
 class AnimationStore : public FiniteStateMachine<AnimationStore> {
 
@@ -35,24 +40,42 @@ public:
 
   int getNumAnimations();
 
+  void setAnimationStrategy(AnimationStrategy strategy, int startWithAnimationId, bool repeat);
+
+  void init(Adafruit_TLC5947& tlc); // to be called in setup()
+  void loop(); // to be called in loop()
+
 private:
   vector<Animation> _animation;
   std::map<int,StepperWorker> _stepperWorkerMap;
   std::map<int,LedWorker> _ledWorkerMap;
 
   int _currentAnimationId;
+  long _elapsedTime;
+  long _startTime;
 
+  AnimationStrategy _strategy;
+  int _strategy_startWithAnimationId;
+  bool _strategy_repeat;
+
+  Adafruit_TLC5947 _tlc;
+
+  Animation& _getCurrentAnimation();
 
   bool _init_to_calibrating();
   bool _init_to_active();
   bool _calibrate_to_active();
   bool _active_to_finish();
+  bool _finish_to_calibrating();
 
   void _entry_calibrating();
   void _action_calibrating();
 
   void _entry_active();
   void _action_active();
+
+  void _entry_finished();
+  void _action_finished();
 
 };
 

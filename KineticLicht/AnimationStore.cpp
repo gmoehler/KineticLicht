@@ -13,9 +13,23 @@ int AnimationStore::getNumAnimations(){
 
 Animation& AnimationStore::getAnimation(int id){
   printf("AnimationStore: Selecting animation %d:\n", id);
-  _animation[id].printAnimation();
-  return _animation[id];
+  _animation.at(id).printAnimation();
+  return _animation.at(id);
 }
+
+Animation& AnimationStore::_getCurrentAnimation(){
+  if (_animation.size() == 0 || (int) _animation.size() < _currentAnimationId){
+    printf("AnimationStore: Cannot select current Animation %d:\n", _currentAnimationId);
+  }
+  return getAnimation(_currentAnimationId);
+}
+
+void AnimationStore::setAnimationStrategy(AnimationStrategy strategy, int startWithAnimationId, bool repeat){
+  _strategy = strategy;
+  _strategy_startWithAnimationId = startWithAnimationId;
+  _strategy_repeat = repeat;
+}
+
 
 void AnimationStore::addStepperWorker(StepperWorker sw){
   int id = sw.getId();
@@ -30,8 +44,7 @@ void AnimationStore::addLedWorker(LedWorker lw){
 }
 
 bool AnimationStore::_init_to_calibrating(){
-  return _animation.size() > 0 && (int) _animation.size() > _currentAnimationId &&
-    _animation[_currentAnimationId].containsMotorFrames();
+  return _getCurrentAnimation().containsMotorFrames();
 }
 
 bool AnimationStore::_calibrate_to_active(){
@@ -48,10 +61,18 @@ bool AnimationStore::_calibrate_to_active(){
 
 void AnimationStore::_entry_calibrating(){
   printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
+  _startTime = millis(); // reset time
   for (std::map<int, StepperWorker>::iterator it = _stepperWorkerMap.begin() ;
         it != _stepperWorkerMap.end(); ++it) {
       StepperWorker sw = it->second;
       sw.startCalibration();
+  }
+}
+
+void AnimationStore::_action_calibrating(){
+  for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
+      StepperWorker sw = it->second;
+      sw.loop(_elapsedTime);
   }
 }
 
@@ -62,19 +83,106 @@ bool AnimationStore::_init_to_active(){
 
 void AnimationStore::_entry_active(){
   printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
-  // TODO: think about where to put elapsedTime
-  //elapsedTime = millis(); // reset time
-  for (std::map<int, StepperWorker>::iterator it = _stepperWorkerMap.begin() ;
-        it != _stepperWorkerMap.end(); ++it) {
+  _startTime = millis(); // reset time
+  for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
       StepperWorker sw = it->second;
       sw.startAnimation();
   }
 }
 
+bool AnimationStore::_active_to_finish(){
+  return _getCurrentAnimation().isAnimationFinished();
+}
+
+void AnimationStore::_entry_finished(){
+  // choose next animation based on strategy
+  if (_strategy == SINGLE) {
+    // stop after first animation
+    _currentAnimationId = -1;
+  }
+  else {
+    _currentAnimationId++;
+    if (_currentAnimationId >= getNumAnimations()) {
+      if (_strategy_repeat){
+        // restart animation
+        _currentAnimationId = 0;
+      }
+      else {
+        // stop animation
+        _currentAnimationId = -1;
+      }
+    }
+  }
+}
+
+void AnimationStore::_action_finished(){
+  if (_currentAnimationId == -1){
+    //TODO: do things to stop animation: go dark, stop steppers, ...
+  }
+}
+
+bool AnimationStore::_finish_to_calibrating(){
+  // continue if we have a valid id
+  printf("### Proceeding with Animation %d ###.\n", _currentAnimationId);
+  return _currentAnimationId >= 0;
+}
+
+void AnimationStore::_action_active(){
+
+  _elapsedTime = millis() - _startTime;
+
+  if (_getCurrentAnimation().needsTargetFrameUpdate(_elapsedTime)) {
+    vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
+    for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
+      KeyFrame kf = *kf_it;
+
+      // check whether this is an update for a stepper worker
+      auto sit =_stepperWorkerMap.find(kf_it->getId());
+      if(sit != _stepperWorkerMap.end()) {
+        StepperWorker sw = sit->second;
+        sw.updateTargetKeyFrame(_elapsedTime, kf);
+      }
+
+      // check whether this is an update for a stepper worker
+      auto lit =_ledWorkerMap.find(kf_it->getId());
+      if(lit != _ledWorkerMap.end()) {
+        LedWorker lw = lit->second;
+        lw.updateTargetKeyFrame(_elapsedTime, kf);
+      }
+    }
+  }
+
+  for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
+      StepperWorker sw = it->second;
+      sw.loop(_elapsedTime);
+  }
+
+  bool needLedUpdate = false;
+
+  for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
+      LedWorker lw = it->second;
+      lw.loop(_elapsedTime);
+      if (lw.needsUpdate()){
+        needLedUpdate = true;
+      }
+  }
+
+  if (needLedUpdate) {
+    for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
+      LedWorker lw = it->second;
+      RGB rgbColor = lw.getColorForUpdate();
+      _tlc.setLED(lw.getId(), rgbColor.red(), rgbColor.green(), rgbColor.blue());
+    }
+    _tlc.write();
+  }
+
+}
+
+
 
 AnimationStore::AnimationStore()
   : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
-  _currentAnimationId(-1)
+  _currentAnimationId(-1), _elapsedTime(0)
 {
   // LED test: leds turn red and black again one after the other
   Animation led_test1;

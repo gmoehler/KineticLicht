@@ -24,6 +24,21 @@ void AccelStepper::setCurrentPosition(long pos){
   printf("setCurPos: %ld\n", pos);
 }
 
+Adafruit_TLC5947::Adafruit_TLC5947(){
+
+}
+void Adafruit_TLC5947::begin(void){
+
+}
+void Adafruit_TLC5947::setLED(int lednum, int r, int g, int b){
+
+}
+void Adafruit_TLC5947::write(void){
+  
+}
+
+
+
 long _testCurrentTime=0L;
 unsigned long millis() {
   printf("millis() %ld\n",_testCurrentTime );

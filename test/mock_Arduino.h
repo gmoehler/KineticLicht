@@ -17,6 +17,16 @@ private:
   double _speed;
 };
 
+class Adafruit_TLC5947 {
+ public:
+  Adafruit_TLC5947();
+  void begin(void);
+  void setLED(int lednum, int r, int g, int b);
+  void write(void);
+};
+
+
+
 #define INPUT_PULLUP 42
 #define LOW 0
 #define HIGH 1
