@@ -10,11 +10,12 @@ TEST(AnimationStore_tests, scenario){
   StepperWorker sw = StepperWorker (acs, 1, pin, false);
 
   LedWorker lw = LedWorker (0);
-  
+
   as.addStepperWorker(sw);
   as.addLedWorker(lw);
 
   int num0 = as.getNumAnimations();
+  printf("Number of animations: %d\n", num0);
 
   Animation a0;
   a0.addKeyFrames({
@@ -25,22 +26,21 @@ TEST(AnimationStore_tests, scenario){
   });
 
   int id = as.addAnimation(a0);
+  printf("Id of animation: %d\n", id);
   EXPECT_EQ(num0+1, as.getNumAnimations());
   EXPECT_EQ(num0, id);
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
 
-  as.init(tlc);
+  as.init(tlc, SINGLE, id, false);
   EXPECT_EQ(as.getState(), ANIMATION_INIT);
-  
-  for (int i=0;i<100;i++){
-  	
+
+  for (int i=0;i<5;i++){
+
     as.loop();
     EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);
-  
-  
+
+
   }
-  
-  
 }
 
 
@@ -113,5 +113,3 @@ TEST(AnimationStore_tests, storetest){
   EXPECT_TRUE(a.isAnimationFinished());
 
 }
-
-

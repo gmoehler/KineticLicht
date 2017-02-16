@@ -13,7 +13,7 @@ int AnimationStore::getNumAnimations(){
 
 Animation& AnimationStore::getAnimation(int id){
   printf("AnimationStore: Selecting animation %d:\n", id);
-  _animation.at(id).printAnimation();
+  _animation[id].printAnimation();
   return _animation.at(id);
 }
 
@@ -24,15 +24,13 @@ Animation& AnimationStore::_getCurrentAnimation(){
   return getAnimation(_currentAnimationId);
 }
 
-void AnimationStore::setAnimationStrategy(AnimationStrategy strategy, int startWithAnimationId, bool repeat){
+void AnimationStore::init(Adafruit_TLC5947& tlc, AnimationStrategy strategy,
+  int startWithAnimationId, bool repeat){
+
+  _tlc = tlc;
   _strategy = strategy;
   _strategy_startWithAnimationId = startWithAnimationId;
   _strategy_repeat = repeat;
-}
-
-void AnimationStore::init(Adafruit_TLC5947& tlc){
-
-  _tlc = tlc;
 
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
     StepperWorker sw = it->second;
@@ -43,10 +41,21 @@ void AnimationStore::init(Adafruit_TLC5947& tlc){
     LedWorker lw = it->second;
     lw.init();
   }
+
+  if (getNumAnimations() > _strategy_startWithAnimationId){
+    _currentAnimationId = _strategy_startWithAnimationId;
+  }
+  else {
+    printf ("#### ERROR! Cannot start with animation id %d > %d.\n",
+    _strategy_startWithAnimationId, getNumAnimations());
+  }
+  printf("init: current id: %d %d %d.\n", _currentAnimationId,
+  _strategy_startWithAnimationId,getNumAnimations() );
+
 }
 
 void AnimationStore::loop(){
-
+    FiniteStateMachine::loop();
 }
 
 void AnimationStore::addStepperWorker(StepperWorker sw){
@@ -62,10 +71,11 @@ void AnimationStore::addLedWorker(LedWorker lw){
 }
 
 bool AnimationStore::_init_to_calibrating(){
+  printf("_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
   return _getCurrentAnimation().containsMotorFrames();
 }
 
-bool AnimationStore::_calibrate_to_active(){
+bool AnimationStore::_calibrating_to_active(){
   // return true if all calibrations are finished
   for (std::map<int, StepperWorker>::iterator it = _stepperWorkerMap.begin() ;
   it != _stepperWorkerMap.end(); ++it) {
@@ -98,8 +108,7 @@ void AnimationStore::_action_calibrating(){
 }
 
 bool AnimationStore::_init_to_active(){
-  return _animation.size() > 0 && (int) _animation.size() > _currentAnimationId &&
-  ! _animation[_currentAnimationId].containsMotorFrames();
+  return !_animation[_currentAnimationId].containsMotorFrames();
 }
 
 void AnimationStore::_entry_active(){
@@ -111,7 +120,7 @@ void AnimationStore::_entry_active(){
   }
 }
 
-bool AnimationStore::_active_to_finish(){
+bool AnimationStore::_active_to_finished(){
   return _getCurrentAnimation().isAnimationFinished();
 }
 
@@ -211,6 +220,20 @@ AnimationStore::AnimationStore()
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
 _currentAnimationId(-1), _elapsedTime(0)
 {
+
+  addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationStore::_init_to_calibrating);
+  addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationStore::_init_to_active);
+  addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationStore::_calibrating_to_active);
+  addTransition(ANIMATION_ACTIVE, ANIMATION_FINISHED, &AnimationStore::_active_to_finished);
+  addTransition(ANIMATION_FINISHED, ANIMATION_CALIBRATING, &AnimationStore::_finish_to_calibrating);
+
+  addStateEntryAction(ANIMATION_CALIBRATING,&AnimationStore::_entry_calibrating);
+  addStateAction(ANIMATION_CALIBRATING, &AnimationStore::_action_calibrating);
+  addStateEntryAction(ANIMATION_ACTIVE, &AnimationStore::_entry_active);
+  addStateAction(ANIMATION_ACTIVE, &AnimationStore::_action_active);
+  addStateEntryAction(ANIMATION_FINISHED, &AnimationStore::_entry_finished);
+  addStateAction(ANIMATION_FINISHED, &AnimationStore::_action_finished);
+
   // LED test: leds turn red and black again one after the other
   Animation led_test1;
   addAnimation(led_test1);

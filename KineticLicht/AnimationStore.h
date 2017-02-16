@@ -40,9 +40,8 @@ public:
 
   int getNumAnimations();
 
-  void setAnimationStrategy(AnimationStrategy strategy, int startWithAnimationId, bool repeat);
-
-  void init(Adafruit_TLC5947& tlc); // to be called in setup()
+  void init(Adafruit_TLC5947& tlc, AnimationStrategy strategy,
+    int startWithAnimationId, bool repeat); // to be called in setup()
   void loop(); // to be called in loop()
 
 private:
@@ -64,8 +63,8 @@ private:
 
   bool _init_to_calibrating();
   bool _init_to_active();
-  bool _calibrate_to_active();
-  bool _active_to_finish();
+  bool _calibrating_to_active();
+  bool _active_to_finished();
   bool _finish_to_calibrating();
 
   void _entry_calibrating();
