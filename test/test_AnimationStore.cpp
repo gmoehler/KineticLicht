@@ -30,10 +30,13 @@ TEST(AnimationStore_tests, scenario){
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
 
   as.init(tlc);
+  EXPECT_EQ(as.getState(), ANIMATION_INIT);
   
   for (int i=0;i<100;i++){
   	
     as.loop();
+    EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);
+  
   
   }
   
