@@ -37,6 +37,7 @@ TEST(AnimationStore_tests, scenario){
   as.init(tlc, SINGLE, id, false);
   EXPECT_EQ(as.getState(), ANIMATION_INIT);
 
+  // 11 (1200ms) is the start of the animation
   for (int i=0;i<15;i++){
 
     if (i==5) {
@@ -50,6 +51,7 @@ TEST(AnimationStore_tests, scenario){
     as.loop();
 
     printf("%d StepperWorkerState: %d\n", i, sw.getState());
+    printf("%d LedWorkerState: %d\n", i, lw.getState());
 
     if (i < 10){
       EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);

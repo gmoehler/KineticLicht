@@ -33,8 +33,7 @@ INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
 #SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 SOURCES      := $(SRCDIR)/RGB.cpp $(SRCDIR)/Animation.cpp $(SRCDIR)/AnimationStore.cpp \
 								$(SRCDIR)/LedWorker.cpp $(SRCDIR)/StepperWorker.cpp
-TESTSOURCES  := $(TESTDIR)/mock_Arduino.cpp   $(TESTDIR)/test_AnimationStore.cpp
-#$(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
+TESTSOURCES  := $(TESTDIR)/mock_Arduino.cpp   $(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
 					$(TESTDIR)/test_Animation.cpp  $(TESTDIR)/test_AnimationStore.cpp \
 					$(TESTDIR)/test_LedWorker.cpp $(TESTDIR)/test_StepperWorker.cpp \
 					$(TESTDIR)/test_FiniteStates.cpp
