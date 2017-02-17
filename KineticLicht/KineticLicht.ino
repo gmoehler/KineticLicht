@@ -83,10 +83,10 @@ void backwardstep4() {
 AccelStepper astepper4(forwardstep4, backwardstep4); // use functions to step
 
 
-StepperWorker  sworker1 = StepperWorker(astepper1, 1, 53, true);
-//StepperWorker  sworker2 = StepperWorker(astepper2, 2, 49, false);
-//StepperWorker  sworker3 = StepperWorker(astepper3, 3, 51, false);
-StepperWorker  sworker4 = StepperWorker(astepper4, 4, 47, true);
+StepperWorker  sworker1 = StepperWorker(STEPPER1, astepper1, 53, true);
+//StepperWorker  sworker2 = StepperWorker(STEPPER2, astepper2, 49, false);
+//StepperWorker  sworker3 = StepperWorker(STEPPER3, astepper3, 51, false);
+StepperWorker  sworker4 = StepperWorker(STEPPER4, astepper4, 4, 47, true);
 
 /****************************
     Create IR remote objects

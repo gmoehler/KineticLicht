@@ -5,8 +5,8 @@
 #define CALIBRATE_SPEED -400
 #define ALLOWED_TARGETTIME_OVERSHOOT 250
 
-StepperWorker::StepperWorker(AccelStepper &astepper,
-                             int id, int endStopPin, bool reverseDirection)
+StepperWorker::StepperWorker(int id, AccelStepper &astepper,
+                             int endStopPin, bool reverseDirection)
   : FiniteStateMachine(NUM_STATES, INIT, *this),
     _id(id), _astepper(astepper),
     _currentSpeed(0.0), _endStopPin(endStopPin),
@@ -65,7 +65,6 @@ void StepperWorker::init() {
 
 void StepperWorker::loop(long elapsedTime) {
   _elapsedTime = elapsedTime;
-  printf("++++ loop: et: %ld esh %ld\n", _elapsedTime, _time_endstophit);
   FiniteStateMachine::loop();
 }
 
@@ -122,7 +121,6 @@ void StepperWorker::_exit_endstop_hit(){
 
 // when endstop is not pressed down anymore and more then 300 ms passed
 bool StepperWorker::_to_endstop_waiting() {
-    printf("++++ et: %ld teh: %ld esa: %d\n", _elapsedTime, _time_endstophit, _endStopActive() ? 1 : 0);
     return (_elapsedTime - _time_endstophit) > 300 && ! _endStopActive();
 }
 

@@ -3,7 +3,7 @@
 TEST(StepperWorker_test, active_past_target){
   AccelStepper as = AccelStepper();
   int pin = 22;
-  StepperWorker sw = StepperWorker (as, 1, pin, false);
+  StepperWorker sw = StepperWorker (1, as, pin, false);
 
   Animation animation;
   animation.addKeyFrames({
@@ -58,7 +58,7 @@ TEST(StepperWorker_test, active_past_target){
 TEST(StepperWorker_test, endstopTest){
   AccelStepper as = AccelStepper();
   int pin = 22;
-  StepperWorker sw = StepperWorker (as, 1, pin, false);
+  StepperWorker sw = StepperWorker (1, as, pin, false);
 
   Animation animation;
   animation.addKeyFrames({
@@ -124,7 +124,7 @@ TEST(StepperWorker_test, endstopTest){
 TEST(StepperWorker_test, calibrationTest){
   AccelStepper as = AccelStepper();
   int pin = 22;
-  StepperWorker sw = StepperWorker (as, 1, pin, false);
+  StepperWorker sw = StepperWorker (1, as, pin, false);
 
   Animation animation;
   animation.addKeyFrames({

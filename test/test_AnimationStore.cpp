@@ -7,10 +7,10 @@ TEST(AnimationStore_tests, scenario){
 
   AccelStepper acs = AccelStepper();
   int pin = 22;
-  StepperWorker sw = StepperWorker (acs, 1, pin, false);
+  StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
   sw.setDebug(true);
 
-  LedWorker lw = LedWorker (0);
+  LedWorker lw = LedWorker (LED1TOP);
 
   as.addStepperWorker(&sw);
   as.addLedWorker(&lw);
