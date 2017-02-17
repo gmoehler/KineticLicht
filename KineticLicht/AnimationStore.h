@@ -32,8 +32,8 @@ class AnimationStore : public FiniteStateMachine<AnimationStore> {
 public:
   AnimationStore();
 
-  void addStepperWorker(StepperWorker& sw);
-  void addLedWorker(LedWorker& lw);
+  void addStepperWorker(StepperWorker* sw);
+  void addLedWorker(LedWorker* lw);
 
   int addAnimation(Animation& a );
   Animation& getAnimation(int id);
@@ -46,8 +46,8 @@ public:
 
 private:
   vector<Animation> _animation;
-  std::map<int,StepperWorker> _stepperWorkerMap;
-  std::map<int,LedWorker> _ledWorkerMap;
+  std::map<int,StepperWorker*> _stepperWorkerMap;
+  std::map<int,LedWorker*> _ledWorkerMap;
 
   int _currentAnimationId;
   long _elapsedTime;

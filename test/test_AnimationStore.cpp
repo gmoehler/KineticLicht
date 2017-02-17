@@ -12,18 +12,20 @@ TEST(AnimationStore_tests, scenario){
 
   LedWorker lw = LedWorker (0);
 
-  as.addStepperWorker(sw);
-  as.addLedWorker(lw);
+  as.addStepperWorker(&sw);
+  as.addLedWorker(&lw);
 
   int num0 = as.getNumAnimations();
   printf("Number of animations: %d\n", num0);
 
   Animation a0;
   a0.addKeyFrames({
-    {STEPPER1, 0, 0},
-    {STEPPER2, 300, 1000},
-    {STEPPER3, 500, 2600},
-    {LED1TOP, 800, YELLOW, 50}
+    {LED1TOP, 0, RED, 100},
+    {LED1TOP, 300, BLUE, 100},
+    {STEPPER1, 500, 0},
+    {STEPPER1, 800, 1000},
+    {STEPPER1, 1000, 2600},
+
   });
 
   int id = as.addAnimation(a0);
@@ -46,8 +48,15 @@ TEST(AnimationStore_tests, scenario){
     }
 
     as.loop();
-    EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);
-    printf("StepperWorkerState: %d\n", sw.getState());
+
+    printf("%d StepperWorkerState: %d\n", i, sw.getState());
+
+    if (i < 10){
+      EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);
+    }
+    else{
+      EXPECT_EQ(as.getState(), ANIMATION_ACTIVE);
+    }
 
 
   }
