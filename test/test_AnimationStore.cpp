@@ -24,7 +24,7 @@ TEST(AnimationStore_tests, scenario){
     {LED1TOP, 300, BLUE, 100},
     {STEPPER1, 500, 0},
     {STEPPER1, 800, 1000},
-    {STEPPER1, 1000, 2600},
+    {STEPPER1, 1200, 2600},
 
   });
 
@@ -38,7 +38,7 @@ TEST(AnimationStore_tests, scenario){
   EXPECT_EQ(as.getState(), ANIMATION_INIT);
 
   // 11 (1200ms) is the start of the animation
-  for (int i=0;i<15;i++){
+  for (int i=0;i<30;i++){
 
     if (i==5) {
       test_triggerEndStop(true);
@@ -51,13 +51,15 @@ TEST(AnimationStore_tests, scenario){
     as.loop();
 
     printf("%d StepperWorkerState: %d\n", i, sw.getState());
-    printf("%d LedWorkerState: %d\n", i, lw.getState());
 
     if (i < 10){
       EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);
     }
-    else{
+    else if (i < 23){
       EXPECT_EQ(as.getState(), ANIMATION_ACTIVE);
+    }
+    else{
+      EXPECT_EQ(as.getState(), ANIMATION_FINISHED);
     }
 
 
@@ -130,7 +132,7 @@ TEST(AnimationStore_tests, storetest){
   EXPECT_TRUE(a.needsTargetFrameUpdate(2100));
   kfs =a.getNextTargetKeyFrames(2100);
   //a.printAnimation();
-  EXPECT_FALSE(a.needsTargetFrameUpdate(10000));
+  EXPECT_TRUE(a.needsTargetFrameUpdate(10000));
   EXPECT_TRUE(a.isAnimationFinished());
 
 }

@@ -88,6 +88,7 @@ bool AnimationStore::_calibrating_to_active(){
 void AnimationStore::_entry_calibrating(){
   printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
   _startTime = millis(); // reset time
+  printf("+++ startTime: %ld\n", _startTime);
   for (auto it = _stepperWorkerMap.begin() ;
   it != _stepperWorkerMap.end(); ++it) {
     StepperWorker* sw = it->second;
@@ -116,14 +117,11 @@ bool AnimationStore::_init_to_active(){
 
 void AnimationStore::_entry_active(){
   _startTime = millis(); // reset time
+  printf("+++ startTime: %ld\n", _startTime);
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
     StepperWorker* sw = it->second;
     sw->startAnimation();
   }
-}
-
-bool AnimationStore::_active_to_finished(){
-  return _getCurrentAnimation().isAnimationFinished();
 }
 
 void AnimationStore::_entry_finished(){
@@ -137,7 +135,7 @@ void AnimationStore::_entry_finished(){
     if (_currentAnimationId >= getNumAnimations()) {
       if (_strategy_repeat){
         // restart animation
-        _currentAnimationId = 0;
+        _currentAnimationId = _strategy_startWithAnimationId;
       }
       else {
         // stop animation
@@ -155,16 +153,30 @@ void AnimationStore::_action_finished(){
 
 bool AnimationStore::_finish_to_calibrating(){
   // continue if we have a valid id
-  printf("### Proceeding with Animation %d ###.\n", _currentAnimationId);
+  if (_currentAnimationId < 0){
+    printf("No more animations available");
+  }
+  else {
+    printf("### Proceeding with Animation %d ###.\n", _currentAnimationId);
+  }
   return _currentAnimationId >= 0;
 }
 
 void AnimationStore::_action_active(){
 
   _elapsedTime = millis() - _startTime;
+  printf("+++ elapsed Time: %ld\n", _elapsedTime);
+  _getCurrentAnimation().printAnimation();
 
   if (_getCurrentAnimation().needsTargetFrameUpdate(_elapsedTime)) {
     vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
+    // no more frames - animation is at an end
+    if (kfs.size() == 0){
+      printf("*********************** Need more frames, but there are none\n");
+      triggerTransition(getState(), ANIMATION_FINISHED);
+      return;
+    }
+
     for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
       KeyFrame kf = *kf_it;
 
@@ -184,9 +196,10 @@ void AnimationStore::_action_active(){
         lw->updateTargetKeyFrame(_elapsedTime, kf);
         keyFrameHandled = true;
       }
+      
       if (!keyFrameHandled){
         printf("### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
-	  }
+	    }
     }
   }
 
@@ -220,7 +233,7 @@ void AnimationStore::_action_active(){
 
 AnimationStore::AnimationStore()
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
-_currentAnimationId(-1), _elapsedTime(0)
+_currentAnimationId(-1), _elapsedTime(0), _startTime(-1)
 {
 
   setDebugString(string("AnimationStore"));
@@ -228,7 +241,6 @@ _currentAnimationId(-1), _elapsedTime(0)
   addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationStore::_init_to_calibrating);
   addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationStore::_init_to_active);
   addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationStore::_calibrating_to_active);
-  addTransition(ANIMATION_ACTIVE, ANIMATION_FINISHED, &AnimationStore::_active_to_finished);
   addTransition(ANIMATION_FINISHED, ANIMATION_CALIBRATING, &AnimationStore::_finish_to_calibrating);
 
   addStateEntryAction(ANIMATION_CALIBRATING,&AnimationStore::_entry_calibrating);

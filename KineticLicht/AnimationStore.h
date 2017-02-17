@@ -19,11 +19,11 @@
 
 using namespace std;
 
-enum AnimationState { ANIMATION_INIT,
-                      ANIMATION_CALIBRATING,
-                      ANIMATION_ACTIVE,
-                      ANIMATION_FINISHED,
-                      NUM_ANIMATION_STATES};
+enum AnimationState { ANIMATION_INIT,           // 0
+                      ANIMATION_CALIBRATING,    // 1
+                      ANIMATION_ACTIVE,         // 2
+                      ANIMATION_FINISHED,       // 3
+                      NUM_ANIMATION_STATES};    // only used for enum size
 
 enum AnimationStrategy { SINGLE, LOOP };
 
@@ -64,7 +64,6 @@ private:
   bool _init_to_calibrating();
   bool _init_to_active();
   bool _calibrating_to_active();
-  bool _active_to_finished();
   bool _finish_to_calibrating();
 
   void _entry_calibrating();

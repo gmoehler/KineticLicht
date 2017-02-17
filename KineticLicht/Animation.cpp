@@ -23,9 +23,9 @@ bool Animation::isAnimationFinished() {
 
 bool Animation::needsTargetFrameUpdate(long elapsedTime) {
 
-  if (isAnimationFinished()){
-    return false;
-  }
+//  if (isAnimationFinished()){
+//    return false;
+//  }
   if (! _firstTargetFrameRead){
     return true;
   }
@@ -45,7 +45,7 @@ vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
   vector<KeyFrame> nextKeyFrames;
 
-  while (needsTargetFrameUpdate(elapsedTime)){
+  while (!isAnimationFinished() && needsTargetFrameUpdate(elapsedTime)){
     // for first frame the iterator is already pointing to the correct frame
     if (! _firstTargetFrameRead){
       _firstTargetFrameRead = true;
@@ -80,7 +80,7 @@ void Animation::addKeyFrames(vector<KeyFrame> kfs) {
 }
 
 void Animation::printAnimation(){
-  printf("Animation contains %d frames. \nCurrent frame: ", _keyFrames.size());
+  printf("Animation contains %d frames. \n Current frame: ", _keyFrames.size());
   _currentKeyFrameIter->printKeyFrame();
   printf("\n");
 }

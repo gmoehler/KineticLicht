@@ -23,7 +23,7 @@ TEST(Animation_tests, test1){
 
   EXPECT_EQ(4, a.numberOfKeyFrames());
   EXPECT_EQ(true,a.containsMotorFrames());
-  
+
 
   EXPECT_TRUE(a.needsTargetFrameUpdate(0));
   vector<KeyFrame> kfs =a.getNextTargetKeyFrames(0);
@@ -49,7 +49,7 @@ TEST(Animation_tests, test1){
   EXPECT_TRUE(a.needsTargetFrameUpdate(2100));
   kfs =a.getNextTargetKeyFrames(2100);
   //a.printAnimation();
-  EXPECT_FALSE(a.needsTargetFrameUpdate(10000));
+  EXPECT_TRUE(a.needsTargetFrameUpdate(10000));
   EXPECT_TRUE(a.isAnimationFinished());
 
 }
@@ -64,6 +64,6 @@ TEST(Animation_tests, noMotorFrames){
   //a.printAnimation();
 
   EXPECT_EQ(1, a.numberOfKeyFrames());
-  EXPECT_EQ(false,a.containsMotorFrames());
-  
+  EXPECT_FALSE(a.containsMotorFrames());
+
   }
