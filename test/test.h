@@ -8,7 +8,7 @@
 
 #include <KeyFrame.h>
 #include <Animation.h>
-#include <AnimationStore.h>
+#include <AnimationOps.h>
 #include <LedWorker.h>
 #include <StepperWorker.h>
 #include <FiniteStates.h>

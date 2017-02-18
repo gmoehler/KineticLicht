@@ -1,5 +1,5 @@
-#ifndef ANIMATIONSTORE_H
-#define ANIMATIONSTORE_H
+#ifndef AnimationOps_H
+#define AnimationOps_H
 
 #ifdef WITHIN_UNITTEST
   #include <stdio.h>
@@ -15,9 +15,10 @@
 #include "StepperWorker.h"
 #include "LedWorker.h"
 
-
-
 using namespace std;
+
+enum Activators {STEPPER1, STEPPER2, STEPPER3, STEPPER4,
+                 LED1TOP, LED1BOT, LED2TOP, LED2BOT, LED3TOP, LED3BOT, LED4TOP, LED4BOT};
 
 enum AnimationState { ANIMATION_INIT,           // 0
                       ANIMATION_CALIBRATING,    // 1
@@ -25,12 +26,12 @@ enum AnimationState { ANIMATION_INIT,           // 0
                       ANIMATION_FINISHED,       // 3
                       NUM_ANIMATION_STATES};    // only used for enum size
 
-enum AnimationStrategy { SINGLE, LOOP };
+enum AnimationStrategy { SINGLE_ANIMATION, LOOP_ANIMATION };
 
-class AnimationStore : public FiniteStateMachine<AnimationStore> {
+class AnimationOps : public FiniteStateMachine<AnimationOps> {
 
 public:
-  AnimationStore();
+  AnimationOps(Adafruit_TLC5947& tlc);
 
   void addStepperWorker(StepperWorker* sw);
   void addLedWorker(LedWorker* lw);
@@ -40,8 +41,8 @@ public:
 
   int getNumAnimations();
 
-  void init(Adafruit_TLC5947& tlc, AnimationStrategy strategy,
-    int startWithAnimationId, bool repeat); // to be called in setup()
+  // to be called in setup()
+  void init(AnimationStrategy strategy, int startWithAnimationId, bool repeat);
   void loop(); // to be called in loop()
 
 private:

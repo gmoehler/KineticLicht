@@ -1,33 +1,32 @@
-#include "AnimationStore.h"
+#include "AnimationOps.h"
 
 // full height: 4200 = 2100mm
 
-int AnimationStore::addAnimation(Animation& a){
+int AnimationOps::addAnimation(Animation& a){
   _animation.push_back(a);
   return _animation.size() -1;
 }
 
-int AnimationStore::getNumAnimations(){
+int AnimationOps::getNumAnimations(){
   return _animation.size();
 }
 
-Animation& AnimationStore::getAnimation(int id){
-  printf("AnimationStore: Selecting animation %d:\n", id);
+Animation& AnimationOps::getAnimation(int id){
+  printf("AnimationOps: Selecting animation %d:\n", id);
   _animation.at(id).printAnimation();
   return _animation.at(id);
 }
 
-Animation& AnimationStore::_getCurrentAnimation(){
+Animation& AnimationOps::_getCurrentAnimation(){
   if (_animation.size() == 0 || (int) _animation.size() < _currentAnimationId){
-    printf("AnimationStore: Cannot select current Animation %d:\n", _currentAnimationId);
+    printf("AnimationOps: Cannot select current Animation %d:\n", _currentAnimationId);
   }
   return getAnimation(_currentAnimationId);
 }
 
-void AnimationStore::init(Adafruit_TLC5947& tlc, AnimationStrategy strategy,
+void AnimationOps::init(AnimationStrategy strategy,
   int startWithAnimationId, bool repeat){
 
-  _tlc = tlc;
   _strategy = strategy;
   _strategy_startWithAnimationId = startWithAnimationId;
   _strategy_repeat = repeat;
@@ -42,6 +41,8 @@ void AnimationStore::init(Adafruit_TLC5947& tlc, AnimationStrategy strategy,
     lw->init();
   }
 
+  _tlc.begin(); // start LED PWM decoder
+
   if (getNumAnimations() > _strategy_startWithAnimationId){
     _currentAnimationId = _strategy_startWithAnimationId;
   }
@@ -52,28 +53,28 @@ void AnimationStore::init(Adafruit_TLC5947& tlc, AnimationStrategy strategy,
 
 }
 
-void AnimationStore::loop(){
+void AnimationOps::loop(){
     FiniteStateMachine::loop();
 }
 
-void AnimationStore::addStepperWorker(StepperWorker* sw){
+void AnimationOps::addStepperWorker(StepperWorker* sw){
   int id = sw->getId();
   // cannot use operator[] since we do not have an empty constructor of StepperWorker
   _stepperWorkerMap.insert( std::map<int, StepperWorker*>::value_type ( id, sw ));
 }
 
-void AnimationStore::addLedWorker(LedWorker* lw){
+void AnimationOps::addLedWorker(LedWorker* lw){
   int id = lw->getId();
   // cannot use operator[] since we do not have an empty constructor of LedWorker
   _ledWorkerMap.insert( std::map< int, LedWorker* >::value_type ( id, lw ));
 }
 
-bool AnimationStore::_init_to_calibrating(){
+bool AnimationOps::_init_to_calibrating(){
   printf("_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
   return _getCurrentAnimation().containsMotorFrames();
 }
 
-bool AnimationStore::_calibrating_to_active(){
+bool AnimationOps::_calibrating_to_active(){
   // return true if all calibrations are finished
   for (auto it = _stepperWorkerMap.begin() ;
   it != _stepperWorkerMap.end(); ++it) {
@@ -85,7 +86,7 @@ bool AnimationStore::_calibrating_to_active(){
   return true;
 }
 
-void AnimationStore::_entry_calibrating(){
+void AnimationOps::_entry_calibrating(){
   printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
   _startTime = millis(); // reset time
   printf("+++ startTime: %ld\n", _startTime);
@@ -97,7 +98,7 @@ void AnimationStore::_entry_calibrating(){
   }
 }
 
-void AnimationStore::_action_calibrating(){
+void AnimationOps::_action_calibrating(){
 
   _elapsedTime = millis() - _startTime;
 
@@ -107,7 +108,7 @@ void AnimationStore::_action_calibrating(){
   }
 }
 
-bool AnimationStore::_init_to_active(){
+bool AnimationOps::_init_to_active(){
   if (!_animation[_currentAnimationId].containsMotorFrames()){
     printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
     return true;
@@ -115,7 +116,7 @@ bool AnimationStore::_init_to_active(){
   return false;
 }
 
-void AnimationStore::_entry_active(){
+void AnimationOps::_entry_active(){
   _startTime = millis(); // reset time
   printf("+++ startTime: %ld\n", _startTime);
   for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
@@ -124,9 +125,9 @@ void AnimationStore::_entry_active(){
   }
 }
 
-void AnimationStore::_entry_finished(){
+void AnimationOps::_entry_finished(){
   // choose next animation based on strategy
-  if (_strategy == SINGLE) {
+  if (_strategy == SINGLE_ANIMATION) {
     // stop after first animation
     _currentAnimationId = -1;
   }
@@ -145,13 +146,13 @@ void AnimationStore::_entry_finished(){
   }
 }
 
-void AnimationStore::_action_finished(){
+void AnimationOps::_action_finished(){
   if (_currentAnimationId == -1){
     //TODO: do things to stop animation: go dark, stop steppers, ...
   }
 }
 
-bool AnimationStore::_finish_to_calibrating(){
+bool AnimationOps::_finish_to_calibrating(){
   // continue if we have a valid id
   if (_currentAnimationId < 0){
     printf("No more animations available");
@@ -162,7 +163,7 @@ bool AnimationStore::_finish_to_calibrating(){
   return _currentAnimationId >= 0;
 }
 
-void AnimationStore::_action_active(){
+void AnimationOps::_action_active(){
 
   _elapsedTime = millis() - _startTime;
   printf("+++ elapsed Time: %ld\n", _elapsedTime);
@@ -196,7 +197,7 @@ void AnimationStore::_action_active(){
         lw->updateTargetKeyFrame(_elapsedTime, kf);
         keyFrameHandled = true;
       }
-      
+
       if (!keyFrameHandled){
         printf("### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
 	    }
@@ -229,26 +230,26 @@ void AnimationStore::_action_active(){
 
 }
 
-
-
-AnimationStore::AnimationStore()
+AnimationOps::AnimationOps(Adafruit_TLC5947& tlc)
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
-_currentAnimationId(-1), _elapsedTime(0), _startTime(-1)
+_currentAnimationId(-1), _elapsedTime(0), _startTime(-1),
+_strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
+_tlc(tlc)
 {
+  setDebugString(string("AnimationOps"));
+  _tlc = tlc;
 
-  setDebugString(string("AnimationStore"));
+  addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOps::_init_to_calibrating);
+  addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationOps::_init_to_active);
+  addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationOps::_calibrating_to_active);
+  addTransition(ANIMATION_FINISHED, ANIMATION_CALIBRATING, &AnimationOps::_finish_to_calibrating);
 
-  addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationStore::_init_to_calibrating);
-  addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationStore::_init_to_active);
-  addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationStore::_calibrating_to_active);
-  addTransition(ANIMATION_FINISHED, ANIMATION_CALIBRATING, &AnimationStore::_finish_to_calibrating);
-
-  addStateEntryAction(ANIMATION_CALIBRATING,&AnimationStore::_entry_calibrating);
-  addStateAction(ANIMATION_CALIBRATING, &AnimationStore::_action_calibrating);
-  addStateEntryAction(ANIMATION_ACTIVE, &AnimationStore::_entry_active);
-  addStateAction(ANIMATION_ACTIVE, &AnimationStore::_action_active);
-  addStateEntryAction(ANIMATION_FINISHED, &AnimationStore::_entry_finished);
-  addStateAction(ANIMATION_FINISHED, &AnimationStore::_action_finished);
+  addStateEntryAction(ANIMATION_CALIBRATING,&AnimationOps::_entry_calibrating);
+  addStateAction(ANIMATION_CALIBRATING, &AnimationOps::_action_calibrating);
+  addStateEntryAction(ANIMATION_ACTIVE, &AnimationOps::_entry_active);
+  addStateAction(ANIMATION_ACTIVE, &AnimationOps::_action_active);
+  addStateEntryAction(ANIMATION_FINISHED, &AnimationOps::_entry_finished);
+  addStateAction(ANIMATION_FINISHED, &AnimationOps::_action_finished);
 
   // LED test: leds turn red and black again one after the other
   Animation led_test1;

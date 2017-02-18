@@ -2,8 +2,10 @@
 
 extern void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, int green, int blue);
 
-TEST(AnimationStore_tests, scenario){
-  AnimationStore as;
+TEST(AnimationOps_tests, scenario){
+
+  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+  AnimationOps as(tlc);
 
   AccelStepper acs = AccelStepper();
   int pin = 22;
@@ -32,9 +34,8 @@ TEST(AnimationStore_tests, scenario){
   printf("Id of animation: %d\n", id);
   EXPECT_EQ(num0+1, as.getNumAnimations());
   EXPECT_EQ(num0, id);
-  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
 
-  as.init(tlc, SINGLE, id, false);
+  as.init(SINGLE_ANIMATION, id, false);
   EXPECT_EQ(as.getState(), ANIMATION_INIT);
 
   // 11 (1200ms) is the start of the animation
@@ -67,8 +68,9 @@ TEST(AnimationStore_tests, scenario){
 }
 
 
-TEST(AnimationStore_tests, storetest){
-  AnimationStore as;
+TEST(AnimationOps_tests, storetest){
+  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+  AnimationOps as(tlc);
 
   int num0 = as.getNumAnimations();
 
