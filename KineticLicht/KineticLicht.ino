@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <ArduinoSTL.h>
-#include <map>
+
 #include <Adafruit_MotorShield.h>
 #include <AccelStepper.h>
 #include <IRremote.h>
@@ -8,14 +8,13 @@
 #include "Adafruit_TLC5947.h"
 
 #include "RGB.h"
-#include "AnimationOps.h"
 #include "StepperWorker.h"
 #include "LedWorker.h"
-//#include "AnimationList.h"
+#include "Animation.h"
+#include "AnimationOps.h"
 
+std::vector<Animation> loadAnimations();
 std::map<long, int> create_NumberButtonMap();
-void updateLEDs(Adafruit_TLC5947 tlc, LedWorker rgb1o, LedWorker rgb1u, LedWorker rgb2o, LedWorker rgb2u,
-                LedWorker rgb3o, LedWorker rgb3u, LedWorker rgb4o, LedWorker rgb4u);
 
 /*************************
     create LED objects
@@ -113,11 +112,12 @@ void setup()
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
-//  for (int i=0; i< animationList.size(); i++){
-//    aniop.addAnimation(&animationList.at(i));
-//  }
+  std::vector<Animation> animations = loadAnimations();
+  for (unsigned i=0; i< animations.size(); i++){
+    aniop.addAnimation(animations.at(i));
+  }
 
-  aniop.addStepperWorker(&sworker1);
+  //aniop.addStepperWorker(&sworker1);
   //aniop.addStepperWorker(&sworker2);
   //aniop.addStepperWorker(&sworker3);
   //aniop.addStepperWorker(&sworker4);

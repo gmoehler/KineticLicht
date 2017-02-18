@@ -5,6 +5,10 @@ bool keyFrameCompare (KeyFrame i,KeyFrame j) { return (i.getTimeMs()<j.getTimeMs
 Animation::Animation() :
   _isSorted(true), _firstTargetFrameRead(false), _withMotor(false) {}
 
+Animation::Animation(vector<KeyFrame> kfs): Animation() {
+  addKeyFrames(kfs);
+}
+
 int Animation::numberOfKeyFrames(){
   return _keyFrames.size();
 }
@@ -12,7 +16,6 @@ int Animation::numberOfKeyFrames(){
  bool Animation::containsMotorFrames(){
  	return _withMotor;
  }
-
 
 bool Animation::isAnimationFinished() {
   // need -- because end() is actually passed the last element
