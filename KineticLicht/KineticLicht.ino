@@ -54,7 +54,7 @@ void forwardstep1() {
 void backwardstep1() {
   steppermotor1->onestep(BACKWARD, INTERLEAVE);
 }
-AccelStepper astepper1(forwardstep1, backwardstep1); // use functions to step
+AccelStepper astepper1(forwardstep1, backwardstep1);
 
 void forwardstep2() {
 steppermotor2->onestep(FORWARD, INTERLEAVE);
@@ -62,7 +62,7 @@ steppermotor2->onestep(FORWARD, INTERLEAVE);
 void backwardstep2() {
 steppermotor2->onestep(BACKWARD, INTERLEAVE);
 }
-AccelStepper astepper2(forwardstep2, backwardstep2); // use functions to step
+AccelStepper astepper2(forwardstep2, backwardstep2);
 
 void forwardstep3() {
 steppermotor3->onestep(FORWARD, INTERLEAVE);
@@ -70,7 +70,7 @@ steppermotor3->onestep(FORWARD, INTERLEAVE);
 void backwardstep3() {
 steppermotor3->onestep(BACKWARD, INTERLEAVE);
 }
-AccelStepper astepper3(forwardstep3, backwardstep3); // use functions to step
+AccelStepper astepper3(forwardstep3, backwardstep3);
 
 void forwardstep4() {
   steppermotor4->onestep(FORWARD, INTERLEAVE);
@@ -78,7 +78,7 @@ void forwardstep4() {
 void backwardstep4() {
   steppermotor4->onestep(BACKWARD, INTERLEAVE);
 }
-AccelStepper astepper4(forwardstep4, backwardstep4); // use functions to step
+AccelStepper astepper4(forwardstep4, backwardstep4);
 
 
 StepperWorker  sworker1 = StepperWorker(STEPPER1, astepper1, 53, true);
@@ -132,7 +132,7 @@ void setup()
 
   aniop.init(SINGLE_ANIMATION, 0, false);
 
-  irrecv.enableIRIn(); // Start the IR receiver
+  //irrecv.enableIRIn(); // Start the IR receiver
 }
 
 /************
