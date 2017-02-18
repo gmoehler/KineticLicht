@@ -1,5 +1,5 @@
-#ifndef AnimationOps_H
-#define AnimationOps_H
+#ifndef ANIMATIONOPS_H
+#define ANIMATIONOPS_H
 
 #ifdef WITHIN_UNITTEST
   #include <stdio.h>
