@@ -41,7 +41,7 @@ void LedWorker::checkAnimation(long elapsedTime) {
     // did we run past the target key frame
     if (elapsedTime > targetTime) {
       if (_debug) {
-        printf("!!! Passed KeyFrame: LED%d, Target time: %ld, Elapsed time: %ld\n", getId(), targetTime, elapsedTime);
+        printf("Warning. Passed KeyFrame: LED%d, Target time: %ld, Elapsed time: %ld\n", getId(), targetTime, elapsedTime);
       }
       _pastTargetKeyFrame = true;
       _needsUpdate = true;

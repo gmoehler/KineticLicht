@@ -227,7 +227,7 @@ void StepperWorker::_entry_past_target(){
   if (_debug) {
     int tgtPos = _targetKeyFrame.getTarget();
     long tgtTime = _targetKeyFrame.getTimeMs();
-    printf("!!! Passed KeyFrame for %d\n", _id);
+    printf("Warning. Passed KeyFrame for %d\n", _id);
     _targetKeyFrame.printKeyFrame();
     printf("%d *** Tgt t  : %ld Act t  : %ld\n", _id, tgtTime, _elapsedTime);
     printf("%d     Tgt pos: %d Act pos: %d\n", _id, tgtPos, _getCurrentPosition());

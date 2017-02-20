@@ -14,8 +14,6 @@
 #include "KeyFrame.h"
 #include "RGB.h"
 
-using namespace std;
-
 class LedWorker
 {
 public:
