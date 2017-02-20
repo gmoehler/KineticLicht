@@ -2,13 +2,11 @@
   #include <ArduinoSTL.h>
 #endif
 #include "Animation.h"
-#include "AnimationOps.h"
-
+#include "AnimationOps.h" // constants
 
 std::vector<Animation> loadAnimations(){
 
   std::vector<Animation> animationList;
-
 
   Animation led_test1({
     {LED1BOT, 500,  RED, 100},
@@ -41,9 +39,12 @@ std::vector<Animation> loadAnimations(){
     {LED4BOT, 4000, BLACK, 100},
     {LED4TOP, 4000, RED, 100},
 
-    {LED4TOP, 4500, BLACK, 100},
+    {LED4TOP, 4500, BLACK, 100}
   });
+  led_test1.printAnimation();
+
   animationList.push_back(led_test1);
+  animationList.front().printAnimation();
 
   // LED test: all LEDs change colors at the same time
   Animation led_test2({
@@ -85,6 +86,7 @@ std::vector<Animation> loadAnimations(){
   });
 
   animationList.push_back(led_test2);
+  animationList.front().printAnimation();
 
   Animation a1({
     {STEPPER1, 0, 0},
@@ -150,6 +152,7 @@ std::vector<Animation> loadAnimations(){
     {LED4BOT, 37000, YELLOW, 0},
   });
   animationList.push_back(a1);
+  animationList.front().printAnimation();
 
   //animation 2
   Animation a2(
@@ -197,5 +200,7 @@ std::vector<Animation> loadAnimations(){
 
 
     animationList.push_back(a2);
+    animationList.front().printAnimation();
+
     return animationList;
   }

@@ -3,7 +3,6 @@
 
 #include <Adafruit_MotorShield.h>
 #include <AccelStepper.h>
-#include <IRremote.h>
 
 #include "Adafruit_TLC5947.h"
 
@@ -81,20 +80,21 @@ void backwardstep4() {
 AccelStepper astepper4(forwardstep4, backwardstep4);
 
 
-StepperWorker  sworker1 = StepperWorker(STEPPER1, astepper1, 53, true);
-StepperWorker  sworker2 = StepperWorker(STEPPER2, astepper2, 49, false);
-StepperWorker  sworker3 = StepperWorker(STEPPER3, astepper3, 51, false);
-StepperWorker  sworker4 = StepperWorker(STEPPER4, astepper4, 47, true);
+//StepperWorker  sworker1 = StepperWorker(STEPPER1, astepper1, 53, true);
+//StepperWorker  sworker2 = StepperWorker(STEPPER2, astepper2, 49, false);
+//StepperWorker  sworker3 = StepperWorker(STEPPER3, astepper3, 51, false);
+//StepperWorker  sworker4 = StepperWorker(STEPPER4, astepper4, 47, true);
 
 /****************************
     Create IR remote objects
  ****************************/
 
-int IR_RECV_PIN = 11;
+/*int IR_RECV_PIN = 11;
 
 IRrecv irrecv(IR_RECV_PIN);
 decode_results irResults;
 std::map<long, int> numberButtons = create_NumberButtonMap();
+*/
 
 /************
     Setup
@@ -105,32 +105,58 @@ AnimationOps aniop(tlc);
 void setup()
 {
   Serial.begin(9600);
-  Serial.println("start");
+  //Serial.println("start");
+  printf("Hello World\n");
+  cout << "Start." << endl;
+
 
   //AFMS_a.begin();
   AFMS_b.begin();
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
-  std::vector<Animation> animations = loadAnimations();
-  for (unsigned i=0; i< animations.size(); i++){
-    aniop.addAnimation(animations.at(i));
+
+  Animation a({
+    {LED1BOT, 500,  RED, 100},
+    {LED1TOP, 500,  BLACK, 100},
+
+    {LED1BOT, 1000, BLACK, 100},
+    {LED1TOP, 1000, RED, 100},
+    {LED2BOT, 1000, BLACK, 100},
+  });
+  a.printAnimation();
+  std::vector<KeyFrame> kfs = a.getNextTargetKeyFrames(1000);
+  for (unsigned j=0; j< kfs.size(); j++){
+    kfs.at(j).printKeyFrame();
   }
+  printf("xxx\n" );
+  kfs = a.getNextTargetKeyFrames(1800);
+  for (unsigned j=0; j< kfs.size(); j++){
+    kfs.at(j).printKeyFrame();
+  }
+
+
+  //std::vector<Animation> animations = loadAnimations();
+  //for (unsigned i=0; i< animations.size(); i++){
+    int i=0;
+    printf("adding animation %d\n", i);
+    //aniop.addAnimation(animations.at(i));
+  //}
 
   //aniop.addStepperWorker(&sworker1);
   //aniop.addStepperWorker(&sworker2);
   //aniop.addStepperWorker(&sworker3);
   //aniop.addStepperWorker(&sworker4);
-  aniop.addLedWorker(&rgb1o);
-  aniop.addLedWorker(&rgb1u);
-  aniop.addLedWorker(&rgb2o);
-  aniop.addLedWorker(&rgb2u);
-  aniop.addLedWorker(&rgb3o);
-  aniop.addLedWorker(&rgb3u);
-  aniop.addLedWorker(&rgb4o);
-  aniop.addLedWorker(&rgb4u);
+  //aniop.addLedWorker(&rgb1o);
+  //aniop.addLedWorker(&rgb1u);
+  //aniop.addLedWorker(&rgb2o);
+  //aniop.addLedWorker(&rgb2u);
+  //aniop.addLedWorker(&rgb3o);
+  //aniop.addLedWorker(&rgb3u);
+  //aniop.addLedWorker(&rgb4o);
+  //aniop.addLedWorker(&rgb4u);
 
-  aniop.init(SINGLE_ANIMATION, 0, false);
+  //aniop.init(SINGLE_ANIMATION, 0, false);
 
   //irrecv.enableIRIn(); // Start the IR receiver
 }
@@ -155,7 +181,7 @@ void loop()
   }
 */
 
-  aniop.loop();
+  //aniop.loop();
 
 }
 

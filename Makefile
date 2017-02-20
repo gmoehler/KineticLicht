@@ -21,7 +21,7 @@ LIBDIR      := test/lib/$(PLATFORM)
 
 
 #Flags, Libraries and Includes
-CFLAGS      := -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
+CFLAGS      := -ggdb -static-libgcc -static-libstdc++ -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
 LIB         := -fopenmp -lm -L$(LIBDIR) -lgtest_main -lgtest
 GOOGLETEST_DIR := /c/Users/gregor/Documents/GitHub/googletest/googletest
 INC         := -I$(INCDIR) -I$(TESTINCDIR) -Itest/include -I/usr/local/include -I$(GOOGLETEST_DIR)/include

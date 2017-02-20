@@ -20,8 +20,11 @@ RGB::RGB(int red, int green, int blue, int brightness) {
 
 RGB::RGB(const RGB& rgb) :
   _red(rgb._red), _green(rgb._green), _blue(rgb._blue){
-    };
+};
 
+RGB::~RGB(){
+  
+}
 
 void RGB::_checkInput(){
   _red   = (_red < 0) ? 0 : _red;

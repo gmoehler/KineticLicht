@@ -19,6 +19,7 @@ class RGB {
     RGB(int red, int green, int blue);
     RGB(const RGB& rgb);
     RGB();
+    ~RGB();
     int red();
     int green();
     int blue();

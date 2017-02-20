@@ -22,6 +22,8 @@ public:
 
   Animation();
   Animation(vector<KeyFrame> new_kfs);
+  Animation(const Animation &a);
+  ~Animation();
 
   bool isAnimationFinished();
   bool needsTargetFrameUpdate(long elapsedTime);
@@ -29,15 +31,17 @@ public:
 
   // add new key frames - sort is done on first getNextTargetKeyFrames()
   void addKeyFrames(vector<KeyFrame> new_kfs);
-  int numberOfKeyFrames();
+  void resetCurrentKeyFrame();
+  unsigned numberOfKeyFrames();
 
   void printAnimation();
+  KeyFrame& getKeyFrame(unsigned i);
 
   bool containsMotorFrames();
 
 private:
   vector<KeyFrame> _keyFrames;
-  vector<KeyFrame>::iterator _currentKeyFrameIter;
+  unsigned _currentFrameId;
   bool _isSorted;
   bool _firstTargetFrameRead;
   bool _withMotor;

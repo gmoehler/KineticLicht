@@ -160,7 +160,12 @@ bool AnimationOps::_finish_to_calibrating(){
   else {
     printf("### Proceeding with Animation %d ###.\n", _currentAnimationId);
   }
-  return _currentAnimationId >= 0;
+
+  if (_currentAnimationId >= 0){
+    _getCurrentAnimation().resetCurrentKeyFrame();
+    return true;
+  }
+  return false;
 }
 
 void AnimationOps::_action_active(){

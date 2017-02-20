@@ -1,6 +1,7 @@
 #include "test.h"
 
 extern void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, int green, int blue);
+std::vector<Animation> loadAnimations();
 
 TEST(AnimationOps_tests, scenario){
 
@@ -65,6 +66,40 @@ TEST(AnimationOps_tests, scenario){
 
 
   }
+}
+
+TEST(AnimationOps, animationList){
+  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+  AnimationOps as(tlc);
+
+  int num0 = as.getNumAnimations();
+  EXPECT_EQ(0, num0);
+
+  std::vector<Animation> animations = loadAnimations();
+  //EXPECT_EQ((unsigned) 4, animations.size());
+  for (unsigned j=0; j<animations.size(); j++){
+    animations[j].printAnimation();
+  }
+  printf("+++++++++++++++");
+
+  Animation a = animations.back();
+  for (unsigned i=0; i<a.numberOfKeyFrames(); i++){
+    a.getKeyFrame(i).printKeyFrame();
+  }
+  printf("+++++++++++++++");
+
+  Animation a1({
+    {LED1TOP, 0, RED, 100},
+    {LED1TOP, 300, BLUE, 100},
+    {STEPPER1, 500, 0},
+    {STEPPER1, 800, 1000},
+    {STEPPER1, 1200, 2600},
+  });
+
+  animations.push_back(a1);
+
+  animations.back().printAnimation();
+
 }
 
 
