@@ -41,7 +41,7 @@ public:
 
 private:
   vector<KeyFrame> _keyFrames;
-  unsigned _currentFrameId;
+  int _currentFrameId;
   bool _isSorted;
   bool _firstTargetFrameRead;
   bool _withMotor;

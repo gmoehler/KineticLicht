@@ -78,13 +78,17 @@ TEST(AnimationOps, animationList){
   std::vector<Animation> animations = loadAnimations();
   //EXPECT_EQ((unsigned) 4, animations.size());
   for (unsigned j=0; j<animations.size(); j++){
+    printf("%d: ", j);
     animations[j].printAnimation();
   }
   printf("+++++++++++++++");
 
-  Animation a = animations.back();
+  Animation a = animations[0];
+  printf("Num keys: %d\n", a.numberOfKeyFrames());
   for (unsigned i=0; i<a.numberOfKeyFrames(); i++){
-    a.getKeyFrame(i).printKeyFrame();
+    printf("%d", i);
+    KeyFrame kf = a.getKeyFrame(i);
+    kf.printKeyFrame();
   }
   printf("+++++++++++++++");
 
@@ -125,7 +129,7 @@ TEST(AnimationOps_tests, storetest){
 
   // this is the test from test_Animation.cpp
 
-  EXPECT_EQ(4, a.numberOfKeyFrames());
+  EXPECT_EQ((unsigned) 4, a.numberOfKeyFrames());
 
   EXPECT_TRUE(a.needsTargetFrameUpdate(0));
   vector<KeyFrame> kfs =a.getNextTargetKeyFrames(0);

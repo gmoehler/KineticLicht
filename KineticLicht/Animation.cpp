@@ -3,7 +3,7 @@
 bool keyFrameCompare (KeyFrame i,KeyFrame j) { return (i.getTimeMs()<j.getTimeMs()); }
 
 Animation::Animation() :
-   _currentFrameId(0), _isSorted(true), _firstTargetFrameRead(false), _withMotor(false) {}
+   _currentFrameId(-1), _isSorted(true), _firstTargetFrameRead(false), _withMotor(false) {}
 
 Animation::Animation(vector<KeyFrame> kfs): Animation() {
   addKeyFrames(kfs);
@@ -11,8 +11,8 @@ Animation::Animation(vector<KeyFrame> kfs): Animation() {
 
 Animation::Animation(const Animation &a) :
   _keyFrames(a._keyFrames), _currentFrameId(a._currentFrameId),
-   _isSorted(a._isSorted), _firstTargetFrameRead(a._firstTargetFrameRead),
-   _withMotor(a._withMotor){}
+  _isSorted(a._isSorted), _firstTargetFrameRead(a._firstTargetFrameRead),
+  _withMotor(a._withMotor){}
 
 Animation::~Animation(){}
 
@@ -29,7 +29,7 @@ bool Animation::isAnimationFinished() {
   /*vector<KeyFrame>::iterator lastKeyFrame = _keyFrames.end();
   --lastKeyFrame;
   return _currentKeyFrameIter == lastKeyFrame;*/
-  return numberOfKeyFrames() == 0 || _currentFrameId >= numberOfKeyFrames();
+  return numberOfKeyFrames() == 0 || _currentFrameId >= (int) numberOfKeyFrames() -1;
 }
 
 bool Animation::needsTargetFrameUpdate(long elapsedTime) {
@@ -37,7 +37,8 @@ bool Animation::needsTargetFrameUpdate(long elapsedTime) {
 //  if (isAnimationFinished()){
 //    return false;
 //  }
-  if (! _firstTargetFrameRead){
+  // nothing read so far
+  if (_currentFrameId < 0){
     return true;
   }
 
@@ -51,20 +52,17 @@ vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
   if (!_isSorted){
     std::sort (_keyFrames.begin(), _keyFrames.end(), keyFrameCompare);
     //_currentKeyFrameIter = _keyFrames.begin();
-    _currentFrameId = 0;
-    _isSorted = true;
+    if (_keyFrames.size() > 0){
+      _currentFrameId = -1;
+      _isSorted = true;
+    }
   }
 
   vector<KeyFrame> nextKeyFrames;
 
   while (!isAnimationFinished() && needsTargetFrameUpdate(elapsedTime)){
     // for first frame the iterator is already pointing to the correct frame
-    if (! _firstTargetFrameRead){
-      _firstTargetFrameRead = true;
-    }
-    else {
-      ++_currentFrameId;
-    }
+    _currentFrameId++;
     nextKeyFrames.push_back(_keyFrames[_currentFrameId]);
   }
 
@@ -73,20 +71,13 @@ vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
 void Animation::addKeyFrames(vector<KeyFrame> kfs) {
 
-  bool emptyFrameList = _keyFrames.size() == 0;
-
-  // need loop to account for _withMotor instead of...
+  // need loop to account for _withMotor instead of one-line insert
   // _keyFrames.insert(_keyFrames.end(), kfs.begin(), kfs.end());
   for (std::vector<KeyFrame>::iterator it = kfs.begin() ; it != kfs.end(); ++it) {
     _keyFrames.push_back(*it);
     if (it->getType() == MOTOR) {
     	_withMotor = true;
     }
-  }
-
-  // set iterator for the first time
-  if (emptyFrameList){
-    resetCurrentKeyFrame();
   }
 
   // trigger resorting
@@ -101,14 +92,23 @@ void Animation::resetCurrentKeyFrame(){
 }
 
 void Animation::printAnimation(){
-  printf("Animation contains %d frames. \n Current frame: ", _keyFrames.size());
+  printf("Animation contains %d frames. \n", _keyFrames.size());
   if (_keyFrames.size() > 0){
     //_currentKeyFrameIter->printKeyFrame();
-    _keyFrames[_currentFrameId].printKeyFrame();
+    if (_currentFrameId < 0){
+        printf("No current frame yet. \n");
+    }
+    else {
+      printf("Current frame: \n");
+      _keyFrames[_currentFrameId].printKeyFrame();
+    }
   }
   printf("\n");
 }
 
   KeyFrame& Animation::getKeyFrame(unsigned i){
+    if (i < 0 || i >= numberOfKeyFrames() ){
+     throw 0;
+    }
     return _keyFrames[i];
   }
