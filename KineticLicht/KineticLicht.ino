@@ -29,10 +29,10 @@ LedWorker rgb1o = LedWorker (LED1TOP, 6);
 LedWorker rgb1u = LedWorker (LED1BOT, 7);
 LedWorker rgb2o = LedWorker (LED2TOP, 4);
 LedWorker rgb2u = LedWorker (LED2BOT, 5);
-LedWorker rgb3o = LedWorker (LED3TOP, 0);
-LedWorker rgb3u = LedWorker (LED3BOT, 1);
-LedWorker rgb4o = LedWorker (LED4TOP, 2);
-LedWorker rgb4u = LedWorker (LED4BOT, 3);
+LedWorker rgb3o = LedWorker (LED3TOP, 1);
+LedWorker rgb3u = LedWorker (LED3BOT, 0);
+LedWorker rgb4o = LedWorker (LED4TOP, 3);
+LedWorker rgb4u = LedWorker (LED4BOT, 2);
 
 /*************************
 create Stepper objects
@@ -120,37 +120,46 @@ void setup()
   std::vector<Animation> animations;
 
   Animation led_test1({
+    {LED1BOT, 0,  BLACK, 0},
+    {LED1TOP, 0,  BLACK, 0},
+    {LED2BOT, 0,  BLACK, 0},
+    {LED2TOP, 0,  BLACK, 0},
+    {LED3BOT, 0,  BLACK, 0},
+    {LED3TOP, 0,  BLACK, 0},
+    {LED4BOT, 0,  BLACK, 0},
+    {LED4TOP, 0,  BLACK, 0},
+
     {LED1BOT, 2000,  RED, 100},
-    {LED1TOP, 2000,  BLACK, 100},
+    {LED1TOP, 2000,  BLACK, 0},
 
-    {LED1BOT, 4000, BLACK, 100},
+    {LED1BOT, 4000, BLACK, 0},
     {LED1TOP, 4000, RED, 100},
-    {LED2BOT, 4000, BLACK, 100},
+    {LED2BOT, 4000, BLACK, 0},
 
-    {LED1TOP, 6000, BLACK, 100},
+    {LED1TOP, 6000, BLACK, 0},
     {LED2BOT, 6000, RED, 100},
-    {LED2TOP, 6000, BLACK, 100},
+    {LED2TOP, 6000, BLACK, 0},
 
-    {LED2BOT, 8000, BLACK, 100},
+    {LED2BOT, 8000, BLACK, 0},
     {LED2TOP, 8000, RED, 100},
-    {LED3BOT, 8000, BLACK, 100},
+    {LED3BOT, 8000, BLACK, 0},
 
-    {LED2TOP, 10000, BLACK, 100},
+    {LED2TOP, 10000, BLACK, 0},
     {LED3BOT, 10000, RED, 100},
-    {LED3TOP, 10000, BLACK, 100},
+    {LED3TOP, 10000, BLACK, 0},
 
-    {LED3BOT, 12000, BLACK, 100},
+    {LED3BOT, 12000, BLACK, 0},
     {LED3TOP, 12000, RED, 100},
-    {LED4BOT, 12000, BLACK, 100},
+    {LED4BOT, 12000, BLACK, 0},
 
-    {LED3TOP, 14000, BLACK, 100},
+    {LED3TOP, 14000, BLACK, 0},
     {LED4BOT, 14000, RED, 100},
-    {LED4TOP, 14000, BLACK, 100},
+    {LED4TOP, 14000, BLACK, 0},
 
-    {LED4BOT, 16000, BLACK, 100},
+    {LED4BOT, 16000, BLACK, 0},
     {LED4TOP, 16000, RED, 100},
 
-    {LED4TOP, 18000, BLACK, 100}
+    {LED4TOP, 18000, BLACK, 0}
   });
 
   //animations.push_back(led_test1);
