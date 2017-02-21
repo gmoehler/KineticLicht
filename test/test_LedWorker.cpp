@@ -45,7 +45,7 @@ void integration_test(){
 */
 
   TEST(LedWorker_test, test1){
-    LedWorker lw = LedWorker (4);
+    LedWorker lw = LedWorker (4,4);
 
     Animation animation;
     animation.addKeyFrames({

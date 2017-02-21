@@ -13,7 +13,7 @@ TEST(AnimationOps_tests, scenario){
   StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
   sw.setDebug(true);
 
-  LedWorker lw = LedWorker (LED1TOP);
+  LedWorker lw = LedWorker (LED1TOP, 0);
 
   as.addStepperWorker(&sw);
   as.addLedWorker(&lw);
