@@ -99,6 +99,7 @@ bool StepperWorker::_to_endstop_hit() {
 
 bool StepperWorker::_endStopActive() {
   int endStop = digitalRead(_endStopPin);
+  printf("Endstop hit: %d\n", endStop);
   return (endStop == LOW);
 }
 

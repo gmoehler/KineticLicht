@@ -1,9 +1,12 @@
 #include "Animation.h"
 
-bool keyFrameCompare (KeyFrame i,KeyFrame j) { return (i.getTimeMs()<j.getTimeMs()); }
+bool keyFrameCompare (KeyFrame i,KeyFrame j) {
+  return (i.getTimeMs()<j.getTimeMs());
+}
 
 Animation::Animation() :
-   _currentFrameId(-1), _isSorted(true), _firstTargetFrameRead(false), _withMotor(false) {}
+   _currentFrameId(-1), _isSorted(true), _firstTargetFrameRead(false),
+   _withMotor(false) {}
 
 Animation::Animation(vector<KeyFrame> kfs): Animation() {
   addKeyFrames(kfs);
@@ -12,7 +15,7 @@ Animation::Animation(vector<KeyFrame> kfs): Animation() {
 Animation::Animation(const Animation &a) :
   _keyFrames(a._keyFrames), _currentFrameId(a._currentFrameId),
   _isSorted(a._isSorted), _firstTargetFrameRead(a._firstTargetFrameRead),
-  _withMotor(a._withMotor){}
+  _withMotor(a._withMotor), _emptyKeyFrame(){}
 
 Animation::~Animation(){}
 
@@ -108,7 +111,8 @@ void Animation::printAnimation(){
 
   KeyFrame& Animation::getKeyFrame(unsigned i){
     if (i < 0 || i >= numberOfKeyFrames() ){
-     throw 0;
+      printf ("ERROR! KeyFrame %u does not exist!\n", i);
+      return _emptyKeyFrame;
     }
     return _keyFrames[i];
   }

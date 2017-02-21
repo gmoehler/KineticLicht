@@ -155,7 +155,7 @@ void AnimationOps::_action_finished(){
 bool AnimationOps::_finish_to_calibrating(){
   // continue if we have a valid id
   if (_currentAnimationId < 0){
-    printf("No more animations available");
+    //printf("No more animations available.\n");
   }
   else {
     printf("### Proceeding with Animation %d ###.\n", _currentAnimationId);
@@ -228,7 +228,7 @@ void AnimationOps::_action_active(){
     for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
       LedWorker* lw = it->second;
       RGB rgbColor = lw->getColorForUpdate();
-      _tlc.setLED(lw->getId(), rgbColor.red(), rgbColor.green(), rgbColor.blue());
+      _tlc.setLED(lw->getTlc5947_id(), rgbColor.red(), rgbColor.green(), rgbColor.blue());
     }
     _tlc.write();
   }
