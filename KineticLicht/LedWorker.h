@@ -1,7 +1,7 @@
 //LedWorker.h
 
-#ifndef LedWorker_h
-#define LedWorker_h
+#ifndef LEDWORKER_H
+#define LEDWORKER_H
 
 #ifdef WITHIN_UNITTEST
   #include <stdlib.h>
