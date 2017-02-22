@@ -1,48 +1,51 @@
-#ifndef WITHIN_UNITTEST
-  #include <ArduinoSTL.h>
-#endif
-#include "Animation.h"
-#include "AnimationOps.h" // constants
+#include "AnimationList.h"
 
-std::vector<Animation> loadAnimations(){
-
-  std::vector<Animation> animationList;
+void AnimationList::load(){
 
   Animation led_test1({
-    {LED1BOT, 500,  RED, 100},
-    {LED1TOP, 500,  BLACK, 100},
+    {LED1BOT, 0,  BLACK, 0},
+    {LED1TOP, 0,  BLACK, 0},
+    {LED2BOT, 0,  BLACK, 0},
+    {LED2TOP, 0,  BLACK, 0},
+    {LED3BOT, 0,  BLACK, 0},
+    {LED3TOP, 0,  BLACK, 0},
+    {LED4BOT, 0,  BLACK, 0},
+    {LED4TOP, 0,  BLACK, 0},
 
-    {LED1BOT, 1000, BLACK, 100},
-    {LED1TOP, 1000, RED, 100},
-    {LED2BOT, 1000, BLACK, 100},
+    {LED1BOT, 2000,  RED, 100},
+    {LED1TOP, 2000,  BLACK, 0},
 
-    {LED1TOP, 1500, BLACK, 100},
-    {LED2BOT, 1500, RED, 100},
-    {LED2TOP, 1500, BLACK, 100},
+    {LED1BOT, 4000, BLACK, 0},
+    {LED1TOP, 4000, RED, 100},
+    {LED2BOT, 4000, BLACK, 0},
 
-    {LED2BOT, 2000, BLACK, 100},
-    {LED2TOP, 2000, RED, 100},
-    {LED3BOT, 2000, BLACK, 100},
+    {LED1TOP, 6000, BLACK, 0},
+    {LED2BOT, 6000, RED, 100},
+    {LED2TOP, 6000, BLACK, 0},
 
-    {LED2TOP, 2500, BLACK, 100},
-    {LED3BOT, 2500, RED, 100},
-    {LED3TOP, 2500, BLACK, 100},
+    {LED2BOT, 8000, BLACK, 0},
+    {LED2TOP, 8000, RED, 100},
+    {LED3BOT, 8000, BLACK, 0},
 
-    {LED3BOT, 3000, BLACK, 100},
-    {LED3TOP, 3000, RED, 100},
-    {LED4BOT, 3000, BLACK, 100},
+    {LED2TOP, 10000, BLACK, 0},
+    {LED3BOT, 10000, RED, 100},
+    {LED3TOP, 10000, BLACK, 0},
 
-    {LED3TOP, 3500, BLACK, 100},
-    {LED4BOT, 3500, RED, 100},
-    {LED4TOP, 3500, BLACK, 100},
+    {LED3BOT, 12000, BLACK, 0},
+    {LED3TOP, 12000, RED, 100},
+    {LED4BOT, 12000, BLACK, 0},
 
-    {LED4BOT, 4000, BLACK, 100},
-    {LED4TOP, 4000, RED, 100},
+    {LED3TOP, 14000, BLACK, 0},
+    {LED4BOT, 14000, RED, 100},
+    {LED4TOP, 14000, BLACK, 0},
 
-    {LED4TOP, 4500, BLACK, 100}
+    {LED4BOT, 16000, BLACK, 0},
+    {LED4TOP, 16000, RED, 100},
+
+    {LED4TOP, 18000, BLACK, 0}
   });
 
-  animationList.push_back(led_test1);
+  _animationList.push_back(led_test1);
 
   // LED test: all LEDs change colors at the same time
   Animation led_test2({
@@ -83,7 +86,7 @@ std::vector<Animation> loadAnimations(){
     {LED4TOP, 12000, RED, 0},
   });
 
-  animationList.push_back(led_test2);
+  _animationList.push_back(led_test2);
 
   Animation a1({
     {STEPPER1, 0, 0},
@@ -148,7 +151,7 @@ std::vector<Animation> loadAnimations(){
     {LED4BOT, 32000, YELLOW, 50},
     {LED4BOT, 37000, YELLOW, 0},
   });
-  animationList.push_back(a1);
+  _animationList.push_back(a1);
 
   //animation 2
   Animation a2(
@@ -194,7 +197,6 @@ std::vector<Animation> loadAnimations(){
       {LED4BOT, 22000, BLACK, 0},
     });
 
-    animationList.push_back(a2);
+    _animationList.push_back(a2);
 
-    return animationList;
   }

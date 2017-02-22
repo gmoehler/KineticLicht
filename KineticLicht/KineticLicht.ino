@@ -12,7 +12,6 @@
 #include "Animation.h"
 #include "AnimationOps.h"
 
-std::vector<Animation> loadAnimations();
 std::map<long, int> create_NumberButtonMap();
 
 /*************************

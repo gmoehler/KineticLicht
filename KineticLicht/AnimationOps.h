@@ -12,13 +12,14 @@
 #include "FiniteStates.h"
 #include "KeyFrame.h"
 #include "Animation.h"
+#include "AnimationList.h"
 #include "StepperWorker.h"
 #include "LedWorker.h"
 
 using namespace std;
 
-enum Activators {STEPPER1, STEPPER2, STEPPER3, STEPPER4,
-                 LED1TOP, LED1BOT, LED2TOP, LED2BOT, LED3TOP, LED3BOT, LED4TOP, LED4BOT};
+//enum Activators {STEPPER1, STEPPER2, STEPPER3, STEPPER4,
+//                 LED1TOP, LED1BOT, LED2TOP, LED2BOT, LED3TOP, LED3BOT, LED4TOP, LED4BOT};
 
 enum AnimationState { ANIMATION_INIT,           // 0
                       ANIMATION_CALIBRATING,    // 1
@@ -31,7 +32,7 @@ enum AnimationStrategy { SINGLE_ANIMATION, LOOP_ANIMATION };
 class AnimationOps : public FiniteStateMachine<AnimationOps> {
 
 public:
-  AnimationOps(Adafruit_TLC5947& tlc);
+  AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations=false);
 
   void addStepperWorker(StepperWorker* sw);
   void addLedWorker(LedWorker* lw);
@@ -46,7 +47,7 @@ public:
   void loop(); // to be called in loop()
 
 private:
-  vector<Animation> _animation;
+  AnimationList _animations;
   std::map<int,StepperWorker*> _stepperWorkerMap;
   std::map<int,LedWorker*> _ledWorkerMap;
 

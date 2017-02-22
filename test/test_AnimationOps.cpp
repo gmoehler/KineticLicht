@@ -1,11 +1,11 @@
 #include "test.h"
 
 extern void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, int green, int blue);
-std::vector<Animation> loadAnimations();
 
 TEST(AnimationOps_tests, scenario){
 
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+  AnimationList animationList(false);
   AnimationOps as(tlc);
 
   AccelStepper acs = AccelStepper();
@@ -67,7 +67,7 @@ TEST(AnimationOps_tests, scenario){
 
   }
 }
-
+/*
 TEST(AnimationOps, animationList){
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
   AnimationOps as(tlc);
@@ -105,7 +105,7 @@ TEST(AnimationOps, animationList){
   animations.back().printAnimation();
 
 }
-
+*/
 
 TEST(AnimationOps_tests, storetest){
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();

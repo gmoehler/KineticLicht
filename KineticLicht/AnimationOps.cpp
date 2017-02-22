@@ -3,22 +3,22 @@
 // full height: 4200 = 2100mm
 
 int AnimationOps::addAnimation(Animation& a){
-  _animation.push_back(a);
-  return _animation.size() -1;
+  _animations._animationList.push_back(a);
+  return _animations._animationList.size() -1;
 }
 
 int AnimationOps::getNumAnimations(){
-  return _animation.size();
+  return _animations._animationList.size();
 }
 
 Animation& AnimationOps::getAnimation(int id){
   printf("AnimationOps: Selecting animation %d:\n", id);
-  _animation.at(id).printAnimation();
-  return _animation.at(id);
+  _animations._animationList.at(id).printAnimation();
+  return _animations._animationList.at(id);
 }
 
 Animation& AnimationOps::_getCurrentAnimation(){
-  if (_animation.size() == 0 || (int) _animation.size() < _currentAnimationId){
+  if (_animations._animationList.size() == 0 || (int) _animations._animationList.size() < _currentAnimationId){
     printf("AnimationOps: Cannot select current Animation %d:\n", _currentAnimationId);
   }
   return getAnimation(_currentAnimationId);
@@ -109,7 +109,7 @@ void AnimationOps::_action_calibrating(){
 }
 
 bool AnimationOps::_init_to_active(){
-  if (!_animation[_currentAnimationId].containsMotorFrames()){
+  if (!_animations._animationList[_currentAnimationId].containsMotorFrames()){
     printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
     return true;
   }
@@ -235,9 +235,9 @@ void AnimationOps::_action_active(){
 
 }
 
-AnimationOps::AnimationOps(Adafruit_TLC5947& tlc)
+AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
-_currentAnimationId(-1), _elapsedTime(0), _startTime(-1),
+_animations(loadAnimations), _currentAnimationId(-1), _elapsedTime(0), _startTime(-1),
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
 _tlc(tlc)
 {
