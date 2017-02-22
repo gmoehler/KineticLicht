@@ -36,7 +36,7 @@ public:
     return _animationList.at(id);
   }
 
-//private:
+private:
   std::vector<Animation> _animationList;
 
 };

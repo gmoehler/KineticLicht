@@ -98,7 +98,7 @@ std::map<long, int> numberButtons = create_NumberButtonMap();
 Setup
 ************/
 
-AnimationOps aniop(tlc);
+AnimationOps aniop(tlc, false);
 
 void setup()
 {

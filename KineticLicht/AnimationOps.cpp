@@ -3,22 +3,22 @@
 // full height: 4200 = 2100mm
 
 int AnimationOps::addAnimation(Animation& a){
-  _animations._animationList.push_back(a);
-  return _animations._animationList.size() -1;
+  _animations.addAnimation(a);
+  return _animations.getNumAnimations() -1;
 }
 
 int AnimationOps::getNumAnimations(){
-  return _animations._animationList.size();
+  return _animations.getNumAnimations();
 }
 
 Animation& AnimationOps::getAnimation(int id){
   printf("AnimationOps: Selecting animation %d:\n", id);
-  _animations._animationList.at(id).printAnimation();
-  return _animations._animationList.at(id);
+  _animations.getAnimation(id).printAnimation();
+  return _animations.getAnimation(id);
 }
 
 Animation& AnimationOps::_getCurrentAnimation(){
-  if (_animations._animationList.size() == 0 || (int) _animations._animationList.size() < _currentAnimationId){
+  if (_animations.getNumAnimations() == 0 || (int) _animations.getNumAnimations() < _currentAnimationId){
     printf("AnimationOps: Cannot select current Animation %d:\n", _currentAnimationId);
   }
   return getAnimation(_currentAnimationId);
@@ -109,7 +109,7 @@ void AnimationOps::_action_calibrating(){
 }
 
 bool AnimationOps::_init_to_active(){
-  if (!_animations._animationList[_currentAnimationId].containsMotorFrames()){
+  if (!_animations.getAnimation(_currentAnimationId).containsMotorFrames()){
     printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
     return true;
   }
