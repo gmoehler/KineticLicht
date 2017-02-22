@@ -22,8 +22,6 @@ public:
 
   Animation();
   Animation(vector<KeyFrame> new_kfs);
-  //Animation(const Animation &a);
-  //~Animation();
 
   bool isAnimationFinished();
   bool needsTargetFrameUpdate(long elapsedTime);

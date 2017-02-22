@@ -36,11 +36,6 @@ class KeyFrame
     KeyFrame()
      : _id(-1), _timeMs(0), _targetPosition(0), _targetColor(0,0,0),_type(NONE) {}
 
-    // copy constructor
-    KeyFrame (const KeyFrame &kf)
-     : _id(kf._id), _timeMs(kf._timeMs), _targetPosition(kf._targetPosition),
-       _targetColor(kf._targetColor), _type(kf._type){}
-
     int getId() {
       return _id;
     }
@@ -70,7 +65,6 @@ class KeyFrame
     	return _type;
     }
 
-    ~KeyFrame(){}
 
   private:
     int _id;

@@ -17,9 +17,7 @@ class RGB {
   public:
     RGB(int red, int green, int blue, int brightness);
     RGB(int red, int green, int blue);
-    //RGB(const RGB& rgb);
     RGB();
-    //~RGB();
     int red();
     int green();
     int blue();
