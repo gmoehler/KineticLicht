@@ -12,13 +12,13 @@ Animation::Animation(vector<KeyFrame> kfs): Animation() {
   addKeyFrames(kfs);
 }
 
-Animation::Animation(const Animation &a) :
+/*Animation::Animation(const Animation &a) :
   _keyFrames(a._keyFrames), _currentFrameId(a._currentFrameId),
   _isSorted(a._isSorted), _firstTargetFrameRead(a._firstTargetFrameRead),
   _withMotor(a._withMotor), _emptyKeyFrame(){}
 
 Animation::~Animation(){}
-
+*/
 unsigned Animation::numberOfKeyFrames(){
   return _keyFrames.size();
 }
