@@ -18,14 +18,14 @@ RGB::RGB(int red, int green, int blue, int brightness) {
   _checkInput();
 };
 
-RGB::RGB(const RGB& rgb) :
+/*RGB::RGB(const RGB& rgb) :
   _red(rgb._red), _green(rgb._green), _blue(rgb._blue){
 };
 
 RGB::~RGB(){
-  
-}
 
+}
+*/
 void RGB::_checkInput(){
   _red   = (_red < 0) ? 0 : _red;
   _red   = (_red > RGB_MAX_VAL) ? RGB_MAX_VAL : _red;
