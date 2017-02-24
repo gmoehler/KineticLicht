@@ -28,6 +28,7 @@ public:
   vector<KeyFrame> getNextTargetKeyFrames(long elapsedTime);
 
   // add new key frames - sort is done on first getNextTargetKeyFrames()
+  void addKeyFrame(KeyFrame kf);
   void addKeyFrames(vector<KeyFrame> new_kfs);
   void resetCurrentKeyFrame();
   unsigned numberOfKeyFrames();

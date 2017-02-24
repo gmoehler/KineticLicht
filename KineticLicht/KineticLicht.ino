@@ -112,10 +112,6 @@ void setup()
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
-  /*std::vector<Animation> animations = loadAnimations();
-  for (unsigned i=0; i< animations.size(); i++){
-  aniop.addAnimation(animations[i]);}*/
-
   std::vector<Animation> animations;
 
   Animation led_test1({
@@ -161,8 +157,13 @@ void setup()
     {LED4TOP, 18000, BLACK, 0}
   });
 
-  //animations.push_back(led_test1);
-  aniop.addAnimation(led_test1);
+
+  //aniop.addAnimation(led_test1);
+
+  AnimationList al;
+  Animation a0 = al.getAnimation(0);
+
+  aniop.addAnimation(a0);
 
   /*for (unsigned i=0; i< led_test1.numberOfKeyFrames(); i++){
   led_test1.getKeyFrame(i).printKeyFrame();}*/

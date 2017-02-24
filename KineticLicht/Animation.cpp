@@ -65,19 +65,23 @@ vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
   return nextKeyFrames;
 }
 
+void Animation::addKeyFrame(KeyFrame kf) {
+    _keyFrames.push_back(kf);
+    if (kf.getType() == MOTOR) {
+      _withMotor = true;
+    }
+
+    // trigger resorting
+    _isSorted = false;
+}
+
 void Animation::addKeyFrames(vector<KeyFrame> kfs) {
 
   // need loop to account for _withMotor instead of one-line insert
   // _keyFrames.insert(_keyFrames.end(), kfs.begin(), kfs.end());
   for (std::vector<KeyFrame>::iterator it = kfs.begin() ; it != kfs.end(); ++it) {
-    _keyFrames.push_back(*it);
-    if (it->getType() == MOTOR) {
-    	_withMotor = true;
-    }
+    addKeyFrame(*it);
   }
-
-  // trigger resorting
-  _isSorted = false;
 }
 
 void Animation::resetCurrentKeyFrame(){
