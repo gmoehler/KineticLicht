@@ -13,6 +13,7 @@
 #include "AnimationOps.h"
 
 std::map<long, int> create_NumberButtonMap();
+int freeRam ();
 
 /*************************
 create LED objects
@@ -24,6 +25,8 @@ create LED objects
 // these are hard-wired in the lib using fast data write
 Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, LED_CLOCK, LED_DATA, LED_LATCH);
 
+int fr0 = freeRam();
+
 LedWorker rgb1o = LedWorker (LED1TOP, 6);
 LedWorker rgb1u = LedWorker (LED1BOT, 7);
 LedWorker rgb2o = LedWorker (LED2TOP, 4);
@@ -32,7 +35,7 @@ LedWorker rgb3o = LedWorker (LED3TOP, 1);
 LedWorker rgb3u = LedWorker (LED3BOT, 0);
 LedWorker rgb4o = LedWorker (LED4TOP, 3);
 LedWorker rgb4u = LedWorker (LED4BOT, 2);
-
+int fr1 = freeRam();
 /*************************
 create Stepper objects
 *************************/
@@ -99,10 +102,15 @@ Setup
 ************/
 
 AnimationOps aniop(tlc, false);
+int fr2 = freeRam();
 
 void setup()
 {
   Serial.begin(9600);
+  printf("0### FREE RAM: %d\n",  fr0);
+  printf("0### FREE RAM: %d\n",  fr1);
+  printf("0### FREE RAM: %d\n",  fr2);
+  printf("1### FREE RAM: %d\n",  freeRam());
   //Serial.println("start");
   printf("Hello World\n");
   cout << "Start." << endl;
@@ -112,6 +120,7 @@ void setup()
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
+  printf("2### FREE RAM: %d\n",  freeRam ());
   std::vector<Animation> animations;
 
   Animation led_test1({
@@ -156,6 +165,7 @@ void setup()
 
     {LED4TOP, 18000, BLACK, 0}
   });
+  printf("3### FREE RAM: %d\n",  freeRam ());
 
 
   //aniop.addAnimation(led_test1);
@@ -164,6 +174,7 @@ void setup()
   Animation a0 = al.getAnimation(0);
 
   aniop.addAnimation(a0);
+  printf("4### FREE RAM: %d\n",  freeRam ());
 
   /*for (unsigned i=0; i< led_test1.numberOfKeyFrames(); i++){
   led_test1.getKeyFrame(i).printKeyFrame();}*/
@@ -182,6 +193,8 @@ void setup()
   aniop.addLedWorker(&rgb4u);
 
   aniop.init(SINGLE_ANIMATION, 0, false);
+  printf("5### FREE RAM: %d\n",  freeRam ());
+  delay(10000);
 
   //irrecv.enableIRIn(); // Start the IR receiver
 }
@@ -225,4 +238,11 @@ std::map<long, int> create_NumberButtonMap()
   m[16730805] = 8;
   m[16732845] = 9;
   return m;
+}
+
+int freeRam ()
+{
+  extern int __heap_start, *__brkval;
+  int v;
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 }
