@@ -15,12 +15,12 @@
 class RGB {
 
   public:
-    RGB(int red, int green, int blue, int brightness);
-    RGB(int red, int green, int blue);
+    RGB(unsigned red, unsigned green, unsigned blue, unsigned brightness);
+    RGB(unsigned red, unsigned green, unsigned blue);
     RGB();
-    int red();
-    int green();
-    int blue();
+    unsigned red();
+    unsigned green();
+    unsigned blue();
 
     static RGB rgb_white() { return RGB(WHITE);}
     static RGB rgb_black() { return RGB(BLACK);}
@@ -32,9 +32,9 @@ class RGB {
     static RGB rgb_cyan() { return RGB(CYAN);}
 
   private:
-    int _red;
-    int _green;
-    int _blue;
+    unsigned _red;
+    unsigned _green;
+    unsigned _blue;
 
     void _checkInput();
 };

@@ -7,7 +7,7 @@
 
 #include "RGB.h"
 
-enum KeyFrameType {MOTOR, RGB_LED, NONE};
+enum KeyFrameType {MOTOR, RGB_LED, NOFRAMETYPE};
 
 
 /////////////////////////////////////////////////////////////////////
@@ -19,24 +19,27 @@ class KeyFrame
 {
   public:
     // legacy
-    KeyFrame(long timeMs, int targetPosition)
-     : _id(0), _timeMs(timeMs), _targetPosition(targetPosition){}
+    KeyFrame(long timeMs, unsigned targetPosition)
+     : _id(0), _timeMs(timeMs), _targetPosition(targetPosition), _type(MOTOR){}
 
     // keyframe for motor movement
-    KeyFrame(int id, long timeMs, int targetPosition)
+    KeyFrame(unsigned id, long timeMs, unsigned targetPosition)
      : _id(id), _timeMs(timeMs), _targetPosition(targetPosition), _targetColor(BLACK), _type(MOTOR){}
 
     // keyframe for led colors
-    KeyFrame(int id, long timeMs, RGB targetColor)
+    KeyFrame(unsigned id, long timeMs, RGB targetColor)
       :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(targetColor), _type(RGB_LED) {}
-    KeyFrame(int id, long timeMs, int red, int green, int blue, int brightness)
+    KeyFrame(unsigned id, long timeMs, unsigned red, unsigned green, unsigned blue, unsigned brightness)
       : _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue, brightness),_type(RGB_LED){}
-    KeyFrame(int id, long timeMs, int red, int green, int blue)
+    KeyFrame(unsigned id, long timeMs, unsigned red, unsigned green, unsigned blue)
       :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue), _type(RGB_LED){}
     KeyFrame()
-     : _id(-1), _timeMs(0), _targetPosition(0), _targetColor(0,0,0),_type(NONE) {}
+     : _id(0), _timeMs(0), _targetPosition(0), _targetColor(0,0,0),_type(NOFRAMETYPE) {}
+    KeyFrame(unsigned v[8])
+    : _id(v[0]), _timeMs(100*v[1]), _targetPosition(v[2]),
+      _targetColor(v[3], v[4], v[5], v[6]),_type(v[7]==1 ? MOTOR : RGB_LED){}
 
-    int getId() {
+    unsigned getId() {
       return _id;
     }
 
@@ -44,11 +47,11 @@ class KeyFrame
       return _timeMs;
     }
 
-    int getTarget() {
+    unsigned getTarget() {
       return _targetPosition;
     }
 
-    int getTargetPosition() {
+    unsigned getTargetPosition() {
       return _targetPosition;
     }
 
@@ -67,9 +70,9 @@ class KeyFrame
 
 
   private:
-    int _id;
+    unsigned _id;
     long _timeMs;
-    int _targetPosition;
+    unsigned _targetPosition;
     RGB _targetColor;
     KeyFrameType _type;
 };
