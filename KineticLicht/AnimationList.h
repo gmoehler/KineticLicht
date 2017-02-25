@@ -52,11 +52,11 @@ private:
     return _numAnimations;
   }
 
-  void _addAsAnimationUint(unsigned v[][8], unsigned idx) {
+  void _addAsAnimationUint(unsigned v[][8], int rows, unsigned idx) {
     if (idx >= _getSizeOfAnimationUint()){
       printf("Cannot store animation uint at index %d\n", idx);
     }
-    unsigned rows = sizeof(v) / sizeof(v[0]);
+
     auto v_heap = new unsigned[rows][8]();
     std::copy(&v[0][0], &v[0][0]+rows*8,&v_heap[0][0]);
     _allAnimations[idx] = v_heap;

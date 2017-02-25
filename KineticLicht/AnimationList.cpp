@@ -50,7 +50,8 @@ unsigned led_test1[][8] = {
     {LED4TOP, 180, 0, BLACK, 0, 2}
   };
 
-  _addAsAnimationUint(led_test1, 0);
+  int rows = sizeof(led_test1) / sizeof(led_test1[0]);
+  _addAsAnimationUint(led_test1, rows, 0);
   /*
   unsigned rows = sizeof(led_test1) / sizeof(led_test1[0]);
   auto led_test1_heap = new unsigned[rows][8]();
@@ -131,7 +132,8 @@ unsigned led_test2[][8] ={
 
   };
 
-  _addAsAnimationUint(led_test2, 1);
+  rows = sizeof(led_test2) / sizeof(led_test2[0]);
+  _addAsAnimationUint(led_test2, rows, 1);
 
 /*
   Animation led_test2;

@@ -2,6 +2,67 @@
 
 extern void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, int green, int blue);
 
+typedef unsigned int animation_as_uint_t [8];
+
+animation_as_uint_t* allV[4];
+int rows = 0;
+
+animation_as_uint_t* getAnis(int id){
+  unsigned v[][8] = {
+    {LED1BOT, 20, 0, RED, 100, 2},
+    {LED1TOP, 20, 0, BLACK, 0, 2}
+  };
+
+  rows = sizeof(v) / sizeof(v[0]);
+  auto v_heap = new unsigned[rows][8]();
+  std::copy(&v[0][0], &v[0][0]+rows*8,&v_heap[0][0]);
+  int rows1 = sizeof(v_heap) / sizeof(v_heap[0]);
+
+  printf("SIZE %d %d\n", rows, rows1);
+
+  for (int i=0; i<rows; i++){
+    for (int j=0; j<8; j++){
+      printf("%u ", v[i][j]);
+    }
+    printf("\n");
+  }
+  for (int i=0; i<rows; i++){
+    for (int j=0; j<8; j++){
+      printf("%u ", v_heap[i][j]);
+    }
+    printf("\n");
+  }
+
+  allV[0] = v_heap;
+
+  for (int i=0; i<rows; i++){
+    for (int j=0; j<8; j++){
+      printf("%u ", allV[0][i][j]);
+    }
+    printf("\n");
+  }
+
+  return allV[id];
+}
+
+
+TEST(AnimationOps_tests, array_stuff){
+
+  animation_as_uint_t* as = getAnis(0);
+
+  for (int i=0; i<rows; i++){
+    for (int j=0; j<8; j++){
+      printf("%u ",as[i][j]);
+    }
+    printf("\n");
+  }
+
+
+}
+
+
+/*
+
 TEST(AnimationOps_tests, scenario){
 
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
@@ -107,9 +168,9 @@ TEST(AnimationOps, animationList){
 
   animations.back().printAnimation();
 */
-}
+//}
 
-
+/*
 TEST(AnimationOps_tests, storetest){
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
   AnimationOps as(tlc);
@@ -180,3 +241,9 @@ TEST(AnimationOps_tests, storetest){
   EXPECT_TRUE(a.isAnimationFinished());
 
 }
+*/
+/*int main( int argc, const char* argv[] )
+{
+	printf( "\nHello World\n\n" );
+}
+*/
