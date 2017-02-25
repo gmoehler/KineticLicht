@@ -65,9 +65,23 @@ TEST(AnimationOps_tests, array_stuff){
 
   cleanupAnis();
 
-
 }
 
+
+TEST(AnimationOps, animationList){
+
+  AnimationList al(true);
+  /*animation_as_uint_t* a = getAnimationAsUint(0);
+
+  for (int i=0; i<10; i++){
+    for (int j=0; j<8; j++){
+      printf("%u ",as[i][j]);
+    }
+    printf("\n");
+  }
+*/
+
+}
 
 /*
 

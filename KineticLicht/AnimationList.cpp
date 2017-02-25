@@ -51,7 +51,7 @@ unsigned led_test1[][8] = {
   };
 
   int rows = sizeof(led_test1) / sizeof(led_test1[0]);
-  _addAsAnimationUint(led_test1, rows, 0);
+  _addAsAnimationUint(led_test1, rows, _numAnimations++);
   /*
   unsigned rows = sizeof(led_test1) / sizeof(led_test1[0]);
   auto led_test1_heap = new unsigned[rows][8]();
@@ -133,7 +133,7 @@ unsigned led_test2[][8] ={
   };
 
   rows = sizeof(led_test2) / sizeof(led_test2[0]);
-  _addAsAnimationUint(led_test2, rows, 1);
+  _addAsAnimationUint(led_test2, rows, _numAnimations++);
 
 /*
   Animation led_test2;
@@ -155,11 +155,11 @@ unsigned led_test2[][8] ={
 
   //    _animationList.push_back(a);
 
-
+*/
 
 //  _animationList.push_back(led_test2);
-/*
-  std::vector<KeyFrame> kfs3 ={
+
+  unsigned a1[][8] = {
     {STEPPER1, 0, 0},
     {STEPPER1, 2000, 0},
     {STEPPER1, 9000, 2600},
@@ -222,11 +222,15 @@ unsigned led_test2[][8] ={
     {LED4BOT, 32000, YELLOW, 50},
     {LED4BOT, 37000, YELLOW, 0}
   };
+
+  rows = sizeof(a1) / sizeof(a1[0]);
+  _addAsAnimationUint(a1, rows, _numAnimations++);
+
 //);
 //  _animationList.push_back(a1);
 
   //animation 2
-  std::vector<KeyFrame> kfs4 ={
+  unsigned a2[][8] = {
       {STEPPER1, 0, 0},
       {STEPPER4, 0, 0},
       {STEPPER4, 2000, 0},
@@ -268,6 +272,7 @@ unsigned led_test2[][8] ={
       {LED4BOT, 22000, BLACK, 0}
     };
 
-    _animationList.push_back(a2);
-*/
+    rows = sizeof(a2) / sizeof(a2[0]);
+    _addAsAnimationUint(a2, rows, _numAnimations++);
+
 }
