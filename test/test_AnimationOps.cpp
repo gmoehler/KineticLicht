@@ -45,6 +45,12 @@ animation_as_uint_t* getAnis(int id){
   return allV[id];
 }
 
+void cleanupAnis(){
+  for (int i=0; i<4; i++){
+    delete[] allV[i];
+  }
+}
+
 
 TEST(AnimationOps_tests, array_stuff){
 
@@ -56,6 +62,8 @@ TEST(AnimationOps_tests, array_stuff){
     }
     printf("\n");
   }
+
+  cleanupAnis();
 
 
 }
