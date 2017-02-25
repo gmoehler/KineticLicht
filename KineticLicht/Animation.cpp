@@ -12,6 +12,14 @@ Animation::Animation(vector<KeyFrame> kfs): Animation() {
   addKeyFrames(kfs);
 }
 
+Animation::Animation(array_of_8_uint_t *v, unsigned length): Animation() {
+
+  for (unsigned i=0; i< length; i++){
+    KeyFrame kf(v[i]);
+    addKeyFrame(kf);
+  }
+}
+
 unsigned Animation::numberOfKeyFrames(){
   return _keyFrames.size();
 }
@@ -105,11 +113,3 @@ void Animation::printAnimation(){
   }
   printf("\n");
 }
-
-  KeyFrame& Animation::getKeyFrame(unsigned i){
-    if (i < 0 || i >= numberOfKeyFrames() ){
-      printf ("ERROR! KeyFrame %u does not exist!\n", i);
-      return _emptyKeyFrame;
-    }
-    return _keyFrames[i];
-  }

@@ -14,6 +14,8 @@
 
 using namespace std;
 
+typedef unsigned int animation_as_uint_t [8];
+
 enum LedPosition { TOP, BOTTOM };
 
 class Animation
@@ -22,6 +24,7 @@ public:
 
   Animation();
   Animation(vector<KeyFrame> new_kfs);
+  Animation(animation_as_uint_t *v, unsigned length);
 
   bool isAnimationFinished();
   bool needsTargetFrameUpdate(long elapsedTime);
@@ -34,13 +37,13 @@ public:
   unsigned numberOfKeyFrames();
 
   void printAnimation();
-  KeyFrame& getKeyFrame(unsigned i);
 
   bool containsMotorFrames();
 
 private:
   vector<KeyFrame> _keyFrames;
   int _currentFrameId;
+  KeyFrame _currentKeyFrame;
   bool _isSorted;
   bool _firstTargetFrameRead;
   bool _withMotor;

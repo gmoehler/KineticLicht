@@ -1,58 +1,71 @@
 #include "AnimationList.h"
 
+bool Compare_Rows(const unsigned a[8], const unsigned b[8])
+{
+  return a[0] < b[0];
+}
+
 void AnimationList::load(){
 
-std::vector<KeyFrame> kfs0 ={
-    {LED1BOT, 0,  BLACK, 0},
-    {LED1TOP, 0,  BLACK, 0},
-    {LED2BOT, 0,  BLACK, 0},
-    {LED2TOP, 0,  BLACK, 0},
-    {LED3BOT, 0,  BLACK, 0},
-    {LED3TOP, 0,  BLACK, 0},
-    {LED4BOT, 0,  BLACK, 0},
-    {LED4TOP, 0,  BLACK, 0},
+unsigned led_test1[][8] = {
+    {LED1BOT, 0, 0, BLACK, 0, 2},
+    {LED1TOP, 0, 0, BLACK, 0, 2},
+    {LED2BOT, 0, 0, BLACK, 0, 2},
+    {LED2TOP, 0, 0, BLACK, 0, 2},
+    {LED3BOT, 0, 0, BLACK, 0, 2},
+    {LED3TOP, 0, 0, BLACK, 0, 2},
+    {LED4BOT, 0, 0, BLACK, 0, 2},
+    {LED4TOP, 0, 0, BLACK, 0, 2},
 
-    {LED1BOT, 2000,  RED, 100},
-    {LED1TOP, 2000,  BLACK, 0},
+    {LED1BOT, 20, 0, RED, 100, 2},
+    {LED1TOP, 20, 0, BLACK, 0, 2},
 
-    {LED1BOT, 4000, BLACK, 0},
-    {LED1TOP, 4000, RED, 100},
-    {LED2BOT, 4000, BLACK, 0},
+    {LED1BOT, 40, 0, BLACK, 0, 2},
+    {LED1TOP, 40, 0, RED, 100, 2},
+    {LED2BOT, 40, 0, BLACK, 0, 2},
 
-    {LED1TOP, 6000, BLACK, 0},
-    {LED2BOT, 6000, RED, 100},
-    {LED2TOP, 6000, BLACK, 0},
+    {LED1TOP, 60, 0, BLACK, 0, 2},
+    {LED2BOT, 60, 0, RED, 100, 2},
+    {LED2TOP, 60, 0, BLACK, 0, 2},
 
-    {LED2BOT, 8000, BLACK, 0},
-    {LED2TOP, 8000, RED, 100},
-    {LED3BOT, 8000, BLACK, 0},
+    {LED2BOT, 80, 0, BLACK, 0, 2},
+    {LED2TOP, 80, 0, RED, 100, 2},
+    {LED3BOT, 80, 0, BLACK, 0, 2},
 
-    {LED2TOP, 10000, BLACK, 0},
-    {LED3BOT, 10000, RED, 100},
-    {LED3TOP, 10000, BLACK, 0},
+    {LED2TOP, 100, 0, BLACK, 0, 2},
+    {LED3BOT, 100, 0, RED, 100, 2},
+    {LED3TOP, 100, 0, BLACK, 0, 2},
 
-    {LED3BOT, 12000, BLACK, 0},
-    {LED3TOP, 12000, RED, 100},
-    {LED4BOT, 12000, BLACK, 0},
+    {LED3BOT, 120, 0, BLACK, 0, 2},
+    {LED3TOP, 120, 0, RED, 100, 2},
+    {LED4BOT, 120, 0, BLACK, 0, 2},
 
-    {LED3TOP, 14000, BLACK, 0},
-    {LED4BOT, 14000, RED, 100},
-    {LED4TOP, 14000, BLACK, 0},
+    {LED3TOP, 140, 0, BLACK, 0, 2},
+    {LED4BOT, 140, 0, RED, 100, 2},
+    {LED4TOP, 140, 0, BLACK, 0, 2},
 
-    {LED4BOT, 16000, BLACK, 0},
-    {LED4TOP, 16000, RED, 100},
+    {LED4BOT, 160, 0, BLACK, 0, 2},
+    {LED4TOP, 160, 0, RED, 100, 2},
 
-    {LED4TOP, 18000, BLACK, 0}
+    {LED4TOP, 180, 0, BLACK, 0, 2}
   };
 
-  Animation led_test1;
-  led_test1.addKeyFrames(kfs0);
+  _addAsAnimationUint(led_test1, 0);
+  /*
+  unsigned rows = sizeof(led_test1) / sizeof(led_test1[0]);
+  auto led_test1_heap = new unsigned[rows][8]();
+  std::copy(&led_test1[0][0], &led_test1[0][0]+rows*8,&led_test1_heap[0][0]);
+  _allAnimations[0] = led_test1_heap;
 
-  _animationList.push_back(led_test1);
-
-
+  for (unsigned i=0; i<31; i++){
+    for (int j=0; j<8; j++){
+      printf("%d ", _allAnimations[0][i][j]);
+    }
+    printf("\n");
+  }
+*/
   // LED test: all LEDs change colors at the same time
-std::vector<KeyFrame> kfs1 ={
+unsigned led_test2[][8] ={
     {LED1BOT, 3000, RED, 100},
     {LED1TOP, 3000, RED, 100},
     {LED2BOT, 3000, RED, 100},
@@ -117,13 +130,16 @@ std::vector<KeyFrame> kfs1 ={
     {LED4TOP, 15000, LILA, 0}
 
   };
+
+  _addAsAnimationUint(led_test2, 1);
+
 /*
   Animation led_test2;
   led_test2.addKeyFrames(kfs1);
 */
   //_animationList.push_back(led_test2);
 
-
+/*
       Animation a;
       KeyFrame kf0(LED1BOT, 2000,  GREEN, 100);
       KeyFrame kf1(LED3BOT, 2000,  GREEN, 100);

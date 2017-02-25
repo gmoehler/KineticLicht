@@ -67,7 +67,7 @@ TEST(AnimationOps_tests, scenario){
 
   }
 }
-/*
+
 TEST(AnimationOps, animationList){
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
   AnimationOps as(tlc);
@@ -75,6 +75,9 @@ TEST(AnimationOps, animationList){
   int num0 = as.getNumAnimations();
   EXPECT_EQ(0, num0);
 
+  AnimationList al(true);
+
+/*
   std::vector<Animation> animations = loadAnimations();
   //EXPECT_EQ((unsigned) 4, animations.size());
   for (unsigned j=0; j<animations.size(); j++){
@@ -103,9 +106,9 @@ TEST(AnimationOps, animationList){
   animations.push_back(a1);
 
   animations.back().printAnimation();
-
-}
 */
+}
+
 
 TEST(AnimationOps_tests, storetest){
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
@@ -139,10 +142,10 @@ TEST(AnimationOps_tests, storetest){
 
   EXPECT_EQ(STEPPER1, kf.getId());
   EXPECT_EQ(0, kf.getTimeMs());
-  EXPECT_EQ(0, kf.getTargetPosition());
-  EXPECT_EQ(0, kf.getTargetColor().red());
-  EXPECT_EQ(0, kf.getTargetColor().green());
-  EXPECT_EQ(0, kf.getTargetColor().blue());
+  EXPECT_EQ(0u, kf.getTargetPosition());
+  EXPECT_EQ(0u, kf.getTargetColor().red());
+  EXPECT_EQ(0u, kf.getTargetColor().green());
+  EXPECT_EQ(0u, kf.getTargetColor().blue());
 
   EXPECT_TRUE(a.needsTargetFrameUpdate(1000));
   kfs =a.getNextTargetKeyFrames(1000);
@@ -151,10 +154,10 @@ TEST(AnimationOps_tests, storetest){
 
   EXPECT_EQ(LED1TOP, kf.getId());
   EXPECT_EQ(1500, kf.getTimeMs());
-  EXPECT_EQ(0, kf.getTargetPosition());
-  EXPECT_EQ(RGB_MAX_VAL/2,kf.getTargetColor().red());
-  EXPECT_EQ(RGB_MAX_VAL/2,kf.getTargetColor().green());
-  EXPECT_EQ(0, kf.getTargetColor().blue());
+  EXPECT_EQ(0u, kf.getTargetPosition());
+  EXPECT_EQ((unsigned) RGB_MAX_VAL/2,kf.getTargetColor().red());
+  EXPECT_EQ((unsigned) RGB_MAX_VAL/2,kf.getTargetColor().green());
+  EXPECT_EQ(0u, kf.getTargetColor().blue());
 
   EXPECT_TRUE(a.needsTargetFrameUpdate(1600));
   kfs =a.getNextTargetKeyFrames(1600);
@@ -163,10 +166,10 @@ TEST(AnimationOps_tests, storetest){
 
   EXPECT_EQ(STEPPER2, kf.getId());
   EXPECT_EQ(2000, kf.getTimeMs());
-  EXPECT_EQ(1000, kf.getTargetPosition());
-  EXPECT_EQ(0, kf.getTargetColor().red());
-  EXPECT_EQ(0, kf.getTargetColor().green());
-  EXPECT_EQ(0, kf.getTargetColor().blue());
+  EXPECT_EQ(1000u, kf.getTargetPosition());
+  EXPECT_EQ(0u, kf.getTargetColor().red());
+  EXPECT_EQ(0u, kf.getTargetColor().green());
+  EXPECT_EQ(0u, kf.getTargetColor().blue());
 
   EXPECT_FALSE(a.isAnimationFinished());
 
