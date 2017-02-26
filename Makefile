@@ -26,6 +26,7 @@ LIBDIR      := test/lib/$(PLATFORM)
 #Flags, Libraries and Includes
 CFLAGS      := -ggdb -static-libgcc -static-libstdc++ -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
 LIB         := -fopenmp -lm -L$(LIBDIR) -lgtest_main -lgtest
+EXLIB       := -lm -L$(LIBDIR) -lgtest_main -lgtest
 GOOGLETEST_DIR := /c/Users/gregor/Documents/GitHub/googletest/googletest
 INC         := -I$(INCDIR) -I$(TESTINCDIR) -Itest/include -I/usr/local/include -I$(GOOGLETEST_DIR)/include
 INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
@@ -83,7 +84,7 @@ $(TARGET): $(OBJECTS)
 	$(CC) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
 
 $(EXAMPLE): $(EXOBJECTS)
-	$(CC) -o $(TARGETDIR)/$(EXAMPLE) $^ $(LIB)
+	$(CC) -o $(TARGETDIR)/$(EXAMPLE) $^ $(EXLIB)
 
 #Compile
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
