@@ -52,19 +52,7 @@ unsigned led_test1[][8] = {
 
   int rows = sizeof(led_test1) / sizeof(led_test1[0]);
   _addAsAnimationUint(led_test1, rows, _numAnimations++);
-  /*
-  unsigned rows = sizeof(led_test1) / sizeof(led_test1[0]);
-  auto led_test1_heap = new unsigned[rows][8]();
-  std::copy(&led_test1[0][0], &led_test1[0][0]+rows*8,&led_test1_heap[0][0]);
-  _allAnimations[0] = led_test1_heap;
-
-  for (unsigned i=0; i<31; i++){
-    for (int j=0; j<8; j++){
-      printf("%d ", _allAnimations[0][i][j]);
-    }
-    printf("\n");
-  }
-*/
+/*
   // LED test: all LEDs change colors at the same time
 unsigned led_test2[][8] ={
     {LED1BOT, 3000, RED, 100},
@@ -135,30 +123,6 @@ unsigned led_test2[][8] ={
   rows = sizeof(led_test2) / sizeof(led_test2[0]);
   _addAsAnimationUint(led_test2, rows, _numAnimations++);
 
-/*
-  Animation led_test2;
-  led_test2.addKeyFrames(kfs1);
-*/
-  //_animationList.push_back(led_test2);
-
-/*
-      Animation a;
-      KeyFrame kf0(LED1BOT, 2000,  GREEN, 100);
-      KeyFrame kf1(LED3BOT, 2000,  GREEN, 100);
-      std::vector<KeyFrame> kfs = {
-        {LED1BOT, 2000,  GREEN, 100},
-        {LED1BOT, 4000,  BLUE, 100}
-      };
-      kfs.push_back(kf0);
-      kfs.push_back(kf1);
-      a.addKeyFrames(kfs);
-
-  //    _animationList.push_back(a);
-
-*/
-
-//  _animationList.push_back(led_test2);
-
   unsigned a1[][8] = {
     {STEPPER1, 0, 0},
     {STEPPER1, 2000, 0},
@@ -226,9 +190,6 @@ unsigned led_test2[][8] ={
   rows = sizeof(a1) / sizeof(a1[0]);
   _addAsAnimationUint(a1, rows, _numAnimations++);
 
-//);
-//  _animationList.push_back(a1);
-
   //animation 2
   unsigned a2[][8] = {
       {STEPPER1, 0, 0},
@@ -274,5 +235,5 @@ unsigned led_test2[][8] ={
 
     rows = sizeof(a2) / sizeof(a2[0]);
     _addAsAnimationUint(a2, rows, _numAnimations++);
-
+    */
 }

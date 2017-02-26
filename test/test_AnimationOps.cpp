@@ -56,6 +56,13 @@ TEST(AnimationOps_tests, array_stuff){
 
   animation_as_uint_t* as = getAnis(0);
 
+  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+  AnimationOps ao(tlc);
+
+  int num0 = ao.getNumAnimations();
+  EXPECT_EQ(0, num0);
+
+
   for (int i=0; i<rows; i++){
     for (int j=0; j<8; j++){
       printf("%u ",as[i][j]);
@@ -71,11 +78,12 @@ TEST(AnimationOps_tests, array_stuff){
 TEST(AnimationOps, animationList){
 
   AnimationList al(true);
-  /*animation_as_uint_t* a = getAnimationAsUint(0);
+/*
+  animation_as_uint_t* a = al.getAnimationAsUint(0);
 
   for (int i=0; i<10; i++){
     for (int j=0; j<8; j++){
-      printf("%u ",as[i][j]);
+      printf("%u ",a[i][j]);
     }
     printf("\n");
   }
