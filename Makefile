@@ -3,7 +3,7 @@ CC          := g++
 
 #The Target Binary Program
 TARGET      := dotest
-EXAMPLE 		:= doexample
+EXAMPLE 		:= example
 
 # what platform we are running on
 PLATFORM    := $(shell uname -so | sed -r s'/[^a-zA-Z0-9]/_/g')
@@ -36,15 +36,20 @@ INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
 #SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 SOURCES      := $(SRCDIR)/RGB.cpp $(SRCDIR)/Animation.cpp $(SRCDIR)/AnimationOps.cpp \
 								$(SRCDIR)/LedWorker.cpp $(SRCDIR)/StepperWorker.cpp $(SRCDIR)/AnimationList.cpp
-TESTSOURCES  := $(TESTDIR)/mock_Arduino.cpp  $(TESTDIR)/test_AnimationOps.cpp
-#$(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
+TESTSOURCES  := $(TESTDIR)/mock_Arduino.cpp  $(TESTDIR)/test_AnimationOps.cpp $(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
 					$(TESTDIR)/test_Animation.cpp  $(TESTDIR)/test_AnimationOps.cpp \
 					$(TESTDIR)/test_LedWorker.cpp $(TESTDIR)/test_StepperWorker.cpp \
 					$(TESTDIR)/test_FiniteStates.cpp
-EXSOURCES := $(EXDIR)/example_main.cpp
+EXSOURCES    := $(TESTDIR)/mock_Arduino.cpp
+#$(EXDIR)/example_main.cpp
 
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) \
 							 $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.$(OBJEXT)))
+
+EXOBJECTS   := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) \
+							 $(patsubst $(EXDIR)/%,$(BUILDDIR)/%,$(EXSOURCES:.$(SRCEXT)=.$(OBJEXT))) \
+							 $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.$(OBJEXT)))
+
 
 #Defauilt Make
 all: $(TARGET)
@@ -71,10 +76,14 @@ cleaner: clean
 
 #Pull in dependency info for *existing* .o files
 -include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
+-include $(EXOBJECTS:.$(OBJEXT)=.$(DEPEXT))
 
 #Link
 $(TARGET): $(OBJECTS)
 	$(CC) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
+
+$(EXAMPLE): $(EXOBJECTS)
+	$(CC) -o $(EXDIR)/$(EXAMPLE) $^ $(LIB)
 
 #Compile
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
@@ -86,8 +95,10 @@ $(BUILDDIR)/%.$(OBJEXT): $(TESTDIR)/%.$(SRCEXT)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(BUILDDIR)/%.$(OBJEXT): $(EXDIR)/%.$(SRCEXT)
-		@mkdir -p $(dir $@)
-		$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+
+
 
 #Non-File Targets
 .PHONY: all remake clean cleaner resources
