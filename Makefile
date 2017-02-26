@@ -99,7 +99,7 @@ $(BUILDDIR)/%.$(OBJEXT): $(EXDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
-
+print-%  : ; @echo $* = $($*)
 
 #Non-File Targets
 .PHONY: all remake clean cleaner resources
