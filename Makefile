@@ -41,14 +41,13 @@ TESTSOURCES  := $(TESTDIR)/mock_Arduino.cpp  $(TESTDIR)/test_rgb.cpp $(TESTDIR)/
 								$(TESTDIR)/test_Animation.cpp  $(TESTDIR)/test_AnimationOps.cpp \
 								$(TESTDIR)/test_LedWorker.cpp $(TESTDIR)/test_StepperWorker.cpp \
 								$(TESTDIR)/test_FiniteStates.cpp
-EXSOURCES    := $(EXDIR)/example_main.cpp
+EXSOURCES    := $(EXDIR)/mock_Arduino.cpp $(EXDIR)/example_main.cpp
 
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) \
 							 $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.$(OBJEXT)))
 
 EXOBJECTS   := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) \
-							 $(patsubst $(EXDIR)/%,$(BUILDDIR)/%,$(EXSOURCES:.$(SRCEXT)=.$(OBJEXT))) \
-							 $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.$(OBJEXT)))
+							 $(patsubst $(EXDIR)/%,$(BUILDDIR)/%,$(EXSOURCES:.$(SRCEXT)=.$(OBJEXT))) 
 
 #$(info $$EXOBJECTS is [${EXOBJECTS}])
 
