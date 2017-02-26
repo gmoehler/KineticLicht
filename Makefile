@@ -50,6 +50,7 @@ EXOBJECTS   := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 							 $(patsubst $(EXDIR)/%,$(BUILDDIR)/%,$(EXSOURCES:.$(SRCEXT)=.$(OBJEXT))) \
 							 $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.$(OBJEXT)))
 
+$(info $$EXOBJECTS is [${EXOBJECTS}])
 
 #Defauilt Make
 all: $(TARGET)
