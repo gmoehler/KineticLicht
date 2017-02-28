@@ -54,7 +54,7 @@ private:
 
   void _addAsAnimationUint(unsigned v[][8], int rows, unsigned idx) {
     if (idx >= _getSizeOfAnimationUint()){
-      printf("Cannot store animation uint at index %d\n", idx);
+      printf("Cannot store animation uint at index %d, max idex is %d.\n", idx, _getSizeOfAnimationUint());
     }
 
     auto v_heap = new unsigned[rows][8]();

@@ -7,6 +7,8 @@ bool Compare_Rows(const unsigned a[8], const unsigned b[8])
 
 void AnimationList::load(){
 
+int animationId = 0;
+
 unsigned led_test1[][8] = {
     {LED1BOT, 0, 0, BLACK, 0, 2},
     {LED1TOP, 0, 0, BLACK, 0, 2},
@@ -51,7 +53,7 @@ unsigned led_test1[][8] = {
   };
 
   int rows = sizeof(led_test1) / sizeof(led_test1[0]);
-  _addAsAnimationUint(led_test1, rows, _numAnimations++);
+  _addAsAnimationUint(led_test1, rows, animationId++);
 /*
   // LED test: all LEDs change colors at the same time
 unsigned led_test2[][8] ={
@@ -121,7 +123,7 @@ unsigned led_test2[][8] ={
   };
 
   rows = sizeof(led_test2) / sizeof(led_test2[0]);
-  _addAsAnimationUint(led_test2, rows, _numAnimations++);
+  _addAsAnimationUint(led_test2, rows, animationId++);
 
   unsigned a1[][8] = {
     {STEPPER1, 0, 0},
@@ -188,7 +190,7 @@ unsigned led_test2[][8] ={
   };
 
   rows = sizeof(a1) / sizeof(a1[0]);
-  _addAsAnimationUint(a1, rows, _numAnimations++);
+  _addAsAnimationUint(a1, rows, animationId++);
 
   //animation 2
   unsigned a2[][8] = {
@@ -234,6 +236,6 @@ unsigned led_test2[][8] ={
     };
 
     rows = sizeof(a2) / sizeof(a2[0]);
-    _addAsAnimationUint(a2, rows, _numAnimations++);
+    _addAsAnimationUint(a2, rows, animationId++);
     */
 }

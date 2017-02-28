@@ -70,4 +70,17 @@ int main( int argc, const char* argv[] )
   }
 
   cleanupAnis0();
+  
+  printf ("reading...\n");
+  
+  AnimationList al(true);
+  
+  animation_as_uint_t* ani = al.getAnimationAsUint(0);
+  
+  for (int i=0; i<20; i++){
+    for (int j=0; j<8; j++){
+      printf("%u ",ani[i][j]);
+    }
+    printf("\n");
+  }
 }

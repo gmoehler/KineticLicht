@@ -24,7 +24,8 @@ LIBDIR      := test/lib/$(PLATFORM)
 
 
 #Flags, Libraries and Includes
-CFLAGS      := -ggdb -static-libgcc -static-libstdc++ -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
+#CFLAGS      := -ggdb -static-libgcc -static-libstdc++ -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
+CFLAGS      := -ggdb -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
 LIB         := -fopenmp -lm -L$(LIBDIR) -lgtest_main -lgtest
 EXLIB       := -lm -L$(LIBDIR) -lgtest_main -lgtest
 GOOGLETEST_DIR := /c/Users/gregor/Documents/GitHub/googletest/googletest
@@ -52,7 +53,7 @@ EXOBJECTS   := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 #$(info $$EXOBJECTS is [${EXOBJECTS}])
 
 #Defauilt Make
-all: $(TARGET)
+all: $(TARGET) $(EXAMPLE)
 
 #Remake
 remake: cleaner all

@@ -78,17 +78,15 @@ TEST(AnimationOps_tests, array_stuff){
 TEST(AnimationOps, animationList){
 
   AnimationList al(true);
-/*
-  animation_as_uint_t* a = al.getAnimationAsUint(0);
-
-  for (int i=0; i<10; i++){
+  animation_as_uint_t* ani = al.getAnimationAsUint(0);
+  
+  for (int i=0; i<3; i++){
     for (int j=0; j<8; j++){
-      printf("%u ",a[i][j]);
+      printf("%u ",ani[i][j]);
     }
     printf("\n");
   }
-*/
-
+  
 }
 
 /*
