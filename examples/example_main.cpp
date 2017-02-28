@@ -94,4 +94,9 @@ int main( int argc, const char* argv[] )
   Animation animation(ani, numKf);
   animation.printAnimation();
   
+  printf ("current animation...\n");
+  ao.selectAnimation(0);
+  Animation& an0 = ao._getCurrentAnimation();
+  an0.printAnimation();
+  
 }

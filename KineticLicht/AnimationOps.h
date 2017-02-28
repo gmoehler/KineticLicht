@@ -32,25 +32,27 @@ enum AnimationStrategy { SINGLE_ANIMATION, LOOP_ANIMATION };
 class AnimationOps : public FiniteStateMachine<AnimationOps> {
 
 public:
-  AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations=false);
+  AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations=true);
 
   void addStepperWorker(StepperWorker* sw);
   void addLedWorker(LedWorker* lw);
 
   int addAnimation(Animation& a );
-  Animation& getAnimation(int id);
-
+  
+  void selectAnimation(int id);
   int getNumAnimations();
 
   // to be called in setup()
   void init(AnimationStrategy strategy, int startWithAnimationId, bool repeat);
   void loop(); // to be called in loop()
+Animation& _getCurrentAnimation();
 
 private:
   AnimationList _animations;
   std::map<int,StepperWorker*> _stepperWorkerMap;
   std::map<int,LedWorker*> _ledWorkerMap;
 
+  Animation _currentAnimation;
   int _currentAnimationId;
   long _elapsedTime;
   long _startTime;
@@ -61,7 +63,8 @@ private:
 
   Adafruit_TLC5947 _tlc;
 
-  Animation& _getCurrentAnimation();
+  
+  Animation& getAnimation(int id);
 
   bool _init_to_calibrating();
   bool _init_to_active();

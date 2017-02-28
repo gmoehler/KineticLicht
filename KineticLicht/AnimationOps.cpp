@@ -17,11 +17,19 @@ Animation& AnimationOps::getAnimation(int id){
   return _animations.getAnimation(id);
 }
 
+void AnimationOps::selectAnimation(int id){
+	animation_as_uint_t* aniUint = _animations.getAnimationAsUint(id);
+    int numKf = _animations.getNumKeyFrames(id);
+    _currentAnimation = Animation(aniUint, numKf);
+	}
+
 Animation& AnimationOps::_getCurrentAnimation(){
-  if (_animations.getNumAnimations() == 0 || (int) _animations.getNumAnimations() < _currentAnimationId){
+/*  if (_animations.getNumAnimations() == 0 || (int) _animations.getNumAnimations() < _currentAnimationId){
     printf("AnimationOps: Cannot select current Animation %d:\n", _currentAnimationId);
   }
   return getAnimation(_currentAnimationId);
+  */
+  return _currentAnimation;
 }
 
 void AnimationOps::init(AnimationStrategy strategy,
