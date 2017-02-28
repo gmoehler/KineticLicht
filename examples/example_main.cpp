@@ -82,5 +82,16 @@ int main( int argc, const char* argv[] )
       printf("%u ",ani[i][j]);
     }
     printf("\n");
+    KeyFrame kf(ani[i]);
+    kf.printKeyFrame();
   }
+  
+  animation_as_uint_t *a;
+  a = new animation_as_uint_t[4];
+  
+  
+  int numKf = al.getNumKeyFrames(0);
+  Animation animation(ani, numKf);
+  animation.printAnimation();
+  
 }

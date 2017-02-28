@@ -19,6 +19,8 @@ class AnimationList
 
 public:
   AnimationList(bool loadAnimations=true) : _numAnimations(4){
+
+    //_allAnimations = new animation_as_uint_t[4];
     if (loadAnimations){
       load();
     }
@@ -42,11 +44,17 @@ public:
   animation_as_uint_t* getAnimationAsUint(unsigned id){
     return _allAnimations[id];
   }
+  
+  int getNumKeyFrames(unsigned id){
+  	return _numKeyFrames[id];
+  	}
+  
 
 private:
   std::vector<Animation> _animationList;
   unsigned _numAnimations;
   animation_as_uint_t* _allAnimations[4];
+  int _numKeyFrames[4];
 
   unsigned _getSizeOfAnimationUint(){
     return _numAnimations;
@@ -60,6 +68,7 @@ private:
     auto v_heap = new unsigned[rows][8]();
     std::copy(&v[0][0], &v[0][0]+rows*8,&v_heap[0][0]);
     _allAnimations[idx] = v_heap;
+    _numKeyFrames[idx] = rows;
   }
 };
 
