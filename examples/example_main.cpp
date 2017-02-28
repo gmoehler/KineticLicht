@@ -51,7 +51,7 @@ void cleanupAnis0(){
 }
 
 
-int main( int argc, const char* argv[] )
+void test1()
 {
   animation_as_uint_t* as = getAnis0(0);
 
@@ -99,4 +99,20 @@ int main( int argc, const char* argv[] )
   Animation& an0 = ao._getCurrentAnimation();
   an0.printAnimation();
   
+}
+
+void test2(){
+	Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+    AnimationOps ao(tlc, true);
+	
+	ao.init(SINGLE_ANIMATION, 0, false);
+	Animation& an0 = ao._getCurrentAnimation();
+    an0.printAnimation();
+	
+	}
+
+int main( int argc, const char* argv[] ){
+	//test1();
+	test2();
+	
 }

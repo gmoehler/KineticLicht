@@ -8,6 +8,7 @@ int AnimationOps::addAnimation(Animation& a){
 }
 
 int AnimationOps::getNumAnimations(){
+  //return _animations.getNumAnimations();
   return _animations.getNumAnimations();
 }
 
@@ -53,6 +54,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
   if (getNumAnimations() > _strategy_startWithAnimationId){
     _currentAnimationId = _strategy_startWithAnimationId;
+    selectAnimation(_currentAnimationId);
   }
   else {
     printf ("#### ERROR! Cannot start with animation id %d > %d.\n",

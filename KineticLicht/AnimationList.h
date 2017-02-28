@@ -29,7 +29,8 @@ public:
   void load();
 
   unsigned getNumAnimations(){
-    return _animationList.size();
+    //return _animationList.size();
+    return _numAnimations;
   }
 
   unsigned addAnimation(Animation& a){
