@@ -2,21 +2,10 @@
 
 // full height: 4200 = 2100mm
 
-int AnimationOps::addAnimation(Animation& a){
-  _animations.addAnimation(a);
-  return _animations.getNumAnimations() -1;
-}
-
 int AnimationOps::getNumAnimations(){
-  //return _animations.getNumAnimations();
   return _animations.getNumAnimations();
 }
 
-Animation& AnimationOps::getAnimation(int id){
-  printf("AnimationOps: Selecting animation %d:\n", id);
-  _animations.getAnimation(id).printAnimation();
-  return _animations.getAnimation(id);
-}
 
 void AnimationOps::selectAnimation(int id){
 	animation_as_uint_t* aniUint = _animations.getAnimationAsUint(id);
@@ -25,11 +14,6 @@ void AnimationOps::selectAnimation(int id){
 	}
 
 Animation& AnimationOps::_getCurrentAnimation(){
-/*  if (_animations.getNumAnimations() == 0 || (int) _animations.getNumAnimations() < _currentAnimationId){
-    printf("AnimationOps: Cannot select current Animation %d:\n", _currentAnimationId);
-  }
-  return getAnimation(_currentAnimationId);
-  */
   return _currentAnimation;
 }
 
@@ -119,7 +103,7 @@ void AnimationOps::_action_calibrating(){
 }
 
 bool AnimationOps::_init_to_active(){
-  if (!_animations.getAnimation(_currentAnimationId).containsMotorFrames()){
+  if (!_getCurrentAnimation().containsMotorFrames()){
     printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
     return true;
   }

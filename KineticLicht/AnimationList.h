@@ -19,27 +19,23 @@ class AnimationList
 
 public:
   AnimationList(bool loadAnimations=true) : _numAnimations(4){
-
+  _numKeyFrames = new int[4];
     //_allAnimations = new animation_as_uint_t[4];
     if (loadAnimations){
       load();
     }
   }
+  
+ ~AnimationList() {
+ 	for (int i=0;i<4;i++){
+ 	  delete[] _allAnimations[i];
+   }
+ }
 
   void load();
 
   unsigned getNumAnimations(){
-    //return _animationList.size();
     return _numAnimations;
-  }
-
-  unsigned addAnimation(Animation& a){
-    _animationList.push_back(a);
-    return _animationList.size()-1;
-  }
-
-  Animation& getAnimation(unsigned id){
-    return _animationList.at(id);
   }
 
   animation_as_uint_t* getAnimationAsUint(unsigned id){
@@ -52,15 +48,15 @@ public:
   
 
 private:
-  std::vector<Animation> _animationList;
   unsigned _numAnimations;
   animation_as_uint_t* _allAnimations[4];
-  int _numKeyFrames[4];
+  int* _numKeyFrames;
 
   unsigned _getSizeOfAnimationUint(){
     return _numAnimations;
   }
-
+  
+  // add an animation array to _allAnimations
   void _addAsAnimationUint(unsigned v[][8], int rows, unsigned idx) {
     if (idx >= _getSizeOfAnimationUint()){
       printf("Cannot store animation uint at index %d, max idex is %d.\n", idx, _getSizeOfAnimationUint());

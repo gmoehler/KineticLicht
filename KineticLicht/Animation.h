@@ -33,19 +33,18 @@ public:
   // add new key frames - sort is done on first getNextTargetKeyFrames()
   void addKeyFrame(KeyFrame kf);
   void addKeyFrames(vector<KeyFrame> new_kfs);
+  KeyFrame& getKeyFrame(unsigned id);
   void resetCurrentKeyFrame();
   unsigned numberOfKeyFrames();
 
-  void printAnimation();
-
   bool containsMotorFrames();
+
+  void printAnimation();
 
 private:
   vector<KeyFrame> _keyFrames;
   int _currentFrameId;
-  KeyFrame _currentKeyFrame;
   bool _isSorted;
-  bool _firstTargetFrameRead;
   bool _withMotor;
   KeyFrame _emptyKeyFrame; // return this one in case of errors
 };

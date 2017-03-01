@@ -1,6 +1,5 @@
 #include "../test/test.h"
 
-
 typedef unsigned int animation_as_uint_t [8];
 
 animation_as_uint_t* allV0[4];
@@ -59,8 +58,7 @@ void test1()
   AnimationOps ao(tlc);
 
   int num0 = ao.getNumAnimations();
-  EXPECT_EQ(0, num0);
-
+  EXPECT_EQ(4, num0);
 
   for (int i=0; i<rows0; i++){
     for (int j=0; j<8; j++){
@@ -77,7 +75,7 @@ void test1()
   
   animation_as_uint_t* ani = al.getAnimationAsUint(0);
   
-  for (int i=0; i<20; i++){
+  for (int i=0; i<3; i++){
     for (int j=0; j<8; j++){
       printf("%u ",ani[i][j]);
     }
@@ -89,30 +87,43 @@ void test1()
   animation_as_uint_t *a;
   a = new animation_as_uint_t[4];
   
-  
   int numKf = al.getNumKeyFrames(0);
   Animation animation(ani, numKf);
-  animation.printAnimation();
+  EXPECT_EQ(numKf, animation.numberOfKeyFrames());
+  //animation.printAnimation();
   
   printf ("current animation...\n");
-  ao.selectAnimation(0);
+  ao.selectAnimation(1);
   Animation& an0 = ao._getCurrentAnimation();
-  an0.printAnimation();
+  EXPECT_EQ(56, an0.numberOfKeyFrames());
+  //an0.printAnimation();
   
 }
 
 void test2(){
 	Adafruit_TLC5947 tlc = Adafruit_TLC5947();
     AnimationOps ao(tlc, true);
+	EXPECT_EQ(4, ao.getNumAnimations());
 	
 	ao.init(SINGLE_ANIMATION, 0, false);
-	Animation& an0 = ao._getCurrentAnimation();
-    an0.printAnimation();
+	Animation& a = ao._getCurrentAnimation();
+    a.printAnimation();
+    
+    printf("+++++++++++++++\n");
+
+  printf("Num keys: %d\n", a.numberOfKeyFrames());
+  //for (unsigned i=0; i<a.numberOfKeyFrames(); i++){
+    for (unsigned i=0; i<3; i++){
+      printf("%d", i);
+      KeyFrame kf = a.getKeyFrame(i);
+      kf.printKeyFrame();
+  }
+  printf("+++++++++++++++\n");
 	
 	}
 
 int main( int argc, const char* argv[] ){
-	//test1();
+	test1();
 	test2();
 	
 }

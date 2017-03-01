@@ -54,7 +54,7 @@ unsigned led_test1[][8] = {
 
   int rows = sizeof(led_test1) / sizeof(led_test1[0]);
   _addAsAnimationUint(led_test1, rows, animationId++);
-/*
+
   // LED test: all LEDs change colors at the same time
 unsigned led_test2[][8] ={
     {LED1BOT, 3000, RED, 100},
@@ -237,5 +237,5 @@ unsigned led_test2[][8] ={
 
     rows = sizeof(a2) / sizeof(a2[0]);
     _addAsAnimationUint(a2, rows, animationId++);
-    */
+    
 }

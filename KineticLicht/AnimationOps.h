@@ -36,8 +36,6 @@ public:
 
   void addStepperWorker(StepperWorker* sw);
   void addLedWorker(LedWorker* lw);
-
-  int addAnimation(Animation& a );
   
   void selectAnimation(int id);
   int getNumAnimations();
