@@ -34,9 +34,9 @@ unsigned led_test1[][8] = {
     {LED2TOP, 80, 0, RED, 1, 2},
     {LED3BOT, 80, 0, BLACK, 0, 2},
 
-    {LED2TOP, 1, 0, BLACK, 0, 2},
-    {LED3BOT, 1, 0, RED, 1, 2},
-    {LED3TOP, 1, 0, BLACK, 0, 2},
+    {LED2TOP, 100, 0, BLACK, 0, 2},
+    {LED3BOT, 100, 0, RED, 1, 2},
+    {LED3TOP, 100, 0, BLACK, 0, 2},
 
     {LED3BOT, 120, 0, BLACK, 0, 2},
     {LED3TOP, 120, 0, RED, 1, 2},
@@ -119,7 +119,6 @@ unsigned led_test2[][8] ={
     {LED3TOP, 150, LILA, 0},
     {LED4BOT, 150, LILA, 0},
     {LED4TOP, 150, LILA, 0}
-
   };
 
   rows = sizeof(led_test2) / sizeof(led_test2[0]);
@@ -132,11 +131,11 @@ unsigned led_test2[][8] ={
     {STEPPER1, 120, 2600},
     {STEPPER1, 260, 10},
 
-    {STEPPER2,0, 0},
-    {STEPPER2,30, 0},
-    {STEPPER2,100, 2800},
-    {STEPPER2,130, 2800},
-    {STEPPER2,270, 10},
+    {STEPPER2, 0, 0},
+    {STEPPER2, 30, 0},
+    {STEPPER2, 100, 2800},
+    {STEPPER2, 130, 2800},
+    {STEPPER2, 270, 10},
 
     {LED1TOP, 0,    YELLOW, 0},
     {LED1TOP, 15, YELLOW, 50},
@@ -175,8 +174,8 @@ unsigned led_test2[][8] ={
     {LED4TOP, 300, YELLOW, 50},
     {LED4TOP, 350, YELLOW, 50},
 
-    {LED4BOT, 0,    YELLOW, 0},
-    {LED4BOT, 10,    YELLOW, 0},
+    {LED4BOT, 0,  YELLOW, 0},
+    {LED4BOT, 10,  YELLOW, 0},
     {LED4BOT, 45, YELLOW, 50},
     {LED4BOT, 50, YELLOW, 50},
     {LED4BOT, 140, RED, 100},

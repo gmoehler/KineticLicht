@@ -141,7 +141,7 @@ void test3(){
   ao.init(SINGLE_ANIMATION, 0, false);
   EXPECT_EQ(ao.getState(), ANIMATION_INIT);
 
-  for (int i=0;i<30;i++){
+  for (int i=0;i<20;i++){
     ao.loop();
     printf("%d +++++++%d++++++++\n",i,ao.getState());
   } 
