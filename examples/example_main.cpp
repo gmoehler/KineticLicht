@@ -16,7 +16,7 @@ animation_as_uint_t* getAnis0(int id){
   std::copy(&v[0][0], &v[0][0]+rows0*8,&v_heap[0][0]);
   int rows01 = sizeof(v_heap) / sizeof(v_heap[0]);
 
-  printf("SIZE %d %d\n", rows0, rows01);
+  EXPECT_EQ(rows0, rows01);
 
   for (int i=0; i<rows0; i++){
     for (int j=0; j<8; j++){
@@ -105,25 +105,51 @@ void test2(){
     AnimationOps ao(tlc, true);
 	EXPECT_EQ(4, ao.getNumAnimations());
 	
-	ao.init(SINGLE_ANIMATION, 0, false);
+	ao.init(SINGLE_ANIMATION, 3, false);
 	Animation& a = ao._getCurrentAnimation();
+    EXPECT_EQ(35, a.numberOfKeyFrames());
     a.printAnimation();
     
     printf("+++++++++++++++\n");
 
-  printf("Num keys: %d\n", a.numberOfKeyFrames());
-  //for (unsigned i=0; i<a.numberOfKeyFrames(); i++){
+    printf("Num keys: %d\n", a.numberOfKeyFrames());
+    //for (unsigned i=0; i<a.numberOfKeyFrames(); i++){
     for (unsigned i=0; i<3; i++){
       printf("%d", i);
       KeyFrame kf = a.getKeyFrame(i);
       kf.printKeyFrame();
   }
   printf("+++++++++++++++\n");
+}
+   
+void test3(){
 	
-	}
+  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+  AnimationOps ao(tlc, true);
+  EXPECT_EQ(4, ao.getNumAnimations());
+	
+  AccelStepper acs = AccelStepper();
+  int pin = 22;
+  StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
+  sw.setDebug(true);
 
+  LedWorker lw = LedWorker (LED1TOP, 0);
+
+  ao.addStepperWorker(&sw);
+  ao.addLedWorker(&lw);
+	
+  ao.init(SINGLE_ANIMATION, 0, false);
+  EXPECT_EQ(ao.getState(), ANIMATION_INIT);
+
+  for (int i=0;i<30;i++){
+    ao.loop();
+    printf("%d +++++++%d++++++++\n",i,ao.getState());
+  } 
+}
+   
 int main( int argc, const char* argv[] ){
-	test1();
-	test2();
+	//test1();
+	//test2();
+	test3();
 	
 }

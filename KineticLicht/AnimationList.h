@@ -19,7 +19,7 @@ class AnimationList
 
 public:
   AnimationList(bool loadAnimations=true) : _numAnimations(4){
-  _numKeyFrames = new int[4];
+    _numKeyFrames = new int[4];
     //_allAnimations = new animation_as_uint_t[4];
     if (loadAnimations){
       load();
