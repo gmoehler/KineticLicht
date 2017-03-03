@@ -101,7 +101,7 @@ std::map<long, int> numberButtons = create_NumberButtonMap();
 Setup
 ************/
 
-AnimationOps aniop(tlc, false);
+AnimationOps aniop(tlc, true);
 int fr2 = freeRam();
 
 void setup()
@@ -121,64 +121,7 @@ void setup()
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
   printf("2### FREE RAM: %d\n",  freeRam ());
-  std::vector<Animation> animations;
-
-  Animation led_test1({
-    {LED1BOT, 0,  BLACK, 0},
-    {LED1TOP, 0,  BLACK, 0},
-    {LED2BOT, 0,  BLACK, 0},
-    {LED2TOP, 0,  BLACK, 0},
-    {LED3BOT, 0,  BLACK, 0},
-    {LED3TOP, 0,  BLACK, 0},
-    {LED4BOT, 0,  BLACK, 0},
-    {LED4TOP, 0,  BLACK, 0},
-
-    {LED1BOT, 2000,  RED, 100},
-    {LED1TOP, 2000,  BLACK, 0},
-
-    {LED1BOT, 4000, BLACK, 0},
-    {LED1TOP, 4000, RED, 100},
-    {LED2BOT, 4000, BLACK, 0},
-
-    {LED1TOP, 6000, BLACK, 0},
-    {LED2BOT, 6000, RED, 100},
-    {LED2TOP, 6000, BLACK, 0},
-
-    {LED2BOT, 8000, BLACK, 0},
-    {LED2TOP, 8000, RED, 100},
-    {LED3BOT, 8000, BLACK, 0},
-
-    {LED2TOP, 10000, BLACK, 0},
-    {LED3BOT, 10000, RED, 100},
-    {LED3TOP, 10000, BLACK, 0},
-
-    {LED3BOT, 12000, BLACK, 0},
-    {LED3TOP, 12000, RED, 100},
-    {LED4BOT, 12000, BLACK, 0},
-
-    {LED3TOP, 14000, BLACK, 0},
-    {LED4BOT, 14000, RED, 100},
-    {LED4TOP, 14000, BLACK, 0},
-
-    {LED4BOT, 16000, BLACK, 0},
-    {LED4TOP, 16000, RED, 100},
-
-    {LED4TOP, 18000, BLACK, 0}
-  });
-  printf("3### FREE RAM: %d\n",  freeRam ());
-
-
-  //aniop.addAnimation(led_test1);
-
-  AnimationList al;
-  Animation a0 = al.getAnimation(0);
-
-  aniop.addAnimation(a0);
-  printf("4### FREE RAM: %d\n",  freeRam ());
-
-  /*for (unsigned i=0; i< led_test1.numberOfKeyFrames(); i++){
-  led_test1.getKeyFrame(i).printKeyFrame();}*/
-
+  
   //aniop.addStepperWorker(&sworker1);
   //aniop.addStepperWorker(&sworker2);
   //aniop.addStepperWorker(&sworker3);
