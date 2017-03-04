@@ -10,8 +10,6 @@
 
 #include "RGB.h"
 
-using namespace std;
-
 enum KeyFrameType {MOTORFRAME, LEDFRAME, NOFRAMETYPE};
 
 enum Activators { STEPPER1,  // 0

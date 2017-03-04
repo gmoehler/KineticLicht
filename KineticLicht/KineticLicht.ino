@@ -114,7 +114,7 @@ void setup()
   printf("0### FREE RAM: %d\n",  fr1);
   printf("0### FREE RAM: %d\n",  fr2);
   printf("1### FREE RAM: %d\n",  freeRam());
-  //Serial.println("start");
+
   printf("Hello World\n");
   cout << "Start." << endl;
 
@@ -139,6 +139,7 @@ void setup()
   aniop.addLedWorker(&rgb4u);
 
   aniop.init(SINGLE_ANIMATION, 0, false);
+  
   printf("5### FREE RAM: %d\n",  freeRam ());
   delay(10000);
 
