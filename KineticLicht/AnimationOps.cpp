@@ -146,7 +146,11 @@ void AnimationOps::_action_finished(){
   }
 }
 
-bool AnimationOps::_finish_to_calibrating(){
+bool AnimationOps::_finished_to_calibrating(){
+  if (!_getCurrentAnimation().containsMotorFrames()){
+    return false;
+  }
+
   // continue if we have a valid id
   if (_currentAnimationId < 0){
     //printf("No more animations available.\n");
@@ -161,6 +165,27 @@ bool AnimationOps::_finish_to_calibrating(){
   }
   return false;
 }
+
+bool AnimationOps::_finished_to_active(){
+  if (_getCurrentAnimation().containsMotorFrames()){
+    return false;
+  }
+
+  // continue if we have a valid id
+  if (_currentAnimationId < 0){
+    //printf("No more animations available.\n");
+  }
+  else {
+    printf("### Proceeding with Animation %d ###.\n", _currentAnimationId);
+  }
+
+  if (_currentAnimationId >= 0){
+    _getCurrentAnimation().resetCurrentKeyFrame();
+    return true;
+  }
+  return false;
+}
+
 
 void AnimationOps::_action_active(){
 
@@ -241,7 +266,8 @@ _tlc(tlc)
   addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOps::_init_to_calibrating);
   addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationOps::_init_to_active);
   addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationOps::_calibrating_to_active);
-  addTransition(ANIMATION_FINISHED, ANIMATION_CALIBRATING, &AnimationOps::_finish_to_calibrating);
+  addTransition(ANIMATION_FINISHED, ANIMATION_CALIBRATING, &AnimationOps::_finished_to_calibrating);
+  addTransition(ANIMATION_FINISHED, ANIMATION_ACTIVE, &AnimationOps::_finished_to_active);
 
   addStateEntryAction(ANIMATION_CALIBRATING,&AnimationOps::_entry_calibrating);
   addStateAction(ANIMATION_CALIBRATING, &AnimationOps::_action_calibrating);

@@ -11,6 +11,7 @@
 #define YELLOW RGB_MAX_VAL,RGB_MAX_VAL,0
 #define LILA RGB_MAX_VAL,0,RGB_MAX_VAL
 #define CYAN 0,RGB_MAX_VAL,RGB_MAX_VAL
+#define NOCOLOR 0, 0, 0, 0 // includes brightness
 
 class RGB {
 

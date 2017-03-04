@@ -34,7 +34,7 @@ void Adafruit_TLC5947::setLED(int lednum, int r, int g, int b){
 
 }
 void Adafruit_TLC5947::write(void){
-  
+
 }
 
 
@@ -42,7 +42,7 @@ void Adafruit_TLC5947::write(void){
 long _testCurrentTime=0L;
 unsigned long millis() {
   printf("millis() %ld\n",_testCurrentTime );
-  _testCurrentTime+=100;
+  _testCurrentTime+=1000;
   return _testCurrentTime;
 }
 

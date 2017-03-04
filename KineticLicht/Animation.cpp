@@ -46,6 +46,7 @@ bool Animation::needsTargetFrameUpdate(long elapsedTime) {
   }
 
   double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();//_currentKeyFrameIter->getTimeMs();
+  printf("**** currentTargetTime: %f, elapsedTime: %ld\n", currentTargetTime, elapsedTime);
   return (currentTargetTime < elapsedTime);
 }
 
@@ -73,7 +74,7 @@ vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
 void Animation::addKeyFrame(KeyFrame kf) {
     _keyFrames.push_back(kf);
-    if (kf.getType() == MOTOR) {
+    if (kf.getType() == MOTORFRAME) {
       _withMotor = true;
     }
 
@@ -97,7 +98,14 @@ void Animation::resetCurrentKeyFrame(){
 }
 
 void Animation::printAnimation(){
-  printf("Animation contains %d frames. \n", numberOfKeyFrames());
+  printf("Animation contains %d frames ", numberOfKeyFrames());
+  if (_withMotor){
+    printf("with motor frames.\n" );
+  }
+  else {
+    printf("with no motor frames.\n" );
+  }
+
   if (numberOfKeyFrames() > 0){
     if (_currentFrameId < 0){
         printf("No current frame yet. \n");
@@ -107,5 +115,6 @@ void Animation::printAnimation(){
       getKeyFrame(_currentFrameId).printKeyFrame();
     }
   }
+
   printf("\n");
 }

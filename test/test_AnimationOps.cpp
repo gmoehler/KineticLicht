@@ -14,11 +14,15 @@ animation_as_uint_t* getAnis(int id){
   };
 
   rows = sizeof(v) / sizeof(v[0]);
-  auto v_heap = new unsigned[rows][8]();
+  printf("sizes v: %d - %d\n",  sizeof(v),  sizeof(v[0]));
+  auto v_heap = new unsigned[rows][8];
+  printf("sizes v_heap: %d - %d\n",  sizeof(v_heap),  sizeof(v_heap[0]));
   std::copy(&v[0][0], &v[0][0]+rows*8,&v_heap[0][0]);
-  int rows1 = sizeof(v_heap) / sizeof(v_heap[0]);
+  //int rows1 = sizeof(v_heap) / sizeof(v_heap[0]);
+  printf("sizes v_heap: %d - %d\n",  sizeof(v_heap),  sizeof(v_heap[0]));
 
-  printf("SIZE %d %d\n", rows, rows1);
+  //TODO: check why this fails
+  //EXPECT_EQ(rows, rows1);
 
   for (int i=0; i<rows; i++){
     for (int j=0; j<8; j++){
@@ -51,17 +55,16 @@ void cleanupAnis(){
   }
 }
 
-
+/*
 TEST(AnimationOps_tests, array_stuff){
 
   animation_as_uint_t* as = getAnis(0);
 
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
-  AnimationOps ao(tlc);
+  AnimationOps ao(tlc, true);
 
   int num0 = ao.getNumAnimations();
-  EXPECT_EQ(0, num0);
-
+  EXPECT_EQ(4, num0);
 
   for (int i=0; i<rows; i++){
     for (int j=0; j<8; j++){
@@ -72,21 +75,101 @@ TEST(AnimationOps_tests, array_stuff){
 
   cleanupAnis();
 
-}
+  printf ("current animation...\n");
+  ao.selectAnimation(1);
+  Animation& an0 = ao._getCurrentAnimation();
+  EXPECT_EQ(56u, an0.numberOfKeyFrames());
+  //an0.printAnimation();
 
+}
 
 TEST(AnimationOps, animationList){
 
   AnimationList al(true);
+
   animation_as_uint_t* ani = al.getAnimationAsUint(0);
-  
+
   for (int i=0; i<3; i++){
     for (int j=0; j<8; j++){
       printf("%u ",ani[i][j]);
     }
     printf("\n");
+    KeyFrame kf(ani[i]);
+    kf.printKeyFrame();
   }
-  
+
+  //animation_as_uint_t *a;
+  //a = new animation_as_uint_t[4];
+
+  int numKf = al.getNumKeyFrames(0);
+  Animation animation(ani, numKf);
+  EXPECT_EQ((unsigned) numKf, animation.numberOfKeyFrames());
+  //animation.printAnimation();
+
+}
+
+TEST(AnimationOps_tests, scenario_single){
+
+  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+  AnimationOps ao(tlc, true);
+  EXPECT_EQ(4, ao.getNumAnimations());
+
+  AccelStepper acs = AccelStepper();
+  int pin = 22;
+  StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
+  sw.setDebug(true);
+
+  LedWorker lw = LedWorker (LED1TOP, 0);
+
+  ao.addStepperWorker(&sw);
+  ao.addLedWorker(&lw);
+
+  ao.init(SINGLE_ANIMATION, 0, false);
+  EXPECT_EQ(ao.getState(), ANIMATION_INIT);
+
+  for (int i=0;i<22;i++){
+    ao.loop();
+    printf("%d +++++++%d++++++++\n",i,ao.getState());
+
+    if (i>18){
+      EXPECT_EQ(ANIMATION_FINISHED, ao.getState());
+    }
+    else{
+        EXPECT_EQ(ANIMATION_ACTIVE, ao.getState());
+    }
+  }
+}
+*/
+TEST(AnimationOps_tests, scenario_loop){
+
+  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+  AnimationOps ao(tlc, true);
+  EXPECT_EQ(4, ao.getNumAnimations());
+
+  AccelStepper acs = AccelStepper();
+  int pin = 22;
+  StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
+  sw.setDebug(true);
+
+  LedWorker lw = LedWorker (LED1TOP, 0);
+
+  ao.addStepperWorker(&sw);
+  ao.addLedWorker(&lw);
+
+  ao.init(LOOP_ANIMATION, 0, false);
+  EXPECT_EQ(ao.getState(), ANIMATION_INIT);
+
+  for (int i=0;i<40;i++){
+    ao.loop();
+    printf("%d +++++++%d++++++++\n",i,ao.getState());
+
+    if ((i>18 && i<20) || i>36){
+      EXPECT_EQ(ANIMATION_FINISHED, ao.getState());
+    }
+    else{
+        EXPECT_EQ(ANIMATION_ACTIVE, ao.getState());
+    }
+  }
 }
 
 /*
@@ -270,4 +353,3 @@ TEST(AnimationOps_tests, storetest){
 
 }
 */
-l

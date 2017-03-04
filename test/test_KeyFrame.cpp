@@ -19,7 +19,7 @@ TEST(KeyFrame_tests, test1){
     EXPECT_EQ((unsigned)0, kf.getTargetColor().red());
     EXPECT_EQ((unsigned)0, kf.getTargetColor().green());
     EXPECT_EQ((unsigned)0, kf.getTargetColor().blue());
-    EXPECT_EQ(MOTOR, kf.getType());
+    EXPECT_EQ(MOTORFRAME, kf.getType());
 
     unsigned v1[] = {42, 33, 1000, 0, 0, 0, 0, 1};
     kf = KeyFrame(v1);
@@ -29,7 +29,7 @@ TEST(KeyFrame_tests, test1){
     EXPECT_EQ((unsigned)0, kf.getTargetColor().red());
     EXPECT_EQ((unsigned)0, kf.getTargetColor().green());
     EXPECT_EQ((unsigned)0, kf.getTargetColor().blue());
-    EXPECT_EQ(MOTOR, kf.getType());
+    EXPECT_EQ(MOTORFRAME, kf.getType());
 
     kf = KeyFrame(42, 3333, 1000, 2000, 3000);
     EXPECT_EQ((unsigned)42, kf.getId());
@@ -38,7 +38,7 @@ TEST(KeyFrame_tests, test1){
     EXPECT_EQ((unsigned)1000, kf.getTargetColor().red());
     EXPECT_EQ((unsigned)2000, kf.getTargetColor().green());
     EXPECT_EQ((unsigned)3000, kf.getTargetColor().blue());
-    EXPECT_EQ(RGB_LED, kf.getType());
+    EXPECT_EQ(LEDFRAME, kf.getType());
 
     unsigned v2[] = {42, 33, 0, 1000, 2000, 3000, 100, 2};
     kf = KeyFrame(v2);
@@ -48,7 +48,7 @@ TEST(KeyFrame_tests, test1){
     EXPECT_EQ((unsigned)1000, kf.getTargetColor().red());
     EXPECT_EQ((unsigned)2000, kf.getTargetColor().green());
     EXPECT_EQ((unsigned)3000, kf.getTargetColor().blue());
-    EXPECT_EQ(RGB_LED, kf.getType());
+    EXPECT_EQ(LEDFRAME, kf.getType());
 
     kf = KeyFrame(42, 3333, 1000, 2000, 3000, 50);
     EXPECT_EQ((unsigned)42, kf.getId());
@@ -57,7 +57,7 @@ TEST(KeyFrame_tests, test1){
     EXPECT_EQ((unsigned)500, kf.getTargetColor().red());
     EXPECT_EQ((unsigned)1000, kf.getTargetColor().green());
     EXPECT_EQ((unsigned)1500, kf.getTargetColor().blue());
-    EXPECT_EQ(RGB_LED, kf.getType());
+    EXPECT_EQ(LEDFRAME, kf.getType());
 
     kf = KeyFrame(42, 3333, RGB::rgb_yellow());
     EXPECT_EQ((unsigned)42, kf.getId());
@@ -66,7 +66,7 @@ TEST(KeyFrame_tests, test1){
     EXPECT_EQ((unsigned)RGB_MAX_VAL, kf.getTargetColor().red());
     EXPECT_EQ((unsigned)RGB_MAX_VAL, kf.getTargetColor().green());
     EXPECT_EQ((unsigned)0, kf.getTargetColor().blue());
-    EXPECT_EQ(RGB_LED, kf.getType());
+    EXPECT_EQ(LEDFRAME, kf.getType());
 
     kf = KeyFrame(42, 3333, 1000);
     EXPECT_EQ((unsigned)42, kf.getId());
@@ -75,5 +75,5 @@ TEST(KeyFrame_tests, test1){
     EXPECT_EQ((unsigned)0, kf.getTargetColor().red());
     EXPECT_EQ((unsigned)0, kf.getTargetColor().green());
     EXPECT_EQ((unsigned)0, kf.getTargetColor().blue());
-    EXPECT_EQ(MOTOR, kf.getType());
+    EXPECT_EQ(MOTORFRAME, kf.getType());
   }

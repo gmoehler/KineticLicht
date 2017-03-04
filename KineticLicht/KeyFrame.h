@@ -7,7 +7,7 @@
 
 #include "RGB.h"
 
-enum KeyFrameType {MOTOR, RGB_LED, NOFRAMETYPE};
+enum KeyFrameType {MOTORFRAME, LEDFRAME, NOFRAMETYPE};
 
 
 /////////////////////////////////////////////////////////////////////
@@ -20,24 +20,24 @@ class KeyFrame
   public:
     // legacy
     KeyFrame(long timeMs, unsigned targetPosition)
-     : _id(0), _timeMs(timeMs), _targetPosition(targetPosition), _type(MOTOR){}
+     : _id(0), _timeMs(timeMs), _targetPosition(targetPosition), _type(MOTORFRAME){}
 
     // keyframe for motor movement
     KeyFrame(unsigned id, long timeMs, unsigned targetPosition)
-     : _id(id), _timeMs(timeMs), _targetPosition(targetPosition), _targetColor(BLACK), _type(MOTOR){}
+     : _id(id), _timeMs(timeMs), _targetPosition(targetPosition), _targetColor(BLACK), _type(MOTORFRAME){}
 
     // keyframe for led colors
     KeyFrame(unsigned id, long timeMs, RGB targetColor)
-      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(targetColor), _type(RGB_LED) {}
+      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(targetColor), _type(LEDFRAME) {}
     KeyFrame(unsigned id, long timeMs, unsigned red, unsigned green, unsigned blue, unsigned brightness)
-      : _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue, brightness),_type(RGB_LED){}
+      : _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue, brightness), _type(LEDFRAME){}
     KeyFrame(unsigned id, long timeMs, unsigned red, unsigned green, unsigned blue)
-      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue), _type(RGB_LED){}
+      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue), _type(LEDFRAME){}
     KeyFrame()
      : _id(0), _timeMs(0), _targetPosition(0), _targetColor(0,0,0),_type(NOFRAMETYPE) {}
     KeyFrame(unsigned v[8])
     : _id(v[0]), _timeMs(100*v[1]), _targetPosition(v[2]),
-      _targetColor(v[3], v[4], v[5], v[6]),_type(v[7]==1 ? MOTOR : RGB_LED){}
+      _targetColor(v[3], v[4], v[5], v[6]), _type(v[7]==MOTORFRAME ? MOTORFRAME : LEDFRAME){}
 
     unsigned getId() {
       return _id;

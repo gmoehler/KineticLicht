@@ -36,7 +36,7 @@ public:
 
   void addStepperWorker(StepperWorker* sw);
   void addLedWorker(LedWorker* lw);
-  
+
   void selectAnimation(int id);
   int getNumAnimations();
 
@@ -61,13 +61,14 @@ private:
 
   Adafruit_TLC5947 _tlc;
 
-  
+
   Animation& getAnimation(int id);
 
   bool _init_to_calibrating();
   bool _init_to_active();
   bool _calibrating_to_active();
-  bool _finish_to_calibrating();
+  bool _finished_to_calibrating();
+  bool _finished_to_active();
 
   void _entry_calibrating();
   void _action_calibrating();
