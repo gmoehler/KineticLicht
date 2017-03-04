@@ -82,9 +82,11 @@ class KeyFrame
       :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue), _type(LEDFRAME){}
     KeyFrame()
      : _id(0), _timeMs(0), _targetPosition(0), _targetColor(0,0,0),_type(NOFRAMETYPE) {}
+
+    // constructor from unsigned array
     KeyFrame(unsigned v[8])
-    : _id(v[0]), _timeMs(100*v[1]), _targetPosition(v[2]),
-      _targetColor(v[3], v[4], v[5], v[6]), _type(v[7]==MOTORFRAME ? MOTORFRAME : LEDFRAME){}
+    : _id((int) v[0]), _timeMs(100*v[1]), _targetPosition(v[2]),
+      _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]), _type(v[7]==MOTORFRAME ? MOTORFRAME : LEDFRAME){}
 
     int getId() {
       return _id;
