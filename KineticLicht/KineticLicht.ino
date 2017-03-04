@@ -15,9 +15,9 @@
 std::map<long, int> create_NumberButtonMap();
 int freeRam ();
 
-/*************************
-create LED objects
-*************************/
+/*******************
+ Create LED objects
+********************/
 
 #define LED_DATA   4
 #define LED_CLOCK  5
@@ -35,7 +35,9 @@ LedWorker rgb3o = LedWorker (LED3TOP, 1);
 LedWorker rgb3u = LedWorker (LED3BOT, 0);
 LedWorker rgb4o = LedWorker (LED4TOP, 3);
 LedWorker rgb4u = LedWorker (LED4BOT, 2);
+
 int fr1 = freeRam();
+
 /*************************
 create Stepper objects
 *************************/
@@ -102,6 +104,7 @@ Setup
 ************/
 
 AnimationOps aniop(tlc, true);
+
 int fr2 = freeRam();
 
 void setup()
@@ -121,7 +124,7 @@ void setup()
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
   printf("2### FREE RAM: %d\n",  freeRam ());
-  
+
   //aniop.addStepperWorker(&sworker1);
   //aniop.addStepperWorker(&sworker2);
   //aniop.addStepperWorker(&sworker3);

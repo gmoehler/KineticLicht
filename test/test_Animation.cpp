@@ -21,7 +21,7 @@ TEST(Animation_tests, test1){
 
   //a.printAnimation();
 
-  EXPECT_EQ((unsigned) 4, a.numberOfKeyFrames());
+  EXPECT_EQ(4, a.numberOfKeyFrames());
   EXPECT_EQ(true,a.containsMotorFrames());
 
 
@@ -63,7 +63,7 @@ TEST(Animation_tests, noMotorFrames){
 
   //a.printAnimation();
 
-  EXPECT_EQ((unsigned) 1, a.numberOfKeyFrames());
+  EXPECT_EQ( 1, a.numberOfKeyFrames());
   EXPECT_FALSE(a.containsMotorFrames());
 
   }

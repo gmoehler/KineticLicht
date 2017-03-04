@@ -1,7 +1,7 @@
 #include "test.h"
 
 TEST(RGB_tests, red){
-  RGB led = RGB(2000u, 0u , 0u);
+  RGB led = RGB(2000, 0 , 0);
   EXPECT_EQ(2000, led.red());
   led = RGB(2000, 0 , 0, 50);
   EXPECT_EQ(1000, led.red());

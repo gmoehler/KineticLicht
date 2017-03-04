@@ -12,18 +12,18 @@ Animation::Animation(vector<KeyFrame> kfs): Animation() {
   addKeyFrames(kfs);
 }
 
-Animation::Animation(animation_as_uint_t *v, unsigned length): Animation() {
-  for (unsigned i=0; i< length; i++){
+Animation::Animation(animation_as_uint_t *v, int length): Animation() {
+  for (int i=0; i< length; i++){
     KeyFrame kf(v[i]);
     addKeyFrame(kf);
   }
 }
 
-KeyFrame& Animation::getKeyFrame(unsigned id){
+KeyFrame& Animation::getKeyFrame(int id){
 	return _keyFrames[id];
 }
 
-unsigned Animation::numberOfKeyFrames(){
+int Animation::numberOfKeyFrames(){
   return _keyFrames.size();
 }
 

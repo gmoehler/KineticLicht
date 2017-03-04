@@ -2,10 +2,32 @@
 
 // full height: 4200 = 2100mm
 
+AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
+: FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
+_animations(loadAnimations), _currentAnimationId(-1), _elapsedTime(0), _startTime(-1),
+_strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
+_tlc(tlc)
+{
+  setDebugString(string("AnimationOps"));
+  _tlc = tlc;
+
+  addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOps::_init_to_calibrating);
+  addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationOps::_init_to_active);
+  addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationOps::_calibrating_to_active);
+  addTransition(ANIMATION_FINISHED, ANIMATION_INIT, &AnimationOps::_finished_to_init);
+
+  addStateEntryAction(ANIMATION_CALIBRATING,&AnimationOps::_entry_calibrating);
+  addStateAction(ANIMATION_CALIBRATING, &AnimationOps::_action_calibrating);
+  addStateEntryAction(ANIMATION_ACTIVE, &AnimationOps::_entry_active);
+  addStateAction(ANIMATION_ACTIVE, &AnimationOps::_action_active);
+  addStateEntryAction(ANIMATION_FINISHED, &AnimationOps::_entry_finished);
+  addStateAction(ANIMATION_FINISHED, &AnimationOps::_action_finished);
+
+  }
+
 int AnimationOps::getNumAnimations(){
   return _animations.getNumAnimations();
 }
-
 
 void AnimationOps::selectAnimation(int id){
 	animation_as_uint_t* aniUint = _animations.getAnimationAsUint(id);
@@ -138,6 +160,10 @@ void AnimationOps::_entry_finished(){
       }
     }
   }
+  // load the new current animation
+  if (_currentAnimationId > 0){
+    selectAnimation(_currentAnimationId);
+  }
 }
 
 void AnimationOps::_action_finished(){
@@ -146,10 +172,7 @@ void AnimationOps::_action_finished(){
   }
 }
 
-bool AnimationOps::_finished_to_calibrating(){
-  if (!_getCurrentAnimation().containsMotorFrames()){
-    return false;
-  }
+bool AnimationOps::_finished_to_init(){
 
   // continue if we have a valid id
   if (_currentAnimationId < 0){
@@ -165,27 +188,6 @@ bool AnimationOps::_finished_to_calibrating(){
   }
   return false;
 }
-
-bool AnimationOps::_finished_to_active(){
-  if (_getCurrentAnimation().containsMotorFrames()){
-    return false;
-  }
-
-  // continue if we have a valid id
-  if (_currentAnimationId < 0){
-    //printf("No more animations available.\n");
-  }
-  else {
-    printf("### Proceeding with Animation %d ###.\n", _currentAnimationId);
-  }
-
-  if (_currentAnimationId >= 0){
-    _getCurrentAnimation().resetCurrentKeyFrame();
-    return true;
-  }
-  return false;
-}
-
 
 void AnimationOps::_action_active(){
 
@@ -253,27 +255,3 @@ void AnimationOps::_action_active(){
   }
 
 }
-
-AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
-: FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
-_animations(loadAnimations), _currentAnimationId(-1), _elapsedTime(0), _startTime(-1),
-_strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
-_tlc(tlc)
-{
-  setDebugString(string("AnimationOps"));
-  _tlc = tlc;
-
-  addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOps::_init_to_calibrating);
-  addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationOps::_init_to_active);
-  addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationOps::_calibrating_to_active);
-  addTransition(ANIMATION_FINISHED, ANIMATION_CALIBRATING, &AnimationOps::_finished_to_calibrating);
-  addTransition(ANIMATION_FINISHED, ANIMATION_ACTIVE, &AnimationOps::_finished_to_active);
-
-  addStateEntryAction(ANIMATION_CALIBRATING,&AnimationOps::_entry_calibrating);
-  addStateAction(ANIMATION_CALIBRATING, &AnimationOps::_action_calibrating);
-  addStateEntryAction(ANIMATION_ACTIVE, &AnimationOps::_entry_active);
-  addStateAction(ANIMATION_ACTIVE, &AnimationOps::_action_active);
-  addStateEntryAction(ANIMATION_FINISHED, &AnimationOps::_entry_finished);
-  addStateAction(ANIMATION_FINISHED, &AnimationOps::_action_finished);
-
-  }

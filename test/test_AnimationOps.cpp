@@ -55,7 +55,6 @@ void cleanupAnis(){
   }
 }
 
-/*
 TEST(AnimationOps_tests, array_stuff){
 
   animation_as_uint_t* as = getAnis(0);
@@ -78,7 +77,7 @@ TEST(AnimationOps_tests, array_stuff){
   printf ("current animation...\n");
   ao.selectAnimation(1);
   Animation& an0 = ao._getCurrentAnimation();
-  EXPECT_EQ(56u, an0.numberOfKeyFrames());
+  EXPECT_EQ(56, an0.numberOfKeyFrames());
   //an0.printAnimation();
 
 }
@@ -103,7 +102,7 @@ TEST(AnimationOps, animationList){
 
   int numKf = al.getNumKeyFrames(0);
   Animation animation(ani, numKf);
-  EXPECT_EQ((unsigned) numKf, animation.numberOfKeyFrames());
+  EXPECT_EQ( numKf, animation.numberOfKeyFrames());
   //animation.printAnimation();
 
 }
@@ -139,7 +138,7 @@ TEST(AnimationOps_tests, scenario_single){
     }
   }
 }
-*/
+
 TEST(AnimationOps_tests, scenario_loop){
 
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
@@ -159,11 +158,18 @@ TEST(AnimationOps_tests, scenario_loop){
   ao.init(LOOP_ANIMATION, 0, false);
   EXPECT_EQ(ao.getState(), ANIMATION_INIT);
 
-  for (int i=0;i<40;i++){
+  // will run tru animations 0 and 1 and start with 2
+  for (int i=0;i<45;i++){
     ao.loop();
     printf("%d +++++++%d++++++++\n",i,ao.getState());
 
-    if ((i>18 && i<20) || i>36){
+    if (i > 39 ){
+        EXPECT_EQ(ANIMATION_CALIBRATING, ao.getState());
+    }
+    else if (i==20 || i==39){
+        EXPECT_EQ(ANIMATION_INIT, ao.getState());
+    }
+    else if ((i>18 && i<20) || i>37){
       EXPECT_EQ(ANIMATION_FINISHED, ao.getState());
     }
     else{
@@ -238,118 +244,5 @@ TEST(AnimationOps_tests, scenario){
 
 
   }
-}
-
-TEST(AnimationOps, animationList){
-  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
-  AnimationOps as(tlc);
-
-  int num0 = as.getNumAnimations();
-  EXPECT_EQ(0, num0);
-
-  AnimationList al(true);
-
-/*
-  std::vector<Animation> animations = loadAnimations();
-  //EXPECT_EQ((unsigned) 4, animations.size());
-  for (unsigned j=0; j<animations.size(); j++){
-    printf("%d: ", j);
-    animations[j].printAnimation();
-  }
-  printf("+++++++++++++++");
-
-  Animation a = animations[0];
-  printf("Num keys: %d\n", a.numberOfKeyFrames());
-  for (unsigned i=0; i<a.numberOfKeyFrames(); i++){
-    printf("%d", i);
-    KeyFrame kf = a.getKeyFrame(i);
-    kf.printKeyFrame();
-  }
-  printf("+++++++++++++++");
-
-  Animation a1({
-    {LED1TOP, 0, RED, 100},
-    {LED1TOP, 300, BLUE, 100},
-    {STEPPER1, 500, 0},
-    {STEPPER1, 800, 1000},
-    {STEPPER1, 1200, 2600},
-  });
-
-  animations.push_back(a1);
-
-  animations.back().printAnimation();
-*/
-//}
-
-/*
-TEST(AnimationOps_tests, storetest){
-  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
-  AnimationOps as(tlc);
-
-  int num0 = as.getNumAnimations();
-
-  Animation a0;
-  a0.addKeyFrames({
-    {STEPPER1, 0, 0},
-    {STEPPER2, 2000, 1000},
-    {STEPPER3, 9000, 2600},
-    {LED1TOP, 1500, YELLOW, 50}
-  });
-
-  int id = as.addAnimation(a0);
-  EXPECT_EQ(num0+1, as.getNumAnimations());
-  EXPECT_EQ(num0, id);
-
-  Animation a = as.getAnimation(id);
-
-  // this is the test from test_Animation.cpp
-
-  EXPECT_EQ((unsigned) 4, a.numberOfKeyFrames());
-
-  EXPECT_TRUE(a.needsTargetFrameUpdate(0));
-  vector<KeyFrame> kfs =a.getNextTargetKeyFrames(0);
-
-  ASSERT_EQ(1, (int) kfs.size());
-  KeyFrame kf = kfs.front();
-
-  EXPECT_EQ(STEPPER1, kf.getId());
-  EXPECT_EQ(0, kf.getTimeMs());
-  EXPECT_EQ(0u, kf.getTargetPosition());
-  EXPECT_EQ(0u, kf.getTargetColor().red());
-  EXPECT_EQ(0u, kf.getTargetColor().green());
-  EXPECT_EQ(0u, kf.getTargetColor().blue());
-
-  EXPECT_TRUE(a.needsTargetFrameUpdate(1000));
-  kfs =a.getNextTargetKeyFrames(1000);
-  ASSERT_EQ(1, (int) kfs.size());
-  kf = kfs.front();
-
-  EXPECT_EQ(LED1TOP, kf.getId());
-  EXPECT_EQ(1500, kf.getTimeMs());
-  EXPECT_EQ(0u, kf.getTargetPosition());
-  EXPECT_EQ((unsigned) RGB_MAX_VAL/2,kf.getTargetColor().red());
-  EXPECT_EQ((unsigned) RGB_MAX_VAL/2,kf.getTargetColor().green());
-  EXPECT_EQ(0u, kf.getTargetColor().blue());
-
-  EXPECT_TRUE(a.needsTargetFrameUpdate(1600));
-  kfs =a.getNextTargetKeyFrames(1600);
-  ASSERT_EQ(1, (int)kfs.size());
-  kf = kfs.front();
-
-  EXPECT_EQ(STEPPER2, kf.getId());
-  EXPECT_EQ(2000, kf.getTimeMs());
-  EXPECT_EQ(1000u, kf.getTargetPosition());
-  EXPECT_EQ(0u, kf.getTargetColor().red());
-  EXPECT_EQ(0u, kf.getTargetColor().green());
-  EXPECT_EQ(0u, kf.getTargetColor().blue());
-
-  EXPECT_FALSE(a.isAnimationFinished());
-
-  EXPECT_TRUE(a.needsTargetFrameUpdate(2100));
-  kfs =a.getNextTargetKeyFrames(2100);
-  //a.printAnimation();
-  EXPECT_TRUE(a.needsTargetFrameUpdate(10000));
-  EXPECT_TRUE(a.isAnimationFinished());
-
 }
 */

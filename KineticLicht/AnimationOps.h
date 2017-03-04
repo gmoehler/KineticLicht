@@ -67,8 +67,7 @@ private:
   bool _init_to_calibrating();
   bool _init_to_active();
   bool _calibrating_to_active();
-  bool _finished_to_calibrating();
-  bool _finished_to_active();
+  bool _finished_to_init();
 
   void _entry_calibrating();
   void _action_calibrating();
