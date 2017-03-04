@@ -29,6 +29,8 @@ enum AnimationState { ANIMATION_INIT,           // 0
 
 enum AnimationStrategy { SINGLE_ANIMATION, LOOP_ANIMATION };
 
+#define NO_CURRENT_ANIMATION -1
+
 class AnimationOps : public FiniteStateMachine<AnimationOps> {
 
 public:
@@ -51,7 +53,7 @@ private:
   std::map<int,LedWorker*> _ledWorkerMap;
 
   Animation _currentAnimation;
-  int _currentAnimationId;
+  int _currentAnimationId; // -1 if no current animation
   long _elapsedTime;
   long _startTime;
 

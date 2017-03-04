@@ -37,16 +37,14 @@ bool Animation::isAnimationFinished() {
 
 bool Animation::needsTargetFrameUpdate(long elapsedTime) {
 
-//  if (isAnimationFinished()){
-//    return false;
-//  }
   // nothing read so far
   if (_currentFrameId < 0){
     return true;
   }
 
   double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();//_currentKeyFrameIter->getTimeMs();
-  printf("**** currentTargetTime: %f, elapsedTime: %ld\n", currentTargetTime, elapsedTime);
+  //printf("**** currentTargetTime: %f, elapsedTime: %ld\n", currentTargetTime, elapsedTime);
+
   return (currentTargetTime < elapsedTime);
 }
 
@@ -108,7 +106,7 @@ void Animation::printAnimation(){
 
   if (numberOfKeyFrames() > 0){
     if (_currentFrameId < 0){
-        printf("No current frame yet. \n");
+        printf("No current frame. \n");
     }
     else {
       printf("Current frame: \n");

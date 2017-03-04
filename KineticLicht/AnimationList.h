@@ -26,6 +26,7 @@ public:
  	for (int i=0;i<4;i++){
  	  delete[] _allAnimations[i];
    }
+   delete[] _numKeyFrames;
  }
 
   void load();
@@ -51,9 +52,10 @@ private:
   // add an animation array to _allAnimations
   void _addAsAnimationUint(unsigned v[][8], int rows, int idx) {
     if (idx >= getNumAnimations() || idx < 0){
-      printf("Cannot store animation uint at index %d, max idex is %d.\n", idx, getNumAnimations());
+      printf("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
     }
 
+    // create a copy on the heap
     auto v_heap = new unsigned[rows][8]();
     std::copy(&v[0][0], &v[0][0]+rows*8,&v_heap[0][0]);
     _allAnimations[idx] = v_heap;

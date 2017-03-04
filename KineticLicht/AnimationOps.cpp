@@ -4,7 +4,7 @@
 
 AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
-_animations(loadAnimations), _currentAnimationId(-1), _elapsedTime(0), _startTime(-1),
+_animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION), _elapsedTime(0), _startTime(-1),
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
 _tlc(tlc)
 {
@@ -90,17 +90,6 @@ bool AnimationOps::_init_to_calibrating(){
   return _getCurrentAnimation().containsMotorFrames();
 }
 
-bool AnimationOps::_calibrating_to_active(){
-  // return true if all calibrations are finished
-  for (auto it = _stepperWorkerMap.begin() ;
-  it != _stepperWorkerMap.end(); ++it) {
-    StepperWorker* sw = it->second;
-    if (sw->getState() != CALIBRATION_FINISHED){
-      return false;
-    }
-  }
-  return true;
-}
 
 void AnimationOps::_entry_calibrating(){
   printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
@@ -124,6 +113,18 @@ void AnimationOps::_action_calibrating(){
   }
 }
 
+bool AnimationOps::_calibrating_to_active(){
+  // return true if all calibrations are finished
+  for (auto it = _stepperWorkerMap.begin() ;
+  it != _stepperWorkerMap.end(); ++it) {
+    StepperWorker* sw = it->second;
+    if (sw->getState() != CALIBRATION_FINISHED){
+      return false;
+    }
+  }
+  return true;
+}
+
 bool AnimationOps::_init_to_active(){
   if (!_getCurrentAnimation().containsMotorFrames()){
     printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
@@ -145,7 +146,7 @@ void AnimationOps::_entry_finished(){
   // choose next animation based on strategy
   if (_strategy == SINGLE_ANIMATION) {
     // stop after first animation
-    _currentAnimationId = -1;
+    _currentAnimationId = NO_CURRENT_ANIMATION;
   }
   else {
     _currentAnimationId++;
@@ -156,18 +157,18 @@ void AnimationOps::_entry_finished(){
       }
       else {
         // stop animation
-        _currentAnimationId = -1;
+        _currentAnimationId = NO_CURRENT_ANIMATION;
       }
     }
   }
   // load the new current animation
-  if (_currentAnimationId > 0){
+  if (_currentAnimationId != NO_CURRENT_ANIMATION){
     selectAnimation(_currentAnimationId);
   }
 }
 
 void AnimationOps::_action_finished(){
-  if (_currentAnimationId == -1){
+  if (_currentAnimationId == NO_CURRENT_ANIMATION){
     //TODO: do things to stop animation: go dark, stop steppers, ...
   }
 }
@@ -175,14 +176,14 @@ void AnimationOps::_action_finished(){
 bool AnimationOps::_finished_to_init(){
 
   // continue if we have a valid id
-  if (_currentAnimationId < 0){
+  if (_currentAnimationId == NO_CURRENT_ANIMATION){
     //printf("No more animations available.\n");
   }
   else {
     printf("### Proceeding with Animation %d ###.\n", _currentAnimationId);
   }
 
-  if (_currentAnimationId >= 0){
+  if (_currentAnimationId != NO_CURRENT_ANIMATION){
     _getCurrentAnimation().resetCurrentKeyFrame();
     return true;
   }
@@ -254,4 +255,4 @@ void AnimationOps::_action_active(){
     _tlc.write();
   }
 
-}
+} // AnimationOps
