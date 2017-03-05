@@ -15,15 +15,20 @@ class AnimationList
 
 public:
   AnimationList(bool loadAnimations=true) : _numAnimations(4){
-    _numKeyFrames = new int[4];
-    //_allAnimations = new animation_as_uint_t[4];
+    _numKeyFrames = new int[_numAnimations];
+    //_allAnimations = new animation_as_uint_t*[_numAnimations];
     if (loadAnimations){
       load();
     }
   }
 
  ~AnimationList() {
- 	for (int i=0;i<4;i++){
+  // recursively deleting multidim array
+ 	for (int i=0; i <_numAnimations; i++){
+    /*for (int j=0; j < _numKeyFrames[i]; j++){
+      animation_as_uint_t *kfs = _allAnimations[i];
+      delete[] &kfs[0][0];
+    }*/
  	  delete[] _allAnimations[i];
    }
    delete[] _numKeyFrames;
@@ -39,6 +44,7 @@ public:
     return _allAnimations[id];
   }
 
+  // number of key frames for each animation
   int getNumKeyFrames(int id){
   	return _numKeyFrames[id];
   	}
@@ -46,6 +52,7 @@ public:
 
 private:
   int _numAnimations;
+  //animation_as_uint_t** _allAnimations;
   animation_as_uint_t* _allAnimations[4];
   int* _numKeyFrames;
 
