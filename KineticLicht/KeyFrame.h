@@ -23,7 +23,8 @@ enum Activators { STEPPER1,  // 0
                   LED3TOP,   // 8
                   LED3BOT,   // 9
                   LED4TOP,   // 10
-                  LED4BOT    // 11
+                  LED4BOT,   // 11
+                  NO_ACTIVATOR
                 };
 
 /*string id2String(unsigned id){
@@ -67,33 +68,33 @@ class KeyFrame
   public:
     // legacy
     KeyFrame(long timeMs, int targetPosition)
-     : _id(0), _timeMs(timeMs), _targetPosition(targetPosition), _type(MOTORFRAME){}
+     : _id(0), _timeDs(timeMs/100), _targetPosition(targetPosition){}
 
     // keyframe for motor movement
     KeyFrame(int id, long timeMs, int targetPosition)
-     : _id(id), _timeMs(timeMs), _targetPosition(targetPosition), _targetColor(BLACK), _type(MOTORFRAME){}
+     : _id(id), _timeDs(timeMs/100), _targetPosition(targetPosition), _targetColor(BLACK){}
 
     // keyframe for led colors
     KeyFrame(int id, long timeMs, RGB targetColor)
-      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(targetColor), _type(LEDFRAME) {}
+      :  _id(id), _timeDs(timeMs/100), _targetPosition(0), _targetColor(targetColor) {}
     KeyFrame(int id, long timeMs, int red, int green, int blue, int brightness)
-      : _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue, brightness), _type(LEDFRAME){}
+      : _id(id), _timeDs(timeMs/100), _targetPosition(0), _targetColor(red, green, blue, brightness){}
     KeyFrame(int id, long timeMs, int red, int green, int blue)
-      :  _id(id), _timeMs(timeMs), _targetPosition(0), _targetColor(red, green, blue), _type(LEDFRAME){}
+      :  _id(id), _timeDs(timeMs/100), _targetPosition(0), _targetColor(red, green, blue){}
     KeyFrame()
-     : _id(0), _timeMs(0), _targetPosition(0), _targetColor(0,0,0),_type(NOFRAMETYPE) {}
+     : _id(NO_ACTIVATOR), _timeDs(0), _targetPosition(0), _targetColor(0,0,0){}
 
     // constructor from unsigned array
     KeyFrame(unsigned v[7])
-    : _id((int) v[0]), _timeMs(100*v[1]), _targetPosition(v[2]),
-      _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]), _type(v[0] < LED1TOP ? MOTORFRAME : LEDFRAME){}
+    : _id((int) v[0]), _timeDs(v[1]), _targetPosition(v[2]),
+      _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]){}
 
     int getId() {
       return _id;
     }
 
     long getTimeMs() {
-      return _timeMs;
+      return _timeDs * 100;
     }
 
     int getTarget() {
@@ -109,21 +110,23 @@ class KeyFrame
     }
 
     void printKeyFrame(){
-      printf("KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, _timeMs,
+      printf("KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, 100*(long)_timeDs,
             _targetPosition, _targetColor.red(), _targetColor.green(), _targetColor.blue());
     }
 
-    bool getType(){
-    	return _type;
+KeyFrameType getType(){	
+    if (_id >= NO_ACTIVATOR) {
+    	return NOFRAMETYPE;
+    }
+    return _id < LED1TOP ? MOTORFRAME : LEDFRAME;
     }
 
 
   private:
     int _id;
-    long _timeMs;
+    unsigned _timeDs;
     int _targetPosition;
     RGB _targetColor;
-    KeyFrameType _type;
 };
 
 #endif
