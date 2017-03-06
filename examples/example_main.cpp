@@ -1,31 +1,31 @@
 #include "../test/test.h"
 
-typedef unsigned int animation_as_uint_t [8];
+//typedef unsigned int animation_as_uint_t [7];
 
 animation_as_uint_t* allV0[4];
 int rows0 = 0;
 
 animation_as_uint_t* getAnis0(int id){
-  unsigned v[][8] = {
-    {LED1BOT, 20, 0, RED, 100, 2},
-    {LED1TOP, 20, 0, BLACK, 0, 2}
+  unsigned v[][7] = {
+    {LED1BOT, 20, 0, RED, 100},
+    {LED1TOP, 20, 0, BLACK, 0}
   };
 
   rows0 = sizeof(v) / sizeof(v[0]);
-  auto v_heap = new unsigned[rows0][8]();
-  std::copy(&v[0][0], &v[0][0]+rows0*8,&v_heap[0][0]);
+  auto v_heap = new unsigned[rows0][7]();
+  std::copy(&v[0][0], &v[0][0]+rows0*7,&v_heap[0][0]);
   int rows01 = sizeof(v_heap) / sizeof(v_heap[0]);
 
   EXPECT_EQ(rows0, rows01);
 
   for (int i=0; i<rows0; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ", v[i][j]);
     }
     printf("\n");
   }
   for (int i=0; i<rows0; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ", v_heap[i][j]);
     }
     printf("\n");
@@ -34,7 +34,7 @@ animation_as_uint_t* getAnis0(int id){
   allV0[0] = v_heap;
 
   for (int i=0; i<rows0; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ", allV0[0][i][j]);
     }
     printf("\n");
@@ -61,7 +61,7 @@ void test1()
   EXPECT_EQ(4, num0);
 
   for (int i=0; i<rows0; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ",as[i][j]);
     }
     printf("\n");
@@ -76,7 +76,7 @@ void test1()
   animation_as_uint_t* ani = al.getAnimationAsUint(0);
 
   for (int i=0; i<3; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ",ani[i][j]);
     }
     printf("\n");

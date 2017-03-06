@@ -9,7 +9,7 @@
 
 #include <map>
 
-#define FSM_DEBUG
+//#define FSM_DEBUG
 
 using namespace std;
 

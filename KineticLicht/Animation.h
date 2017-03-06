@@ -14,7 +14,7 @@
 
 using namespace std;
 
-typedef unsigned int animation_as_uint_t [8];
+typedef unsigned int animation_as_uint_t [7];
 
 enum LedPosition { TOP, BOTTOM };
 

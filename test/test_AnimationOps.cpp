@@ -2,22 +2,22 @@
 
 extern void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, int green, int blue);
 
-typedef unsigned int animation_as_uint_t [8];
+//typedef unsigned int animation_as_uint_t [7];
 
 animation_as_uint_t* allV[4];
 int rows = 0;
 
 animation_as_uint_t* getAnis(int id){
-  unsigned v[][8] = {
-    {LED1BOT, 20, 0, RED, 100, 2},
-    {LED1TOP, 20, 0, BLACK, 0, 2}
+  unsigned v[][7] = {
+    {LED1BOT, 20, 0, RED, 100},
+    {LED1TOP, 20, 0, BLACK, 0}
   };
 
   rows = sizeof(v) / sizeof(v[0]);
   printf("sizes v: %d - %d\n",  sizeof(v),  sizeof(v[0]));
-  auto v_heap = new unsigned[rows][8];
+  auto v_heap = new unsigned[rows][7];
   printf("sizes v_heap: %d - %d\n",  sizeof(v_heap),  sizeof(v_heap[0]));
-  std::copy(&v[0][0], &v[0][0]+rows*8,&v_heap[0][0]);
+  std::copy(&v[0][0], &v[0][0]+rows*7,&v_heap[0][0]);
   //int rows1 = sizeof(v_heap) / sizeof(v_heap[0]);
   printf("sizes v_heap: %d - %d\n",  sizeof(v_heap),  sizeof(v_heap[0]));
 
@@ -25,13 +25,13 @@ animation_as_uint_t* getAnis(int id){
   //EXPECT_EQ(rows, rows1);
 
   for (int i=0; i<rows; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ", v[i][j]);
     }
     printf("\n");
   }
   for (int i=0; i<rows; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ", v_heap[i][j]);
     }
     printf("\n");
@@ -40,7 +40,7 @@ animation_as_uint_t* getAnis(int id){
   allV[0] = v_heap;
 
   for (int i=0; i<rows; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ", allV[0][i][j]);
     }
     printf("\n");
@@ -66,7 +66,7 @@ TEST(AnimationOps_tests, array_stuff){
   EXPECT_EQ(4, num0);
 
   for (int i=0; i<rows; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ",as[i][j]);
     }
     printf("\n");
@@ -77,7 +77,8 @@ TEST(AnimationOps_tests, array_stuff){
   printf ("current animation...\n");
   ao.selectAnimation(1);
   Animation& an0 = ao._getCurrentAnimation();
-  EXPECT_EQ(56, an0.numberOfKeyFrames());
+  EXPECT_EQ(40, an0.numberOfKeyFrames());
+  EXPECT_FALSE(an0.containsMotorFrames());
   //an0.printAnimation();
 
 }
@@ -89,7 +90,7 @@ TEST(AnimationOps, animationList){
   animation_as_uint_t* ani = al.getAnimationAsUint(0);
 
   for (int i=0; i<3; i++){
-    for (int j=0; j<8; j++){
+    for (int j=0; j<7; j++){
       printf("%u ",ani[i][j]);
     }
     printf("\n");

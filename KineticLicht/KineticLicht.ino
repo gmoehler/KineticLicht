@@ -111,9 +111,9 @@ void setup()
 {
   Serial.begin(9600);
   printf("0### FREE RAM: %d\n",  fr0);
-  printf("0### FREE RAM: %d\n",  fr1);
-  printf("0### FREE RAM: %d\n",  fr2);
-  printf("1### FREE RAM: %d\n",  freeRam());
+  printf("1### FREE RAM: %d\n",  fr1);
+  printf("2### FREE RAM: %d\n",  fr2);
+  printf("3### FREE RAM: %d\n",  freeRam());
 
   printf("Hello World\n");
   cout << "Start." << endl;
@@ -123,7 +123,7 @@ void setup()
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
-  printf("2### FREE RAM: %d\n",  freeRam ());
+  printf("4### FREE RAM: %d\n",  freeRam ());
 
   //aniop.addStepperWorker(&sworker1);
   //aniop.addStepperWorker(&sworker2);
@@ -138,8 +138,8 @@ void setup()
   aniop.addLedWorker(&rgb4o);
   aniop.addLedWorker(&rgb4u);
 
-  aniop.init(SINGLE_ANIMATION, 0, false);
-  
+  aniop.init(SINGLE_ANIMATION, 1, true);
+
   printf("5### FREE RAM: %d\n",  freeRam ());
   delay(10000);
 
@@ -167,7 +167,7 @@ irrecv.resume(); // Receive the next value
 */
 
 aniop.loop();
-delay(500);
+//delay(500);
 
 }
 

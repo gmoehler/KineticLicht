@@ -13,7 +13,7 @@ StepperWorker::StepperWorker(int id, AccelStepper &astepper,
     _reverseDirection(reverseDirection),
     _previousKeyFrame(KeyFrame()), _targetKeyFrame(KeyFrame()),
     _time_endstophit (0), _targetChanged (false), _elapsedTime(0),
-    _debug(true)
+    _debug(false)
 {
   std::stringstream sstr;
   sstr << "StepperWorker-" << _id;

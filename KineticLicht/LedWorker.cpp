@@ -33,7 +33,8 @@ void LedWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
   _pastTargetKeyFrame = false;
 
   if (_debug) {
-    printf("LED%d %ld Update frame Speed: %.2f %.2f %.2f\n", getId(), elapsedTime, _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed);
+    printf("LED%d %ld Update frame Speed: %d %d %d\n", getId(), elapsedTime,
+      (int) (1000*_currentRedSpeed),  (int) (1000*_currentGreenSpeed),  (int) (1000*_currentBlueSpeed));
   }
 }
 
@@ -111,6 +112,7 @@ void LedWorker::calculateCurrentSpeed() {
   _currentBlueSpeed =  ((double)(targetColor.blue() - prevColor.blue()))
     / (targetTime - prevTime);
   if (_debug) {
-    printf("LED%d Update Current Speed: %.2f, %.2f, %.2f\n", getId(), _currentRedSpeed, _currentGreenSpeed, _currentBlueSpeed);
+    printf("LED%d Update Current Speed: %d, %d, %d\n", getId(), 
+    (int) (1000*_currentRedSpeed), (int) (1000*_currentGreenSpeed), (int)(1000*_currentBlueSpeed));
   }
 }

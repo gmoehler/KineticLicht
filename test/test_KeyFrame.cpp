@@ -21,9 +21,9 @@ TEST(KeyFrame_tests, test1){
     EXPECT_EQ(0, kf.getTargetColor().blue());
     EXPECT_EQ(MOTORFRAME, kf.getType());
 
-    unsigned v1[] = {42, 33, 1000, 0, 0, 0, 0, MOTORFRAME};
+    unsigned v1[] = {STEPPER1, 33, 1000, 0, 0, 0, 0};
     kf = KeyFrame(v1);
-    EXPECT_EQ(42, kf.getId());
+    EXPECT_EQ(STEPPER1, kf.getId());
     EXPECT_EQ(3300, kf.getTimeMs());
     EXPECT_EQ(1000, kf.getTargetPosition());
     EXPECT_EQ(0, kf.getTargetColor().red());
@@ -40,9 +40,9 @@ TEST(KeyFrame_tests, test1){
     EXPECT_EQ(3000, kf.getTargetColor().blue());
     EXPECT_EQ(LEDFRAME, kf.getType());
 
-    unsigned v2[] = {42, 33, 0, 1000, 2000, 3000, 100, LEDFRAME};
+    unsigned v2[] = {LED1BOT, 33, 0, 1000, 2000, 3000, 100};
     kf = KeyFrame(v2);
-    EXPECT_EQ(42, kf.getId());
+    EXPECT_EQ(LED1BOT, kf.getId());
     EXPECT_EQ(3300, kf.getTimeMs());
     EXPECT_EQ(0, kf.getTargetPosition());
     EXPECT_EQ(1000, kf.getTargetColor().red());

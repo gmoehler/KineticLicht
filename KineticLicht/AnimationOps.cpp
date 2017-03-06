@@ -6,7 +6,7 @@ AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
 _animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION), _elapsedTime(0), _startTime(-1),
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
-_tlc(tlc)
+_debug(true), _tlc(tlc)
 {
   setDebugString(string("AnimationOps"));
   _tlc = tlc;
@@ -93,8 +93,9 @@ void AnimationOps::init(AnimationStrategy strategy,
 
   void AnimationOps::_entry_calibrating(){
     printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
-    _startTime = millis(); // reset time
-    printf("+++ startTime: %ld\n", _startTime);
+
+    //_startTime = millis(); // reset time
+    //printf("+++ startTime: %ld\n", _startTime);
     for (auto it = _stepperWorkerMap.begin() ;
     it != _stepperWorkerMap.end(); ++it) {
       StepperWorker* sw = it->second;
@@ -135,7 +136,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
   void AnimationOps::_entry_active(){
     _startTime = millis(); // reset time
-    printf("+++ startTime: %ld\n", _startTime);
+    //printf("+++ startTime: %ld\n", _startTime);
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
       StepperWorker* sw = it->second;
       sw->startAnimation();
@@ -145,8 +146,11 @@ void AnimationOps::init(AnimationStrategy strategy,
   void AnimationOps::_entry_finished(){
     // choose next animation based on strategy
     if (_strategy == SINGLE_ANIMATION) {
-      // stop after first animation
-      _currentAnimationId = NO_CURRENT_ANIMATION;
+
+      if (!_strategy_repeat){
+        // stop after first animation
+        _currentAnimationId = NO_CURRENT_ANIMATION;
+      }
     }
     else {
       _currentAnimationId++;
@@ -193,8 +197,10 @@ void AnimationOps::init(AnimationStrategy strategy,
   void AnimationOps::_action_active(){
 
     _elapsedTime = millis() - _startTime;
-    printf("+++ elapsed Time: %ld\n", _elapsedTime);
-    _getCurrentAnimation().printAnimation();
+    if (_debug){
+      printf("+++ elapsed Time: %ld\n", _elapsedTime);
+      _getCurrentAnimation().printAnimation();
+    }
 
     if (_getCurrentAnimation().needsTargetFrameUpdate(_elapsedTime)) {
       vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
@@ -203,6 +209,9 @@ void AnimationOps::init(AnimationStrategy strategy,
         printf("*********************** Need more frames, but there are none\n");
         triggerTransition(getState(), ANIMATION_FINISHED);
         return;
+      }
+      else if (_debug){
+        printf("++++ Number of KeyFrames read: %d\n\n", kfs.size());
       }
 
       for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {

@@ -18,9 +18,6 @@
 
 using namespace std;
 
-//enum Activators {STEPPER1, STEPPER2, STEPPER3, STEPPER4,
-//                 LED1TOP, LED1BOT, LED2TOP, LED2BOT, LED3TOP, LED3BOT, LED4TOP, LED4BOT};
-
 enum AnimationState { ANIMATION_INIT,           // 0
                       ANIMATION_CALIBRATING,    // 1
                       ANIMATION_ACTIVE,         // 2
@@ -60,6 +57,8 @@ private:
   AnimationStrategy _strategy;
   int _strategy_startWithAnimationId;
   bool _strategy_repeat;
+
+  bool _debug;
 
   Adafruit_TLC5947 _tlc;
 
