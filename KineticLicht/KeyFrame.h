@@ -90,7 +90,7 @@ class KeyFrame
       _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]){}
 
     int getId() {
-      return _id;
+      return (int) _id;
     }
 
     long getTimeMs() {
@@ -123,7 +123,7 @@ KeyFrameType getType(){
 
 
   private:
-    int _id;
+    int8_t _id;
     unsigned _timeDs;
     int _targetPosition;
     RGB _targetColor;
