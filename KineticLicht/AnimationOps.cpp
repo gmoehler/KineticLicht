@@ -6,7 +6,7 @@ AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
 _animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION), _elapsedTime(0), _startTime(-1),
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
-_debug(true), _tlc(tlc)
+_debug(false), _tlc(tlc)
 {
   setDebugString(string("AnimationOps"));
   _tlc = tlc;

@@ -5,7 +5,7 @@ LedWorker::LedWorker(int ledId, int tlc5947_id)
 : _ledId(ledId), _tlc5947_id(tlc5947_id),
 _currentRedSpeed(0.0), _currentGreenSpeed(0.0), _currentBlueSpeed(0.0),
 _needsUpdateDelta(16), _pastTargetKeyFrame(false), _needsUpdate(false),
-_debug(true)
+_debug(false)
 { }
 
 int LedWorker::getId() {
@@ -112,7 +112,7 @@ void LedWorker::calculateCurrentSpeed() {
   _currentBlueSpeed =  ((double)(targetColor.blue() - prevColor.blue()))
     / (targetTime - prevTime);
   if (_debug) {
-    printf("LED%d Update Current Speed: %d, %d, %d\n", getId(), 
+    printf("LED%d Update Current Speed: %d, %d, %d\n", getId(),
     (int) (1000*_currentRedSpeed), (int) (1000*_currentGreenSpeed), (int)(1000*_currentBlueSpeed));
   }
 }

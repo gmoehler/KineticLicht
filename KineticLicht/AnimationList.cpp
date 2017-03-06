@@ -57,8 +57,8 @@ unsigned led_test1[][7] = {
 
   // LED test: all LEDs change colors at the same time
 unsigned led_test2[][7] ={
-//    {LED1BOT, 30, 0, RED, 100},
-//    {LED1TOP, 30, 0, RED, 100},
+    {LED1BOT, 30, 0, RED, 100},
+    {LED1TOP, 30, 0, RED, 100},
     {LED2BOT, 30, 0, RED, 100},
     {LED2TOP, 30, 0, RED, 100},
     {LED3BOT, 30, 0, RED, 100},
@@ -66,8 +66,8 @@ unsigned led_test2[][7] ={
     {LED4BOT, 30, 0, RED, 100},
     {LED4TOP, 30, 0, RED, 100},
 
-//    {LED1BOT, 60, 0, GREEN, 100},
-//    {LED1TOP, 60, 0, GREEN, 100},
+    {LED1BOT, 60, 0, GREEN, 100},
+    {LED1TOP, 60, 0, GREEN, 100},
     {LED2BOT, 60, 0, GREEN, 100},
     {LED2TOP, 60, 0, GREEN, 100},
     {LED3BOT, 60, 0, GREEN, 100},

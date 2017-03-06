@@ -138,7 +138,7 @@ void setup()
   aniop.addLedWorker(&rgb4o);
   aniop.addLedWorker(&rgb4u);
 
-  aniop.init(SINGLE_ANIMATION, 0, true);
+  aniop.init(SINGLE_ANIMATION, 1, true);
 
   printf("5### FREE RAM: %d\n",  freeRam ());
   delay(10000);

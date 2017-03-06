@@ -28,6 +28,7 @@ public:
 
   bool isAnimationFinished();
   bool needsTargetFrameUpdate(long elapsedTime);
+  bool nextFrameWithSameTime();
   vector<KeyFrame> getNextTargetKeyFrames(long elapsedTime);
 
   // add new key frames - sort is done on first getNextTargetKeyFrames()

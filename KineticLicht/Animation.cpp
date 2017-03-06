@@ -32,7 +32,7 @@ int Animation::numberOfKeyFrames(){
  }
 
 bool Animation::isAnimationFinished() {
-  return numberOfKeyFrames() == 0 || _currentFrameId >= (int) numberOfKeyFrames() -1;
+  return numberOfKeyFrames() == 0 || _currentFrameId >= numberOfKeyFrames() -1;
 }
 
 bool Animation::needsTargetFrameUpdate(long elapsedTime) {
@@ -48,6 +48,21 @@ bool Animation::needsTargetFrameUpdate(long elapsedTime) {
   return (currentTargetTime < elapsedTime);
 }
 
+bool Animation::nextFrameWithSameTime() {
+  // nothing read so far
+  if (_currentFrameId < 0){
+    return true;
+  }
+  if (isAnimationFinished()){
+    return false;
+  }
+
+  double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();//_currentKeyFrameIter->getTimeMs();
+  double nextTargetTime = getKeyFrame(_currentFrameId+1).getTimeMs();//_currentKeyFrameIter->getTimeMs();
+
+return currentTargetTime == nextTargetTime;
+}
+
 vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
   // need resorting
@@ -61,7 +76,8 @@ vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
   vector<KeyFrame> nextKeyFrames;
 
-  while (!isAnimationFinished() && needsTargetFrameUpdate(elapsedTime)){
+  while (!isAnimationFinished() &&
+    (needsTargetFrameUpdate(elapsedTime) || nextFrameWithSameTime())){
     // for first frame the iterator is already pointing to the correct frame
     _currentFrameId++;
     nextKeyFrames.push_back(getKeyFrame(_currentFrameId));
