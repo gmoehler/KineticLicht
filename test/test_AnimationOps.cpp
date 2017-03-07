@@ -164,13 +164,13 @@ TEST(AnimationOps_tests, scenario_loop){
     ao.loop();
     printf("%d +++++++%d++++++++\n",i,ao.getState());
 
-    if (i > 39 ){
+    if (i > 38 ){
         EXPECT_EQ(ANIMATION_CALIBRATING, ao.getState());
     }
-    else if (i==20 || i==39){
+    else if (i==20 || i==38){
         EXPECT_EQ(ANIMATION_INIT, ao.getState());
     }
-    else if ((i>18 && i<20) || i>37){
+    else if ((i>18 && i<20) || i>36){
       EXPECT_EQ(ANIMATION_FINISHED, ao.getState());
     }
     else{

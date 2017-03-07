@@ -3,6 +3,10 @@
 
 #define RGB_MAX_VAL 4095
 
+#ifdef WITHIN_UNITTEST
+  #include <stdint.h> // for int8_t
+#endif
+
 // we define the colors like this so it is easy to use them in
 // brace-enclosed initializer lists
 #define WHITE RGB_MAX_VAL,RGB_MAX_VAL,RGB_MAX_VAL

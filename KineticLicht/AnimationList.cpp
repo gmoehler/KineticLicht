@@ -105,7 +105,7 @@ unsigned led_test2[][7] ={
 
   rows = sizeof(led_test2) / sizeof(led_test2[0]);
   _addAsAnimationUint(led_test2, rows, animationId++);
-/*
+
   unsigned a1[][7] = {
     {STEPPER1, 0, 0, NOCOLOR},
     {STEPPER1, 20, 0, NOCOLOR},
@@ -218,5 +218,5 @@ unsigned led_test2[][7] ={
 
     rows = sizeof(a2) / sizeof(a2[0]);
     _addAsAnimationUint(a2, rows, animationId++);
-    */
+    
 }
