@@ -247,7 +247,6 @@ void AnimationList::load(){
   int rows = sizeof(led_test1) / sizeof(led_test1[0]);
   _addAsAnimationUint(led_test1, rows, animationId++);
 
-  // LED test: all LEDs change colors at the same time
   unsigned led_test2[][NUM_COLS] ={
     {LED1TOP, 30, 0, RED, 100},
     {LED1TOP, 60, 0, GREEN, 100},

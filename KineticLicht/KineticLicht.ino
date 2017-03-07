@@ -4,13 +4,13 @@
 #include <Adafruit_MotorShield.h>
 #include <AccelStepper.h>
 
-#include "Adafruit_TLC5947.h"
+#include <Adafruit_TLC5947.h>
 
-#include "RGB.h"
-#include "StepperWorker.h"
-#include "LedWorker.h"
-#include "Animation.h"
-#include "AnimationOps.h"
+#include <RGB.h>
+#include <StepperWorker.h>
+#include <LedWorker.h>
+#include <Animation.h>
+#include <AnimationOps.h>
 
 std::map<long, int> create_NumberButtonMap();
 int freeRam ();
@@ -39,7 +39,7 @@ LedWorker rgb4u = LedWorker (LED4BOT, 2);
 int fr1 = freeRam();
 
 /*************************
-create Stepper objects
+  Create Stepper objects
 *************************/
 // two stepper motors one on each port
 /*Adafruit_MotorShield AFMS_a = Adafruit_MotorShield(0x60);
@@ -89,7 +89,7 @@ AccelStepper astepper4(forwardstep4, backwardstep4);
 //StepperWorker  sworker4 = StepperWorker(STEPPER4, astepper4, 47, true);
 
 /****************************
-Create IR remote objects
+  Create IR remote objects
 ****************************/
 
 /*int IR_RECV_PIN = 11;
@@ -100,11 +100,10 @@ std::map<long, int> numberButtons = create_NumberButtonMap();
 */
 
 /************
-Setup
+    Setup
 ************/
 
 AnimationOps aniop(tlc, true);
-
 int fr2 = freeRam();
 
 void setup()
@@ -116,10 +115,11 @@ void setup()
   printf("3### FREE RAM: %d\n",  freeRam());
 
   printf("Hello World\n");
-  cout << "Start." << endl;
+  std::cout << "Start." << std::endl;
 
   //AFMS_a.begin();
   //AFMS_b.begin();
+
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
@@ -147,7 +147,7 @@ void setup()
 }
 
 /************
-Loop
+    Loop
 ************/
 
 void loop()
@@ -155,20 +155,19 @@ void loop()
   /*
   // react on IR anmiation selection
   if (irrecv.decode(&irResults)) {
-  // pressed a number button: select animation with that id
-  int num = irResults.value;
-  if (numberButtons.count(num) == 1 && num < anops.getNumAnimations()) {
-  animation = anops.getAnimation(num);
-  delay(1000);
-  state = ANIMATION_CALIBRATING;
-}
-irrecv.resume(); // Receive the next value
+    // pressed a number button: select animation with that id
+    int num = irResults.value;
+    if (numberButtons.count(num) == 1 && num < anops.getNumAnimations()) {
+    animation = anops.getAnimation(num);
+    delay(1000);
+    state = ANIMATION_CALIBRATING;
+  }
+  irrecv.resume(); // Receive the next value
 }
 */
 
-aniop.loop();
-//delay(500);
-
+  aniop.loop();
+  
 }
 
 std::map<long, int> create_NumberButtonMap()
