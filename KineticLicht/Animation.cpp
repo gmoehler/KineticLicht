@@ -12,7 +12,7 @@ Animation::Animation(vector<KeyFrame> kfs): Animation() {
   addKeyFrames(kfs);
 }
 
-Animation::Animation(animation_as_uint_t *v, int length): Animation() {
+Animation::Animation(unsigned **v, int length): Animation() {
   for (int i=0; i< length; i++){
     KeyFrame kf(v[i]);
     addKeyFrame(kf);

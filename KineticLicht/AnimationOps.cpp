@@ -30,7 +30,7 @@ int AnimationOps::getNumAnimations(){
 }
 
 void AnimationOps::selectAnimation(int id){
-  animation_as_uint_t* aniUint = _animations.getAnimationAsUint(id);
+  unsigned **aniUint = _animations.getAnimationAsUint(id);
   int numKf = _animations.getNumKeyFrames(id);
   _currentAnimation = Animation(aniUint, numKf);
 }

@@ -18,6 +18,7 @@ class AnimationList
 public:
   AnimationList(bool loadAnimations=true) : _numAnimations(4){
     _numKeyFrames = new int[_numAnimations];
+    _allAnimations = new unsigned **[_numAnimations];
     //_allAnimations = new animation_as_uint_t*[_numAnimations];
     if (loadAnimations){
       load();
@@ -42,7 +43,7 @@ int getNumAnimations(){
   return _numAnimations;
 }
 
-animation_as_uint_t* getAnimationAsUint(int id){
+unsigned** getAnimationAsUint(int id){
   return _allAnimations[id];
 }
 
@@ -54,8 +55,8 @@ int getNumKeyFrames(int id){
 
 private:
   int _numAnimations;
-  //animation_as_uint_t** _allAnimations;
-  animation_as_uint_t* _allAnimations[4];
+  unsigned ***_allAnimations;
+  //animation_as_uint_t* _allAnimations[4];
   int* _numKeyFrames;
 
   // add an animation array to _allAnimations
@@ -65,11 +66,21 @@ private:
     }
 
     // create a copy on the heap
-    auto v_heap = new unsigned[rows][7]();
+   /* auto v_heap = new unsigned[rows][7]();
     std::copy(&v[0][0], &v[0][0]+rows*7,&v_heap[0][0]);
     _allAnimations[idx] = v_heap;
     _numKeyFrames[idx] = rows;
+    */
+  _allAnimations[idx] = new unsigned*[rows];
+  for(int j= 0; j < rows; ++j) {
+    _allAnimations[idx][j] = new unsigned[5];
+    for(int k=0; k< 5; ++k) {
+        _allAnimations[idx][j][k] = v[j][k];
+        }
+    }
   }
+  
+  
 };
 
 #endif

@@ -14,7 +14,7 @@
 
 using namespace std;
 
-typedef unsigned int animation_as_uint_t [7];
+//typedef unsigned int animation_as_uint_t [7];
 
 enum LedPosition { TOP, BOTTOM };
 
@@ -24,7 +24,7 @@ public:
 
   Animation();
   Animation(vector<KeyFrame> new_kfs);
-  Animation(animation_as_uint_t *v, int length);
+  Animation(unsigned **v, int length);
 
   bool isAnimationFinished();
   bool needsTargetFrameUpdate(long elapsedTime);
