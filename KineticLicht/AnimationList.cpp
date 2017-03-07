@@ -5,6 +5,7 @@ bool Compare_Rows(const unsigned a[7], const unsigned b[7])
   return a[0] < b[0];
 }
 
+// consistent version for unit tests below
 #ifndef WITHIN_UNITTEST
 void AnimationList::load(){
 
@@ -221,7 +222,9 @@ unsigned led_test2[][7] ={
     _addAsAnimationUint(a2, rows, animationId++);
 
 }
+
 #else
+
 // consistent version for unit test
 void AnimationList::load(){
 
