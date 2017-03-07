@@ -1,19 +1,28 @@
 #include "../test/test.h"
 
+void addAnimation(int ***ary, int t [][5], int rows, int i){
+	
+  ary[i] = new int*[rows];
+  for(int j= 0; j < rows; ++j) {
+    ary[i][j] = new int[5];
+    for(int k=0; k< 5; ++k) {
+        ary[i][j][k] = t[j][k];
+        }
+    }
+}
+	
 void test1(){
-
-
  
 	int t1[][5] = {
 		{0, 0, 0, 0, 0},
 	};
 
-	unsigned t2[][5] = {
+	int t2[][5] = {
 		{0, 0, 0, 0, 0},
 		{1, 1, 1 ,1 , 1},
 	};
 
-	unsigned t3[][5] = {
+	int t3[][5] = {
 		{0, 0, 0, 0, 0},
 		{1, 1, 1 ,1, 1},
 		{2, 2, 2, 2, 2},
@@ -29,6 +38,13 @@ void test1(){
 
 int sizeX = 5;
 int sizeZ = 3;
+
+int ***ary = new int**[sizeZ];
+int numAni=0;
+addAnimation(ary, t1,rows[0], 0);
+addAnimation(ary, t2,rows[1], 1);
+addAnimation(ary, t3,rows[2], 2);
+/*
 
 int ***ary = new int**[sizeZ];
 for(int i= 0;  i< sizeZ; ++i) {
@@ -51,6 +67,7 @@ for(int i= 0;  i< sizeZ; ++i) {
     }
   }
 }
+*/
 
 printf("hallo\n");
 	for (int i=0; i<3; i++){
