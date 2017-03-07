@@ -35,7 +35,7 @@ enum StepperWorkerState {INIT,                    // 0
 class StepperWorker : public FiniteStateMachine<StepperWorker>
 {
   public:
-    StepperWorker(int id, AccelStepper &astepper, 
+    StepperWorker(int id, AccelStepper &astepper,
                   int endStopPin, bool reverseDirection);
 
     // to be called in setup()

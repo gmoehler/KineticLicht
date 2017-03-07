@@ -4,7 +4,9 @@
 #define ANIMATIONLIST_H
 
 #ifndef WITHIN_UNITTEST
-#include <ArduinoSTL.h>
+  #include <ArduinoSTL.h>
+#else
+  #include "../test/mock_Arduino.h"
 #endif
 
 #include <algorithm>

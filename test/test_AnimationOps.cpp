@@ -77,7 +77,7 @@ TEST(AnimationOps_tests, array_stuff){
   printf ("current animation...\n");
   ao.selectAnimation(1);
   Animation& an0 = ao._getCurrentAnimation();
-  EXPECT_EQ(40, an0.numberOfKeyFrames());
+  EXPECT_EQ(6, an0.numberOfKeyFrames());
   EXPECT_FALSE(an0.containsMotorFrames());
   //an0.printAnimation();
 

@@ -37,8 +37,6 @@ void Adafruit_TLC5947::write(void){
 
 }
 
-
-
 long _testCurrentTime=0L;
 unsigned long millis() {
   printf("millis() %ld\n",_testCurrentTime );

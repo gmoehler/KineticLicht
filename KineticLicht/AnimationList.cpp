@@ -5,6 +5,7 @@ bool Compare_Rows(const unsigned a[7], const unsigned b[7])
   return a[0] < b[0];
 }
 
+#ifndef WITHIN_UNITTEST
 void AnimationList::load(){
 
 int animationId = 0;
@@ -218,5 +219,45 @@ unsigned led_test2[][7] ={
 
     rows = sizeof(a2) / sizeof(a2[0]);
     _addAsAnimationUint(a2, rows, animationId++);
-    
+
 }
+#else
+// consistent version for unit test
+void AnimationList::load(){
+
+int animationId = 0;
+
+unsigned led_test1[][7] = {
+    {LED1TOP, 0, 0, BLACK, 0},
+    {LED1TOP, 20, 0, BLACK, 0},
+    {LED1TOP, 40, 0, RED, 100},
+    {LED4TOP, 180, 0, BLACK, 0}
+  };
+
+  int rows = sizeof(led_test1) / sizeof(led_test1[0]);
+  _addAsAnimationUint(led_test1, rows, animationId++);
+
+  // LED test: all LEDs change colors at the same time
+unsigned led_test2[][7] ={
+    {LED1TOP, 30, 0, RED, 100},
+    {LED1TOP, 60, 0, GREEN, 100},
+    {LED1TOP, 90, 0, BLUE, 100},
+    {LED1TOP, 120, 0, RED, 0},
+    {LED1TOP, 150, 0, LILA, 0},
+    {LED2BOT, 150, 0, LILA, 0},
+  };
+
+  rows = sizeof(led_test2) / sizeof(led_test2[0]);
+  _addAsAnimationUint(led_test2, rows, animationId++);
+
+  unsigned a1[][7] = {
+    {STEPPER1, 0, 0, NOCOLOR},
+    {LED1TOP, 0,    YELLOW, 0},
+    {LED1TOP, 15, YELLOW, 50},
+    {LED1TOP, 330, 0, YELLOW, 0},
+  };
+
+  rows = sizeof(a1) / sizeof(a1[0]);
+  _addAsAnimationUint(a1, rows, animationId++);
+}
+#endif
