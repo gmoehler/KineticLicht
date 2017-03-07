@@ -12,14 +12,13 @@
 #include <algorithm>
 #include "Animation.h"
 
+#define NUM_COLS 7
+
 class AnimationList
 {
 
 public:
-  AnimationList(bool loadAnimations=true) : _numAnimations(4){
-    _numKeyFrames = new int[_numAnimations];
-    _allAnimations = new unsigned **[_numAnimations];
-    //_allAnimations = new animation_as_uint_t*[_numAnimations];
+  AnimationList(bool loadAnimations=true) : _numAnimations(0){
     if (loadAnimations){
       load();
     }
@@ -27,60 +26,67 @@ public:
 
   ~AnimationList() {
     // recursively deleting multidim array
-    for (int i=0; i <_numAnimations; i++){
-      /*for (int j=0; j < _numKeyFrames[i]; j++){
-      animation_as_uint_t *kfs = _allAnimations[i];
-      delete[] &kfs[0][0];
-    }*/
+    for (int8_t i=0; i <_numAnimations; i++){
+      for (int8_t j=0; j < _numKeyFrames[i]; j++){
+        delete[] _allAnimations[i][j];
+    }
     delete[] _allAnimations[i];
   }
+  delete [] _allAnimations;
+
   delete[] _numKeyFrames;
 }
 
 void load();
 
-int getNumAnimations(){
+// needs to be called before we can use _addAsAnimationUint()
+void initNumberOfAnimations(int8_t numAnimations){
+  _numAnimations = numAnimations;
+  _numKeyFrames = new int[_numAnimations];
+  _allAnimations = new unsigned **[_numAnimations];
+}
+
+int8_t getNumAnimations(){
   return _numAnimations;
 }
 
-unsigned** getAnimationAsUint(int id){
+unsigned **getAnimationAsUint(int8_t id){
   return _allAnimations[id];
 }
 
 // number of key frames for each animation
-int getNumKeyFrames(int id){
+int getNumKeyFrames(int8_t id){
   return _numKeyFrames[id];
 }
 
 
 private:
-  int _numAnimations;
+  int8_t _numAnimations;
   unsigned ***_allAnimations;
   //animation_as_uint_t* _allAnimations[4];
   int* _numKeyFrames;
 
   // add an animation array to _allAnimations
-  void _addAsAnimationUint(unsigned v[][7], int rows, int idx) {
+  // need to call initNumberOfAnimations(numAnimations) before this method
+  void _addAsAnimationUint(unsigned v[][NUM_COLS], int rows, int8_t idx) {
     if (idx >= getNumAnimations() || idx < 0){
       printf("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
     }
 
     // create a copy on the heap
-   /* auto v_heap = new unsigned[rows][7]();
-    std::copy(&v[0][0], &v[0][0]+rows*7,&v_heap[0][0]);
-    _allAnimations[idx] = v_heap;
+    // first allocate rows
     _numKeyFrames[idx] = rows;
-    */
-  _allAnimations[idx] = new unsigned*[rows];
-  for(int j= 0; j < rows; ++j) {
-    _allAnimations[idx][j] = new unsigned[5];
-    for(int k=0; k< 5; ++k) {
+    _allAnimations[idx] = new unsigned*[rows];
+    for(int8_t j= 0; j < rows; ++j) {
+      // then allocate columns
+      _allAnimations[idx][j] = new unsigned[NUM_COLS];
+      // then copy over values from initialized array
+      for(int8_t k=0; k< NUM_COLS; ++k) {
         _allAnimations[idx][j][k] = v[j][k];
-        }
+      }
     }
   }
-  
-  
+
 };
 
 #endif

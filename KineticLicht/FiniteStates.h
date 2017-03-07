@@ -2,42 +2,51 @@
 #define FINIITE_STATES_H
 
 #ifndef WITHIN_UNITTEST
-#include <ArduinoSTL.h>
+  #include <ArduinoSTL.h>
 #else
-#include "stdio.h"
+  #include <stdio.h>
 #endif
 
 #include <map>
+#include <string>
 
 //#define FSM_DEBUG
 
-using namespace std;
 
+/**
+ * A class that represents a Finite State Machine
+ *
+ * Use as a base class of your FSM class and define methods
+ *  - that trigger transitions
+ *  - that are called at state entry
+ *  - that are called within each loop while a state is active
+ *  - that are called on a state exit
+ **/
 template <class T> class FiniteStateMachine {
 public:
-  FiniteStateMachine(int numberOfStates, int initialState, T& obj);
+  FiniteStateMachine(int8_t numberOfStates, int8_t initialState, T& obj);
 
   typedef bool (T::*TransitionCondFunction)(void);
-  void addTransition(int fromState, int toState,  TransitionCondFunction transitionFunction);
+  void addTransition(int8_t fromState, int8_t toState,  TransitionCondFunction transitionFunction);
   typedef void (T::*StateActionFunction)(void);
-  void addStateAction(int state, StateActionFunction stateAction);
-  void addStateEntryAction(int state, StateActionFunction stateEntryAction);
-  void addStateExitAction(int state, StateActionFunction stateExitAction);
+  void addStateAction(int8_t state, StateActionFunction stateAction);
+  void addStateEntryAction(int8_t state, StateActionFunction stateEntryAction);
+  void addStateExitAction(int8_t state, StateActionFunction stateExitAction);
 
   void loop();
 
   // one time trigger from one state to another
-  void triggerTransition(int fromState, int toState);
-  int getState();
+  void triggerTransition(int8_t fromState, int8_t toState);
+  int8_t getState();
 
   void setDebug(bool debug);
-  void setDebugString(const string s);
+  void setDebugString(const std::string s);
 
 private:
-  int _numStates;
-  int _state;
+  int8_t _numStates;
+  int8_t _state;
   bool _debug;
-  string _debugString;
+  std::string _debugString;
 
   T& _obj;   // the object to apply the functions on
   std::map<int,std::map<int,TransitionCondFunction>> _transitionMap;
@@ -46,7 +55,7 @@ private:
   std::map<int,StateActionFunction> _stateExitActionMap;
   std::map<int,int> _transitionTriggerMap;
 
-  void _transit(int toState);
+  void _transit(int8_t toState);
 };
 
 template<class T>
@@ -55,42 +64,42 @@ void FiniteStateMachine<T>::setDebug(bool debug){
 }
 
 template<class T>
-void FiniteStateMachine<T>::setDebugString(const string debugString){
+void FiniteStateMachine<T>::setDebugString(const std::string debugString){
   _debugString = debugString;
 }
 
 template<class T>
-FiniteStateMachine<T>::FiniteStateMachine(int numberOfStates, int initialState, T& obj) :
+FiniteStateMachine<T>::FiniteStateMachine(int8_t numberOfStates, int8_t initialState, T& obj) :
 _numStates(numberOfStates), _state(initialState), _debug(true),
 _obj(obj), _transitionMap(), _transitionTriggerMap(){
 }
 template<class T>
-void FiniteStateMachine<T>::addTransition(int fromState, int toState,  TransitionCondFunction transitionFunction){
+void FiniteStateMachine<T>::addTransition(int8_t fromState, int8_t toState,  TransitionCondFunction transitionFunction){
   _transitionMap[fromState][toState] = transitionFunction;
 }
 
 template<class T>
-void FiniteStateMachine<T>::addStateAction(int state,  StateActionFunction stateActionFunction){
+void FiniteStateMachine<T>::addStateAction(int8_t state,  StateActionFunction stateActionFunction){
   _stateActionMap[state] = stateActionFunction;
 }
 
 template<class T>
-void FiniteStateMachine<T>::addStateEntryAction(int state,  StateActionFunction stateEntryActionFunction){
+void FiniteStateMachine<T>::addStateEntryAction(int8_t state,  StateActionFunction stateEntryActionFunction){
   _stateEntryActionMap[state] = stateEntryActionFunction;
 }
 
 template<class T>
-void FiniteStateMachine<T>::addStateExitAction(int state,  StateActionFunction stateExitActionFunction){
+void FiniteStateMachine<T>::addStateExitAction(int8_t state,  StateActionFunction stateExitActionFunction){
   _stateExitActionMap[state] = stateExitActionFunction;
 }
 
 template<class T>
-void FiniteStateMachine<T>::triggerTransition(int fromState, int toState){
+void FiniteStateMachine<T>::triggerTransition(int8_t fromState, int8_t toState){
   _transitionTriggerMap[fromState] = toState;
 }
 
 template<class T>
-int FiniteStateMachine<T>::getState(){
+int8_t FiniteStateMachine<T>::getState(){
   return _state;
 }
 
@@ -100,7 +109,7 @@ void FiniteStateMachine<T>::loop(){
   auto it1 = _transitionTriggerMap.find(_state);
   // transitionConfFunctions found
   if (it1 != _transitionTriggerMap.end()){
-    int toState = it1->second;
+    int8_t toState = it1->second;
     _transit(toState);
     _transitionTriggerMap.erase(it1);
   }
@@ -117,7 +126,7 @@ void FiniteStateMachine<T>::loop(){
         bool (T::*tf)(void)  = it3->second;
         // is transition function  fullfilled?
         if ((_obj.*tf)()) {
-          int toState =  it3->first;
+          int8_t toState =  it3->first;
           _transit(toState);
           break;
         }
@@ -137,7 +146,7 @@ void FiniteStateMachine<T>::loop(){
 }
 
 template<class T>
-void FiniteStateMachine<T>::_transit(int toState){
+void FiniteStateMachine<T>::_transit(int8_t toState){
   // call exit function of last state
   auto it1 = _stateExitActionMap.find(_state);
   if (it1 != _stateExitActionMap.end()){

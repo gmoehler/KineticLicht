@@ -1,6 +1,6 @@
 #include "Animation.h"
 
-bool keyFrameCompare (KeyFrame i,KeyFrame j) {
+bool keyFrameCompare (KeyFrame i, KeyFrame j) {
   return (i.getTimeMs()<j.getTimeMs());
 }
 
@@ -8,7 +8,7 @@ Animation::Animation() :
    _currentFrameId(-1), _isSorted(true),
    _withMotor(false) {}
 
-Animation::Animation(vector<KeyFrame> kfs): Animation() {
+Animation::Animation(std::vector<KeyFrame> kfs): Animation() {
   addKeyFrames(kfs);
 }
 
@@ -63,7 +63,7 @@ bool Animation::nextFrameWithSameTime() {
 return currentTargetTime == nextTargetTime;
 }
 
-vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
+std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
   // need resorting
   if (!_isSorted){
@@ -74,7 +74,7 @@ vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
     }
   }
 
-  vector<KeyFrame> nextKeyFrames;
+  std::vector<KeyFrame> nextKeyFrames;
 
   while (!isAnimationFinished() &&
     (needsTargetFrameUpdate(elapsedTime) || nextFrameWithSameTime())){
@@ -96,7 +96,7 @@ void Animation::addKeyFrame(KeyFrame kf) {
     _isSorted = false;
 }
 
-void Animation::addKeyFrames(vector<KeyFrame> kfs) {
+void Animation::addKeyFrames(std::vector<KeyFrame> kfs) {
 
   // need loop to account for _withMotor instead of one-line insert
   for (std::vector<KeyFrame>::iterator it = kfs.begin() ; it != kfs.end(); ++it) {

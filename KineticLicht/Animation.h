@@ -12,10 +12,6 @@
 
 #include "KeyFrame.h"
 
-using namespace std;
-
-//typedef unsigned int animation_as_uint_t [7];
-
 enum LedPosition { TOP, BOTTOM };
 
 class Animation
@@ -23,17 +19,17 @@ class Animation
 public:
 
   Animation();
-  Animation(vector<KeyFrame> new_kfs);
+  Animation(std::vector<KeyFrame> new_kfs);
   Animation(unsigned **v, int length);
 
   bool isAnimationFinished();
   bool needsTargetFrameUpdate(long elapsedTime);
   bool nextFrameWithSameTime();
-  vector<KeyFrame> getNextTargetKeyFrames(long elapsedTime);
+  std::vector<KeyFrame> getNextTargetKeyFrames(long elapsedTime);
 
   // add new key frames - sort is done on first getNextTargetKeyFrames()
   void addKeyFrame(KeyFrame kf);
-  void addKeyFrames(vector<KeyFrame> new_kfs);
+  void addKeyFrames(std::vector<KeyFrame> new_kfs);
   KeyFrame& getKeyFrame(int id);
   void resetCurrentKeyFrame();
   int numberOfKeyFrames();
@@ -43,7 +39,7 @@ public:
   void printAnimation();
 
 private:
-  vector<KeyFrame> _keyFrames;
+  std::vector<KeyFrame> _keyFrames;
   int _currentFrameId;
   bool _isSorted;
   bool _withMotor;

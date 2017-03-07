@@ -5,13 +5,14 @@
 #define CALIBRATE_SPEED -400
 #define ALLOWED_TARGETTIME_OVERSHOOT 250
 
-StepperWorker::StepperWorker(int id, AccelStepper &astepper,
-                             int endStopPin, bool reverseDirection)
+StepperWorker::StepperWorker(int8_t id, AccelStepper &astepper,
+                             int8_t endStopPin, bool reverseDirection)
   : FiniteStateMachine(NUM_STATES, INIT, *this),
     _id(id), _astepper(astepper),
     _currentSpeed(0.0), _endStopPin(endStopPin),
     _reverseDirection(reverseDirection),
-    _previousKeyFrame(KeyFrame()), _targetKeyFrame(KeyFrame()),
+  //  _previousKeyFrame(KeyFrame()),
+    _targetKeyFrame(KeyFrame()),
     _time_endstophit (0), _targetChanged (false), _elapsedTime(0),
     _debug(false)
 {
@@ -72,7 +73,7 @@ void StepperWorker::startAnimation(){
   triggerTransition(getState(), ACTIVE);
 }
 
-int StepperWorker::getId(){
+int8_t StepperWorker::getId(){
   return _id;
 }
 
@@ -203,7 +204,7 @@ void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
     printf("%d: New Key frame:\n", _id);
     kf.printKeyFrame();
   }
-  _previousKeyFrame = _targetKeyFrame;
+//  _previousKeyFrame = _targetKeyFrame;
   _targetKeyFrame  = kf;
   _targetChanged = true;
 }

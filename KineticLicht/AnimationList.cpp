@@ -1,17 +1,21 @@
 #include "AnimationList.h"
 
-bool Compare_Rows(const unsigned a[7], const unsigned b[7])
+bool Compare_Rows(const unsigned a[NUM_COLS], const unsigned b[NUM_COLS])
 {
   return a[0] < b[0];
 }
 
 // consistent version for unit tests below
 #ifndef WITHIN_UNITTEST
+
 void AnimationList::load(){
 
-int animationId = 0;
+  // 4 animations here
+  initNumberOfAnimations(4);
 
-unsigned led_test1[][7] = {
+  int8_t animationId = 0;
+
+  unsigned led_test1[][NUM_COLS] = {
     {LED1BOT, 0, 0, BLACK, 0},
     {LED1TOP, 0, 0, BLACK, 0},
     {LED2BOT, 0, 0, BLACK, 0},
@@ -58,7 +62,7 @@ unsigned led_test1[][7] = {
   _addAsAnimationUint(led_test1, rows, animationId++);
 
   // LED test: all LEDs change colors at the same time
-unsigned led_test2[][7] ={
+  unsigned led_test2[][NUM_COLS] ={
     {LED1BOT, 30, 0, RED, 100},
     {LED1TOP, 30, 0, RED, 100},
     {LED2BOT, 30, 0, RED, 100},
@@ -108,7 +112,7 @@ unsigned led_test2[][7] ={
   rows = sizeof(led_test2) / sizeof(led_test2[0]);
   _addAsAnimationUint(led_test2, rows, animationId++);
 
-  unsigned a1[][7] = {
+  unsigned a1[][NUM_COLS] = {
     {STEPPER1, 0, 0, NOCOLOR},
     {STEPPER1, 20, 0, NOCOLOR},
     {STEPPER1, 90, 2600, NOCOLOR},
@@ -176,50 +180,50 @@ unsigned led_test2[][7] ={
   _addAsAnimationUint(a1, rows, animationId++);
 
   //animation 2
-  unsigned a2[][7] = {
-      {STEPPER1, 0, 0, NOCOLOR},
-      {STEPPER4, 0, 0, NOCOLOR},
-      {STEPPER4, 20, 0, NOCOLOR},
-      {STEPPER1, 40, 3000, NOCOLOR},
-      {STEPPER4, 60, 3000, NOCOLOR},
-      {STEPPER1, 80, 0, NOCOLOR},
-      {STEPPER4, 100, 0, NOCOLOR},
+  unsigned a2[][NUM_COLS] = {
+    {STEPPER1, 0, 0, NOCOLOR},
+    {STEPPER4, 0, 0, NOCOLOR},
+    {STEPPER4, 20, 0, NOCOLOR},
+    {STEPPER1, 40, 3000, NOCOLOR},
+    {STEPPER4, 60, 3000, NOCOLOR},
+    {STEPPER1, 80, 0, NOCOLOR},
+    {STEPPER4, 100, 0, NOCOLOR},
 
-      {LED1TOP, 4,  WHITE, 100},
-      {LED1TOP, 10, 0, BLACK, 0},
-      {LED1TOP, 23, 0, BLACK, 0},
-      {LED1TOP, 24, 0, WHITE, 100},
-      {LED1TOP, 30, 0, BLACK, 0},
-      {LED1TOP, 200, 0, WHITE, 100},
-      {LED1TOP, 220, 0, BLACK, 0},
+    {LED1TOP, 4,  WHITE, 100},
+    {LED1TOP, 10, 0, BLACK, 0},
+    {LED1TOP, 23, 0, BLACK, 0},
+    {LED1TOP, 24, 0, WHITE, 100},
+    {LED1TOP, 30, 0, BLACK, 0},
+    {LED1TOP, 200, 0, WHITE, 100},
+    {LED1TOP, 220, 0, BLACK, 0},
 
-      {LED1BOT, 2,  WHITE, 100},
-      {LED1BOT, 8, 0, BLACK, 0},
-      {LED1BOT, 20,  BLACK, 0},
-      {LED1BOT, 22,  WHITE, 100},
-      {LED1BOT, 28, 0, BLACK, 0},
-      {LED1BOT, 200, 0, WHITE, 100},
-      {LED1BOT, 220, 0, BLACK, 0},
+    {LED1BOT, 2,  WHITE, 100},
+    {LED1BOT, 8, 0, BLACK, 0},
+    {LED1BOT, 20,  BLACK, 0},
+    {LED1BOT, 22,  WHITE, 100},
+    {LED1BOT, 28, 0, BLACK, 0},
+    {LED1BOT, 200, 0, WHITE, 100},
+    {LED1BOT, 220, 0, BLACK, 0},
 
-      {LED4TOP, 5,  0, WHITE, 100},
-      {LED4TOP, 10, 0, BLACK, 0},
-      {LED4TOP, 36, 0, BLACK, 0},
-      {LED4TOP, 37, 0, WHITE, 100},
-      {LED4TOP, 41, 0, BLACK, 0},
-      {LED4TOP, 200, 0, WHITE, 100},
-      {LED4TOP, 220, 0, BLACK, 0},
+    {LED4TOP, 5,  0, WHITE, 100},
+    {LED4TOP, 10, 0, BLACK, 0},
+    {LED4TOP, 36, 0, BLACK, 0},
+    {LED4TOP, 37, 0, WHITE, 100},
+    {LED4TOP, 41, 0, BLACK, 0},
+    {LED4TOP, 200, 0, WHITE, 100},
+    {LED4TOP, 220, 0, BLACK, 0},
 
-      {LED4BOT, 3,  WHITE, 100},
-      {LED4BOT, 8, 0, BLACK, 0},
-      {LED4BOT, 35, 0, BLACK, 0},
-      {LED4BOT, 36, 0, WHITE, 100},
-      {LED4BOT, 42, 0, BLACK, 0},
-      {LED4BOT, 200, 0, WHITE, 100},
-      {LED4BOT, 220, 0, BLACK, 0}
-    };
+    {LED4BOT, 3,  WHITE, 100},
+    {LED4BOT, 8, 0, BLACK, 0},
+    {LED4BOT, 35, 0, BLACK, 0},
+    {LED4BOT, 36, 0, WHITE, 100},
+    {LED4BOT, 42, 0, BLACK, 0},
+    {LED4BOT, 200, 0, WHITE, 100},
+    {LED4BOT, 220, 0, BLACK, 0}
+  };
 
-    rows = sizeof(a2) / sizeof(a2[0]);
-    _addAsAnimationUint(a2, rows, animationId++);
+  rows = sizeof(a2) / sizeof(a2[0]);
+  _addAsAnimationUint(a2, rows, animationId++);
 
 }
 
@@ -228,9 +232,12 @@ unsigned led_test2[][7] ={
 // consistent version for unit test
 void AnimationList::load(){
 
-int animationId = 0;
+  // 3 animations here
+  initNumberOfAnimations(3);
 
-unsigned led_test1[][7] = {
+  int8_t animationId = 0;
+
+  unsigned led_test1[][NUM_COLS] = {
     {LED1TOP, 0, 0, BLACK, 0},
     {LED1TOP, 20, 0, BLACK, 0},
     {LED1TOP, 40, 0, RED, 100},
@@ -241,7 +248,7 @@ unsigned led_test1[][7] = {
   _addAsAnimationUint(led_test1, rows, animationId++);
 
   // LED test: all LEDs change colors at the same time
-unsigned led_test2[][7] ={
+  unsigned led_test2[][NUM_COLS] ={
     {LED1TOP, 30, 0, RED, 100},
     {LED1TOP, 60, 0, GREEN, 100},
     {LED1TOP, 90, 0, BLUE, 100},
@@ -253,7 +260,7 @@ unsigned led_test2[][7] ={
   rows = sizeof(led_test2) / sizeof(led_test2[0]);
   _addAsAnimationUint(led_test2, rows, animationId++);
 
-  unsigned a1[][7] = {
+  unsigned a1[][NUM_COLS] = {
     {STEPPER1, 0, 0, NOCOLOR},
     {LED1TOP, 0,    YELLOW, 0},
     {LED1TOP, 15, YELLOW, 50},
@@ -262,5 +269,6 @@ unsigned led_test2[][7] ={
 
   rows = sizeof(a1) / sizeof(a1[0]);
   _addAsAnimationUint(a1, rows, animationId++);
+
 }
 #endif

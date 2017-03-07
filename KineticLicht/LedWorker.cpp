@@ -1,18 +1,18 @@
 // LedWorker.cpp
 #include "LedWorker.h"
 
-LedWorker::LedWorker(int ledId, int tlc5947_id)
+LedWorker::LedWorker(int8_t ledId, int8_t tlc5947_id)
 : _ledId(ledId), _tlc5947_id(tlc5947_id),
 _currentRedSpeed(0.0), _currentGreenSpeed(0.0), _currentBlueSpeed(0.0),
 _needsUpdateDelta(16), _pastTargetKeyFrame(false), _needsUpdate(false),
 _debug(false)
 { }
 
-int LedWorker::getId() {
+int8_t LedWorker::getId() {
   return _ledId;
 }
 
-int LedWorker::getTlc5947_id() {
+int8_t LedWorker::getTlc5947_id() {
   return _tlc5947_id;
 }
 

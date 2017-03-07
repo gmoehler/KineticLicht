@@ -12,7 +12,7 @@ TEST(StepperWorker_test, active_past_target){
   });
 
   long elapsedtime = 0;
-  vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedtime);
+  std::vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedtime);
   ASSERT_EQ(1,(int) kfs.size());
   sw.updateTargetKeyFrame(elapsedtime, kfs[0]);
 
@@ -70,7 +70,7 @@ TEST(StepperWorker_test, endstopTest){
 
   long elapsedtime = 0;
   printf("time: %ld\n", elapsedtime);
-  vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedtime);
+  std::vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedtime);
   ASSERT_EQ(1,(int) kfs.size());
   sw.updateTargetKeyFrame(elapsedtime, kfs[0]);
 
@@ -134,7 +134,7 @@ TEST(StepperWorker_test, calibrationTest){
 
   long elapsedtime = 0;
   printf("time: %ld\n", elapsedtime);
-  vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedtime);
+  std::vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedtime);
   ASSERT_EQ(1,(int) kfs.size());
   sw.updateTargetKeyFrame(elapsedtime, kfs[0]);
 

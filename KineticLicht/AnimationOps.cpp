@@ -8,7 +8,7 @@ _animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION), _elapsed
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
 _debug(false), _tlc(tlc)
 {
-  setDebugString(string("AnimationOps"));
+  setDebugString(std::string("AnimationOps"));
   _tlc = tlc;
 
   addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOps::_init_to_calibrating);
@@ -22,14 +22,13 @@ _debug(false), _tlc(tlc)
   addStateAction(ANIMATION_ACTIVE, &AnimationOps::_action_active);
   addStateEntryAction(ANIMATION_FINISHED, &AnimationOps::_entry_finished);
   addStateAction(ANIMATION_FINISHED, &AnimationOps::_action_finished);
-
 }
 
-int AnimationOps::getNumAnimations(){
+int8_t AnimationOps::getNumAnimations(){
   return _animations.getNumAnimations();
 }
 
-void AnimationOps::selectAnimation(int id){
+void AnimationOps::selectAnimation(int8_t id){
   unsigned **aniUint = _animations.getAnimationAsUint(id);
   int numKf = _animations.getNumKeyFrames(id);
   _currentAnimation = Animation(aniUint, numKf);
@@ -40,7 +39,7 @@ Animation& AnimationOps::_getCurrentAnimation(){
 }
 
 void AnimationOps::init(AnimationStrategy strategy,
-    int startWithAnimationId, bool repeat){
+    int8_t startWithAnimationId, bool repeat){
 
     _strategy = strategy;
     _strategy_startWithAnimationId = startWithAnimationId;
@@ -74,13 +73,13 @@ void AnimationOps::init(AnimationStrategy strategy,
   }
 
   void AnimationOps::addStepperWorker(StepperWorker* sw){
-    int id = sw->getId();
+    int8_t id = sw->getId();
     // cannot use operator[] since we do not have an empty constructor of StepperWorker
     _stepperWorkerMap.insert( std::map<int, StepperWorker*>::value_type ( id, sw ));
   }
 
   void AnimationOps::addLedWorker(LedWorker* lw){
-    int id = lw->getId();
+    int8_t id = lw->getId();
     // cannot use operator[] since we do not have an empty constructor of LedWorker
     _ledWorkerMap.insert( std::map< int, LedWorker* >::value_type ( id, lw ));
   }
@@ -203,7 +202,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     }
 
     if (_getCurrentAnimation().needsTargetFrameUpdate(_elapsedTime)) {
-      vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
+      std::vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
       // no more frames - animation is at an end
       if (kfs.size() == 0){
         printf("*********************** Need more frames, but there are none\n");
@@ -214,7 +213,7 @@ void AnimationOps::init(AnimationStrategy strategy,
         printf("++++ Number of KeyFrames read: %d\n\n", kfs.size());
       }
 
-      for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
+      for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
         KeyFrame kf = *kf_it;
 
         bool keyFrameHandled = false;

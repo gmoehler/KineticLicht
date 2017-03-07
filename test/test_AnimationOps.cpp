@@ -1,8 +1,8 @@
 #include "test.h"
 
 extern void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, int green, int blue);
-
-//typedef unsigned int animation_as_uint_t [7];
+/*
+typedef unsigned int animation_as_uint_t [7];
 
 animation_as_uint_t* allV[4];
 int rows = 0;
@@ -82,14 +82,89 @@ TEST(AnimationOps_tests, array_stuff){
   //an0.printAnimation();
 
 }
+*/
+
+void addAnimation(int ***ary, int t [][5], int rows, int i){
+
+  ary[i] = new int*[rows];
+  for(int j= 0; j < rows; ++j) {
+    ary[i][j] = new int[5];
+    for(int k=0; k< 5; ++k) {
+      ary[i][j][k] = t[j][k];
+    }
+  }
+}
+
+TEST(AnimationOps, animationArray){
+
+  int t1[][5] = {
+    {0, 0, 0, 0, 0},
+  };
+
+  int t2[][5] = {
+    {0, 0, 0, 0, 0},
+    {1, 1, 1 ,1 , 1},
+  };
+
+  int t3[][5] = {
+    {0, 0, 0, 0, 0},
+    {1, 1, 1 ,1, 1},
+    {2, 2, 2, 2, 2},
+  };
+
+  int rows[3] = {1,2,3};
+
+  int ***ary = new int**[3];
+  addAnimation(ary, t1,rows[0], 0);
+  addAnimation(ary, t2,rows[1], 1);
+  addAnimation(ary, t3,rows[2], 2);
+
+/*
+  int ***ary = new int**[sizeZ];
+  for(int i= 0;  i< sizeZ; ++i) {
+    ary[i] = new int*[rows[i]];
+    for(int j= 0; j < rows[i]; ++j) {
+      ary[i][j] = new int[sizeX];
+      for(int k=0; k< sizeX; ++k) {
+        ary[i][j][k] = 99;
+        switch (i){
+          case 0:
+          ary[i][j][k] = t1[j][k];
+          break;
+          case 1:
+          ary[i][j][k] = t2[j][k];
+          break;
+          case 2:
+          ary[i][j][k] = t3[j][k];
+          break;
+        }
+      }
+    }
+  }
+*/
+
+  printf("hallo\n");
+  for (int i=0; i<3; i++){
+    for (int j=0; j<rows[i]; j++){
+      for (int k=0; k<5; k++){
+        printf("%d", ary[i][j][k]);
+      }
+      printf ("\n");
+      delete[] ary[i][j];
+    }
+    delete[] ary[i];
+  }
+
+  delete[] ary;
+}
 
 TEST(AnimationOps, animationList){
 
   AnimationList al(true);
 
-  animation_as_uint_t* ani = al.getAnimationAsUint(0);
+  unsigned **ani = al.getAnimationAsUint(0);
 
-  for (int i=0; i<3; i++){
+  for (int i=0; i<4; i++){
     for (int j=0; j<7; j++){
       printf("%u ",ani[i][j]);
     }
@@ -101,10 +176,11 @@ TEST(AnimationOps, animationList){
   //animation_as_uint_t *a;
   //a = new animation_as_uint_t[4];
 
+  printf("Done.\n");
   int numKf = al.getNumKeyFrames(0);
   Animation animation(ani, numKf);
   EXPECT_EQ( numKf, animation.numberOfKeyFrames());
-  //animation.printAnimation();
+  animation.printAnimation();
 
 }
 
@@ -112,7 +188,7 @@ TEST(AnimationOps_tests, scenario_single){
 
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
   AnimationOps ao(tlc, true);
-  EXPECT_EQ(4, ao.getNumAnimations());
+  EXPECT_EQ(3, ao.getNumAnimations());
 
   AccelStepper acs = AccelStepper();
   int pin = 22;
@@ -135,7 +211,7 @@ TEST(AnimationOps_tests, scenario_single){
       EXPECT_EQ(ANIMATION_FINISHED, ao.getState());
     }
     else{
-        EXPECT_EQ(ANIMATION_ACTIVE, ao.getState());
+      EXPECT_EQ(ANIMATION_ACTIVE, ao.getState());
     }
   }
 }
@@ -144,7 +220,7 @@ TEST(AnimationOps_tests, scenario_loop){
 
   Adafruit_TLC5947 tlc = Adafruit_TLC5947();
   AnimationOps ao(tlc, true);
-  EXPECT_EQ(4, ao.getNumAnimations());
+  EXPECT_EQ(3, ao.getNumAnimations());
 
   AccelStepper acs = AccelStepper();
   int pin = 22;
@@ -165,16 +241,16 @@ TEST(AnimationOps_tests, scenario_loop){
     printf("%d +++++++%d++++++++\n",i,ao.getState());
 
     if (i > 38 ){
-        EXPECT_EQ(ANIMATION_CALIBRATING, ao.getState());
+      EXPECT_EQ(ANIMATION_CALIBRATING, ao.getState());
     }
     else if (i==20 || i==38){
-        EXPECT_EQ(ANIMATION_INIT, ao.getState());
+      EXPECT_EQ(ANIMATION_INIT, ao.getState());
     }
     else if ((i>18 && i<20) || i>36){
       EXPECT_EQ(ANIMATION_FINISHED, ao.getState());
     }
     else{
-        EXPECT_EQ(ANIMATION_ACTIVE, ao.getState());
+      EXPECT_EQ(ANIMATION_ACTIVE, ao.getState());
     }
   }
 }
@@ -183,67 +259,67 @@ TEST(AnimationOps_tests, scenario_loop){
 
 TEST(AnimationOps_tests, scenario){
 
-  Adafruit_TLC5947 tlc = Adafruit_TLC5947();
-  AnimationList animationList(false);
-  AnimationOps as(tlc);
+Adafruit_TLC5947 tlc = Adafruit_TLC5947();
+AnimationList animationList(false);
+AnimationOps as(tlc);
 
-  AccelStepper acs = AccelStepper();
-  int pin = 22;
-  StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
-  sw.setDebug(true);
+AccelStepper acs = AccelStepper();
+int pin = 22;
+StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
+sw.setDebug(true);
 
-  LedWorker lw = LedWorker (LED1TOP, 0);
+LedWorker lw = LedWorker (LED1TOP, 0);
 
-  as.addStepperWorker(&sw);
-  as.addLedWorker(&lw);
+as.addStepperWorker(&sw);
+as.addLedWorker(&lw);
 
-  int num0 = as.getNumAnimations();
-  printf("Number of animations: %d\n", num0);
+int num0 = as.getNumAnimations();
+printf("Number of animations: %d\n", num0);
 
-  Animation a0;
-  a0.addKeyFrames({
-    {LED1TOP, 0, RED, 100},
-    {LED1TOP, 300, BLUE, 100},
-    {STEPPER1, 500, 0},
-    {STEPPER1, 800, 1000},
-    {STEPPER1, 1200, 2600},
+Animation a0;
+a0.addKeyFrames({
+{LED1TOP, 0, RED, 100},
+{LED1TOP, 300, BLUE, 100},
+{STEPPER1, 500, 0},
+{STEPPER1, 800, 1000},
+{STEPPER1, 1200, 2600},
 
-  });
+});
 
-  int id = as.addAnimation(a0);
-  printf("Id of animation: %d\n", id);
-  EXPECT_EQ(num0+1, as.getNumAnimations());
-  EXPECT_EQ(num0, id);
+int id = as.addAnimation(a0);
+printf("Id of animation: %d\n", id);
+EXPECT_EQ(num0+1, as.getNumAnimations());
+EXPECT_EQ(num0, id);
 
-  as.init(SINGLE_ANIMATION, id, false);
-  EXPECT_EQ(as.getState(), ANIMATION_INIT);
+as.init(SINGLE_ANIMATION, id, false);
+EXPECT_EQ(as.getState(), ANIMATION_INIT);
 
-  // 11 (1200ms) is the start of the animation
-  for (int i=0;i<30;i++){
+// 11 (1200ms) is the start of the animation
+for (int i=0;i<30;i++){
 
-    if (i==5) {
-      test_triggerEndStop(true);
-    }
+if (i==5) {
+test_triggerEndStop(true);
+}
 
-    if (i==8) {
-      test_triggerEndStop(false);
-    }
+if (i==8) {
+test_triggerEndStop(false);
+}
 
-    as.loop();
+as.loop();
 
-    printf("%d StepperWorkerState: %d\n", i, sw.getState());
+printf("%d StepperWorkerState: %d\n", i, sw.getState());
 
-    if (i < 10){
-      EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);
-    }
-    else if (i < 23){
-      EXPECT_EQ(as.getState(), ANIMATION_ACTIVE);
-    }
-    else{
-      EXPECT_EQ(as.getState(), ANIMATION_FINISHED);
-    }
+if (i < 10){
+EXPECT_EQ(as.getState(), ANIMATION_CALIBRATING);
+}
+else if (i < 23){
+EXPECT_EQ(as.getState(), ANIMATION_ACTIVE);
+}
+else{
+EXPECT_EQ(as.getState(), ANIMATION_FINISHED);
+}
 
 
-  }
+}
 }
 */

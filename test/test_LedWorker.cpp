@@ -22,8 +22,8 @@ void integration_test(){
   long elapsedTime = 0;
   while(elapsedTime < 5000){
     if (animation.needsTargetFrameUpdate(elapsedTime)) {
-      vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedTime);
-      for (vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
+      std::vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(elapsedTime);
+      for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
         KeyFrame kf = *kf_it;
         switch (kf_it->getId()) {
           case LED1TOP:
@@ -53,7 +53,7 @@ void integration_test(){
       {LED1TOP, 1000, RED}
     });
 
-    vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(0);
+    std::vector<KeyFrame> kfs = animation.getNextTargetKeyFrames(0);
     ASSERT_EQ(1,(int) kfs.size());
     lw.updateTargetKeyFrame(0, kfs[0]);
     RGB rgb = lw.getColorForUpdate();

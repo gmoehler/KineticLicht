@@ -1,7 +1,7 @@
 #include "../test/test.h"
 
 void addAnimation(int ***ary, int t [][5], int rows, int i){
-	
+
   ary[i] = new int*[rows];
   for(int j= 0; j < rows; ++j) {
     ary[i][j] = new int[5];
@@ -10,9 +10,9 @@ void addAnimation(int ***ary, int t [][5], int rows, int i){
         }
     }
 }
-	
+
 void test1(){
- 
+
 	int t1[][5] = {
 		{0, 0, 0, 0, 0},
 	};
@@ -27,20 +27,13 @@ void test1(){
 		{1, 1, 1 ,1, 1},
 		{2, 2, 2, 2, 2},
 	};
-	
-	
-	
 
-	unsigned ***allt = 0;
-	allt = new unsigned**[3];
+int rows[3] = {1,2,3};
 
-	int rows[3] = {1,2,3};
-
-int sizeX = 5;
 int sizeZ = 3;
 
 int ***ary = new int**[sizeZ];
-int numAni=0;
+
 addAnimation(ary, t1,rows[0], 0);
 addAnimation(ary, t2,rows[1], 1);
 addAnimation(ary, t3,rows[2], 2);

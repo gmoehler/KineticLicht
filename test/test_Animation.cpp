@@ -26,7 +26,7 @@ TEST(Animation_tests, test1){
 
 
   EXPECT_TRUE(a.needsTargetFrameUpdate(0));
-  vector<KeyFrame> kfs =a.getNextTargetKeyFrames(0);
+  std::vector<KeyFrame> kfs =a.getNextTargetKeyFrames(0);
 
   ASSERT_EQ(1, (int) kfs.size());
   KeyFrame kf = kfs.front();

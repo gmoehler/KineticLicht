@@ -17,7 +17,7 @@
 class LedWorker
 {
 public:
-    LedWorker(int rgbId, int tlc5947_id);
+    LedWorker(int8_t rgbId, int8_t tlc5947_id);
 
     void init(); // to be called at setup()
     void loop(long elapsedTime); // to be called in loop();
@@ -25,8 +25,8 @@ public:
     void updateTargetKeyFrame(long elapsedTime, KeyFrame& kf);
     bool needsUpdate();
     RGB  getColorForUpdate();
-    int  getId();
-    int  getTlc5947_id();
+    int8_t  getId();
+    int8_t  getTlc5947_id();
     bool hasPassedTargetKeyFrame();
 
     void setDebug(bool debug);
@@ -36,9 +36,8 @@ private:
     void calculateCurrentSpeed();
     void checkAnimation(long elapsedTime);
 
-    // currently the id used for the TLC5947
-    int _ledId;
-    int _tlc5947_id;
+    int8_t _ledId;
+    int8_t _tlc5947_id;
 
     // actual color on the LED
     RGB    _currentColor;
