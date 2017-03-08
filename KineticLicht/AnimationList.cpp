@@ -127,17 +127,16 @@ void AnimationList::load(){
     {LED3BOT,  100, 0, WHITE, 100},
     {LED3TOP,  100, 0, WHITE, 100},
 
-    {STEPPER1, 200, 0, NOCOLOR},
-    {STEPPER3, 200, 0, NOCOLOR},
-    {LED1BOT,  200, 0, BLUE, 100},
-    {LED1TOP,  200, 0, BLUE, 100},
-    {LED3BOT,  200, 0, GREEN, 100},
-    {LED3TOP,  200, 0, GREEN, 100},
+    {STEPPER1, 120, 0, NOCOLOR},
+    {STEPPER3, 120, 0, NOCOLOR},
+    {LED1BOT,  120, 0, BLUE, 100},
+    {LED1TOP,  120, 0, BLUE, 100},
+    {LED3BOT,  120, 0, GREEN, 100},
+    {LED3TOP,  120, 0, GREEN, 100},
   };
 
   int rows = sizeof(stepper_test1) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test1, rows, animationId++);
-
 
 /*
   unsigned a1[][NUM_COLS] = {

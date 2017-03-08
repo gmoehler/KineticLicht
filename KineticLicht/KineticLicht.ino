@@ -170,6 +170,9 @@ void loop()
   if (fr > 200){
     aniop.loop();
   }
+  else {
+    printf("ERROR! Memory exhausted.\n");
+  }
 
 }
 

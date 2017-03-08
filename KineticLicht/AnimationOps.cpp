@@ -85,7 +85,7 @@ void AnimationOps::init(AnimationStrategy strategy,
   }
 
   bool AnimationOps::_init_to_calibrating(){
-    printf("_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
+    //printf("_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
     return _getCurrentAnimation().containsMotorFrames();
   }
 
@@ -98,7 +98,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     for (auto it = _stepperWorkerMap.begin() ;
     it != _stepperWorkerMap.end(); ++it) {
       StepperWorker* sw = it->second;
-      printf("+++ Starting calibration for sw %d\n", sw->getId());
+      //printf("+++ Starting calibration for sw %d\n", sw->getId());
       sw->startCalibration();
     }
   }
