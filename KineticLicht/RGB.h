@@ -6,9 +6,10 @@
 #define RGB_MAX_COMPRESSED 255
 
 #ifdef WITHIN_UNITTEST
-  #include <stdint.h> // for int8_t
   #include <stdio.h>
 #endif
+
+#include <stdint.h> // for uint8_t
 
 // we define the colors like this so it is easy to use them in
 // brace-enclosed initializer lists
