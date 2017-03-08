@@ -43,13 +43,13 @@ int fr1 = freeRam();
   Create Stepper objects
 *************************/
 // two stepper motors one on each port
-//Adafruit_MotorShield AFMS_a = Adafruit_MotorShield(0x60);
+Adafruit_MotorShield AFMS_a = Adafruit_MotorShield(0x60);
 Adafruit_MotorShield AFMS_b = Adafruit_MotorShield(0x61);
 
 Adafruit_StepperMotor *steppermotor1 = AFMS_b.getStepper(200, 2);
-//Adafruit_StepperMotor *steppermotor2 = AFMS_a.getStepper(200, 2);
+Adafruit_StepperMotor *steppermotor2 = AFMS_a.getStepper(200, 2);
 Adafruit_StepperMotor *steppermotor3 = AFMS_b.getStepper(200, 1);
-//Adafruit_StepperMotor *steppermotor4 = AFMS_b.getStepper(200, 1);
+Adafruit_StepperMotor *steppermotor4 = AFMS_b.getStepper(200, 1);
 
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
 void forwardstep1() {
@@ -59,7 +59,7 @@ void backwardstep1() {
 steppermotor1->onestep(BACKWARD, INTERLEAVE);
 }
 AccelStepper astepper1(forwardstep1, backwardstep1);
-/*
+
 void forwardstep2() {
 steppermotor2->onestep(FORWARD, INTERLEAVE);
 }
@@ -67,7 +67,7 @@ void backwardstep2() {
 steppermotor2->onestep(BACKWARD, INTERLEAVE);
 }
 AccelStepper astepper2(forwardstep2, backwardstep2);
-*/
+
 void forwardstep3() {
 steppermotor3->onestep(FORWARD, INTERLEAVE);
 }
@@ -75,7 +75,7 @@ void backwardstep3() {
 steppermotor3->onestep(BACKWARD, INTERLEAVE);
 }
 AccelStepper astepper3(forwardstep3, backwardstep3);
-/*
+
 void forwardstep4() {
 steppermotor4->onestep(FORWARD, INTERLEAVE);
 }
@@ -83,11 +83,11 @@ void backwardstep4() {
 steppermotor4->onestep(BACKWARD, INTERLEAVE);
 }
 AccelStepper astepper4(forwardstep4, backwardstep4);
-*/
+
 StepperWorker  sworker1 = StepperWorker(STEPPER1, astepper1, 53, true);
-//StepperWorker  sworker2 = StepperWorker(STEPPER2, astepper2, 49, false);
+StepperWorker  sworker2 = StepperWorker(STEPPER2, astepper2, 49, false);
 StepperWorker  sworker3 = StepperWorker(STEPPER3, astepper3, 51, false);
-//StepperWorker  sworker4 = StepperWorker(STEPPER4, astepper4, 47, true);
+StepperWorker  sworker4 = StepperWorker(STEPPER4, astepper4, 47, true);
 
 /****************************
   Create IR remote objects
@@ -118,7 +118,7 @@ void setup()
   printf("Hello World\n");
   std::cout << "Start." << std::endl;
 
-  //AFMS_a.begin();
+  AFMS_a.begin();
   AFMS_b.begin();
 
   // Change the i2c clock to 400KHz
@@ -166,8 +166,10 @@ void loop()
   irrecv.resume(); // Receive the next value
 }
 */
-
-  aniop.loop();
+  int fr = freeRam();
+  if (fr > 200){
+    aniop.loop();
+  }
 
 }
 
