@@ -1,10 +1,6 @@
 #include "test.h"
 
-void expect_rgb(RGB rgb, int r, int g, int b){
-  RGB_EXPECT_EQ(r, rgb.red());
-  RGB_EXPECT_EQ(g, rgb.green());
-  RGB_EXPECT_EQ(b, rgb.blue());
-}
+
 
 /*
 void integration_test(){
@@ -28,7 +24,7 @@ void integration_test(){
         switch (kf_it->getId()) {
           case LED1TOP:
           kf.printKeyFrame();
-          rgb1o.updateTargetKeyFrame(elapsedTime, kf);
+        r  rgb1o.updateTargetKeyFrame(elapsedTime, kf);
           break;
         }
       }
@@ -69,7 +65,7 @@ void integration_test(){
 
     lw.loop(1000);
     rgb = lw.getColorForUpdate();
-    expect_rgb(rgb, 4094, 0, 0);
+    expect_rgb(rgb, RGB_MAX_VAL, 0, 0);
     EXPECT_FALSE(lw.hasPassedTargetKeyFrame());
 
     lw.loop(1001);

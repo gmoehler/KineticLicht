@@ -15,5 +15,6 @@
 
 int compressExpand(int val);
 void RGB_EXPECT_EQ(int a, int b);
+void expect_rgb(RGB rgb, int r, int g, int b);
 
 #endif

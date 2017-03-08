@@ -43,7 +43,7 @@ TESTSOURCES  := $(TESTDIR)/test_base.cpp $(TESTDIR)/mock_Arduino.cpp  \
 								$(TESTDIR)/test_Animation.cpp  $(TESTDIR)/test_AnimationOps.cpp \
 								$(TESTDIR)/test_LedWorker.cpp $(TESTDIR)/test_StepperWorker.cpp \
 								$(TESTDIR)/test_FiniteStates.cpp
-EXSOURCES    := $(EXDIR)/mock_Arduino.cpp $(EXDIR)/example_main.cpp
+EXSOURCES    := $(EXDIR)/test_base.cpp $(EXDIR)/mock_Arduino.cpp $(EXDIR)/example_main.cpp
 
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) \
 							 $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.$(OBJEXT)))
