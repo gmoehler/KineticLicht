@@ -11,6 +11,7 @@
 #include <LedWorker.h>
 #include <Animation.h>
 #include <AnimationOps.h>
+#include <Flash.h>
 
 std::map<long, int> create_NumberButtonMap();
 int freeRam ();
@@ -167,7 +168,7 @@ void loop()
 */
 
   aniop.loop();
-  
+
 }
 
 std::map<long, int> create_NumberButtonMap()

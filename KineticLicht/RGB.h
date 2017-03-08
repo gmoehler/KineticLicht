@@ -2,9 +2,12 @@
 #define RGB_H
 
 #define RGB_MAX_VAL 4095
+#define RGB_COMPRESSION 16
+#define RGB_MAX_COMPRESSED 255
 
 #ifdef WITHIN_UNITTEST
   #include <stdint.h> // for int8_t
+  #include <stdio.h>
 #endif
 
 // we define the colors like this so it is easy to use them in
@@ -39,11 +42,12 @@ class RGB {
     static RGB rgb_cyan() { return RGB(CYAN);}
 
   private:
-    int _red;
-    int _green;
-    int _blue;
+    uint8_t _red;
+    uint8_t _green;
+    uint8_t _blue;
 
-    void _checkInput();
+    void _checkInput(int r, int g, int b);
+    uint8_t _delimitCompress (int val);
 };
 
 #endif

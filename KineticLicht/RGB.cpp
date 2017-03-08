@@ -1,40 +1,51 @@
 #include "RGB.h"
 
 RGB::RGB() :
-  _red(0), _green(0), _blue(0){
-    };
+_red(0), _green(0), _blue(0){
+};
 
-RGB::RGB(int red, int green, int blue) :
-  _red(red), _green(green), _blue(blue){
-  _checkInput();
+RGB::RGB(int red, int green, int blue) {
+  _checkInput(red, green, blue);
 };
 
 RGB::RGB(int red, int green, int blue, int brightness) {
 
-  _red   = (long) red   * brightness / 100;
-  _green = (long) green * brightness / 100;
-  _blue  = (long) blue  * brightness / 100;
+  int actual_red   = (long) red   * brightness / 100;
+  int actual_green = (long) green * brightness / 100;
+  int actual_blue  = (long) blue  * brightness / 100;
 
-  _checkInput();
+  _checkInput(actual_red, actual_green, actual_blue);
 };
 
-void RGB::_checkInput(){
-  _red   = (_red < 0) ? 0 : _red;
-  _red   = (_red > RGB_MAX_VAL) ? RGB_MAX_VAL : _red;
-  _green = (_green < 0) ? 0 : _green;
-  _green = (_green > RGB_MAX_VAL) ? RGB_MAX_VAL : _green;
-  _blue  = (_blue < 0) ? 0 : _blue;
-  _blue  = (_blue > RGB_MAX_VAL) ? RGB_MAX_VAL : _blue;
+void RGB::_checkInput(int red, int green, int blue){
+  _red = _delimitCompress(red);
+  _green = _delimitCompress(green);
+  _blue = _delimitCompress(blue);
+}
+
+uint8_t RGB::_delimitCompress(int val){
+  int v  = (val < 0) ? 0 : val;
+  v  = (v > RGB_MAX_VAL) ? RGB_MAX_VAL : v;
+  return (uint8_t) (v / RGB_COMPRESSION);
 }
 
 int RGB::red(){
-  return _red;
+  if (_red == RGB_MAX_COMPRESSED){
+    return RGB_MAX_VAL;
+  }
+  return ((int) _red) * RGB_COMPRESSION;
 }
 
 int RGB::green(){
-  return _green;
+  if (_green == RGB_MAX_COMPRESSED){
+    return RGB_MAX_VAL;
+  }
+  return (int) _green * RGB_COMPRESSION;
 }
 
 int RGB::blue(){
-  return _blue;
+  if (_blue == RGB_MAX_COMPRESSED){
+    return RGB_MAX_VAL;
+  }
+  return (int) _blue * RGB_COMPRESSION;
 }

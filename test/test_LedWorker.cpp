@@ -1,9 +1,9 @@
 #include "test.h"
 
 void expect_rgb(RGB rgb, int r, int g, int b){
-  EXPECT_EQ(r, rgb.red());
-  EXPECT_EQ(g, rgb.green());
-  EXPECT_EQ(b, rgb.blue());
+  RGB_EXPECT_EQ(r, rgb.red());
+  RGB_EXPECT_EQ(g, rgb.green());
+  RGB_EXPECT_EQ(b, rgb.blue());
 }
 
 /*

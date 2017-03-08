@@ -13,4 +13,7 @@
 #include <StepperWorker.h>
 #include <FiniteStates.h>
 
+int compressExpand(int val);
+void RGB_EXPECT_EQ(int a, int b);
+
 #endif
