@@ -14,7 +14,7 @@ StepperWorker::StepperWorker(int8_t id, AccelStepper &astepper,
   //  _previousKeyFrame(KeyFrame()),
     _targetKeyFrame(KeyFrame()),
     _time_endstophit (0), _targetChanged (false), _elapsedTime(0),
-    _debug(false)
+    _debug(true)
 {
   std::stringstream sstr;
   sstr << "StepperWorker-" << _id;
@@ -44,7 +44,7 @@ StepperWorker::StepperWorker(int8_t id, AccelStepper &astepper,
 
   addStateEntryAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_entry_endstop_hit);
   addStateAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_action_endstop_hit);
-  addStateAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_exit_endstop_hit);
+  addStateExitAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_exit_endstop_hit);
 
   addTransition(CALIBRATING_ENDSTOPHIT, CALIBRATION_FINISHED, &StepperWorker::_to_endstop_waiting);
 
@@ -78,6 +78,7 @@ int8_t StepperWorker::getId(){
 }
 
 void StepperWorker::_entry_active(){
+  printf("%d Entering state active\n", _id);
   double newSpeed = _calculateTargetSpeed();
   _updateSpeed(newSpeed);
 }
@@ -100,11 +101,14 @@ bool StepperWorker::_to_endstop_hit() {
 
 bool StepperWorker::_endStopActive() {
   int endStop = digitalRead(_endStopPin);
-  printf("Endstop hit: %d\n", endStop);
+  if (endStop == LOW){
+    printf("%d Endstop hit: %d\n", _id, endStop);
+  }
   return (endStop == LOW);
 }
 
 void StepperWorker::_entry_endstop_hit(){
+  printf("%d Entering state endstop_hit\n", _id);
   _updateSpeed(60);
   _time_endstophit = _elapsedTime;
 }
@@ -127,6 +131,7 @@ bool StepperWorker::_to_endstop_waiting() {
 }
 
 void StepperWorker::_entry_endstop_waiting(){
+  printf("%d Entering state endstop_waiting\n", _id);
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
   _time_endstophit = 0;
@@ -150,6 +155,7 @@ void StepperWorker::startCalibration(){
 }
 
 void StepperWorker::_entry_calibrating_up(){
+  printf("%d Entering state entry_calibrating\n", _id);
   _updateSpeed(CALIBRATE_SPEED);
 }
 
@@ -158,6 +164,7 @@ void StepperWorker::_action_calibrating_up(){
 }
 
 void StepperWorker::_entry_calibration_finished(){
+  printf("%d Entering state calibration_finished\n", _id);
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
 }
@@ -192,7 +199,10 @@ void StepperWorker::_updateSpeed(double speed) {
     }
 
     if (_debug){
-      printf("%d Update Speed: %f Act: %f\n", _id, _currentSpeed, act_speed);
+      printf("%d Set speed: %d\n", _id, (int) _currentSpeed);
+/*      int curSpeed = 1000 * _currentSpeed;
+      int actSpeed = 1000 * act_speed;
+      printf("%d Update Speed to %d Act: %d\n", _id, curSpeed, actSpeed);*/
     }
   }
   // when speed was set then new target was used in anyway

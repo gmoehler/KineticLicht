@@ -11,6 +11,8 @@
 #include <RGB.h>
 #include <string>
 
+#define STEPPER_COMPRESSION 16
+
 enum KeyFrameType {MOTORFRAME, LEDFRAME, NOFRAMETYPE};
 
 enum Activators { STEPPER1,  // 0
