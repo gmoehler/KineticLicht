@@ -4,9 +4,9 @@ void expectAnimation(KeyFrame kf, int id, long time, long pos, int red, int gree
   EXPECT_EQ(id, kf.getId());
   EXPECT_EQ(time, kf.getTimeMs());
   EXPECT_EQ(pos, kf.getTargetPosition());
-  EXPECT_EQ(red, kf.getTargetColor().red());
-  EXPECT_EQ(green, kf.getTargetColor().green());
-  EXPECT_EQ(blue, kf.getTargetColor().blue());
+  RGB_EXPECT_EQ(red, kf.getTargetColor().red());
+  RGB_EXPECT_EQ(green, kf.getTargetColor().green());
+  RGB_EXPECT_EQ(blue, kf.getTargetColor().blue());
 }
 
 TEST(Animation_tests, test1){
