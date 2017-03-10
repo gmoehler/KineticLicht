@@ -49,43 +49,48 @@ Adafruit_MotorShield AFMS_b = Adafruit_MotorShield(0x61);
 Adafruit_StepperMotor *steppermotor1 = AFMS_b.getStepper(200, 2);
 Adafruit_StepperMotor *steppermotor2 = AFMS_a.getStepper(200, 2);
 Adafruit_StepperMotor *steppermotor3 = AFMS_b.getStepper(200, 1);
-Adafruit_StepperMotor *steppermotor4 = AFMS_b.getStepper(200, 1);
+Adafruit_StepperMotor *steppermotor4 = AFMS_a.getStepper(200, 1);
 
-// you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
+int fr2 = freeRam();
+
+// you can change these to SINGLE, DOUBLE or INTERLEAVE or MICROSTEP!
+uint8_t style = DOUBLE;
 void forwardstep1() {
-steppermotor1->onestep(FORWARD, INTERLEAVE);
+steppermotor1->onestep(FORWARD, style);
 }
 void backwardstep1() {
-steppermotor1->onestep(BACKWARD, INTERLEAVE);
+steppermotor1->onestep(BACKWARD, style);
 }
 AccelStepper astepper1(forwardstep1, backwardstep1);
 
 void forwardstep2() {
-steppermotor2->onestep(FORWARD, INTERLEAVE);
+steppermotor2->onestep(FORWARD, style);
 }
 void backwardstep2() {
-steppermotor2->onestep(BACKWARD, INTERLEAVE);
+steppermotor2->onestep(BACKWARD, style);
 }
 AccelStepper astepper2(forwardstep2, backwardstep2);
 
 void forwardstep3() {
-steppermotor3->onestep(FORWARD, INTERLEAVE);
+steppermotor3->onestep(FORWARD, style);
 }
 void backwardstep3() {
-steppermotor3->onestep(BACKWARD, INTERLEAVE);
+steppermotor3->onestep(BACKWARD, style);
 }
 AccelStepper astepper3(forwardstep3, backwardstep3);
 
 void forwardstep4() {
-steppermotor4->onestep(FORWARD, INTERLEAVE);
+steppermotor4->onestep(FORWARD, style);
 }
 void backwardstep4() {
-steppermotor4->onestep(BACKWARD, INTERLEAVE);
+steppermotor4->onestep(BACKWARD, style);
 }
 AccelStepper astepper4(forwardstep4, backwardstep4);
 
+int fr3 = freeRam();
+
 StepperWorker  sworker1 = StepperWorker(STEPPER1, astepper1, 53, true);
-StepperWorker  sworker2 = StepperWorker(STEPPER2, astepper2, 49, false);
+StepperWorker  sworker2 = StepperWorker(STEPPER2, astepper2, 49, true); // true seems wrong, but does the right thing...
 StepperWorker  sworker3 = StepperWorker(STEPPER3, astepper3, 51, false);
 StepperWorker  sworker4 = StepperWorker(STEPPER4, astepper4, 47, true);
 
@@ -104,8 +109,9 @@ std::map<long, int> numberButtons = create_NumberButtonMap();
     Setup
 ************/
 
+int fr4 = freeRam();
 AnimationOps aniop(tlc, true);
-int fr2 = freeRam();
+int fr5 = freeRam();
 
 void setup()
 {
@@ -113,36 +119,39 @@ void setup()
   printf("0### FREE RAM: %d\n",  fr0);
   printf("1### FREE RAM: %d\n",  fr1);
   printf("2### FREE RAM: %d\n",  fr2);
-  printf("3### FREE RAM: %d\n",  freeRam());
+  printf("3### FREE RAM: %d\n",  fr3);
+  printf("4### FREE RAM: %d\n",  fr4);
+  printf("5### FREE RAM: %d\n",  fr5);
+  printf("5### FREE RAM: %d\n",  freeRam());
 
   printf("Hello World\n");
   std::cout << "Start." << std::endl;
 
-  AFMS_a.begin();
-  AFMS_b.begin();
+  AFMS_a.begin(4000);
+  AFMS_b.begin(4000);
 
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
 
-  printf("4### FREE RAM: %d\n",  freeRam ());
+  printf("7### FREE RAM: %d\n",  freeRam ());
 
   aniop.addStepperWorker(&sworker1);
-  //aniop.addStepperWorker(&sworker2);
+  /*aniop.addStepperWorker(&sworker2);
   aniop.addStepperWorker(&sworker3);
-  //aniop.addStepperWorker(&sworker4);
+  aniop.addStepperWorker(&sworker4);*/
   aniop.addLedWorker(&rgb1o);
   aniop.addLedWorker(&rgb1u);
-  aniop.addLedWorker(&rgb2o);
+/*  aniop.addLedWorker(&rgb2o);
   aniop.addLedWorker(&rgb2u);
   aniop.addLedWorker(&rgb3o);
   aniop.addLedWorker(&rgb3u);
   aniop.addLedWorker(&rgb4o);
-  aniop.addLedWorker(&rgb4u);
+  aniop.addLedWorker(&rgb4u);*/
 
   aniop.init(SINGLE_ANIMATION, 0, true);
 
-  printf("5### FREE RAM: %d\n",  freeRam ());
-  delay(10000);
+  printf("8### FREE RAM: %d\n",  freeRam ());
+//  delay(10000);
 
   //irrecv.enableIRIn(); // Start the IR receiver
 }

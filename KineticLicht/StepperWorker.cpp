@@ -1,9 +1,11 @@
 #include "StepperWorker.h"
 
 #define ARDBUFFER 80
-#define MAX_SPEED 600
-#define CALIBRATE_SPEED -400
-#define ALLOWED_TARGETTIME_OVERSHOOT 250
+#define MAX_SPEED 220
+#define CALIBRATE_SPEED -200
+#define ALLOWED_TARGETTIME_OVERSHOOT 100
+// max speed INTERLEAVE (interl): ca. 350
+// max speed INTERLEAVE (single): ca. 200
 
 StepperWorker::StepperWorker(int8_t id, AccelStepper &astepper,
                              int8_t endStopPin, bool reverseDirection)

@@ -113,26 +113,44 @@ void AnimationList::load(){
   _addAsAnimationUint(led_test2, rows, animationId++);
 */
   unsigned stepper_test1[][NUM_COLS] = {
-    {LED1BOT, 0, 0, BLACK, 100},
-    {LED1TOP, 0, 0, BLACK, 100},
+    {STEPPER1, 0, 0, NOCOLOR},
+    {STEPPER2, 0, 0, NOCOLOR},
+    {STEPPER3, 0, 0, NOCOLOR},
+    {STEPPER4, 0, 0, NOCOLOR},
+    {LED1BOT, 0, 0, WHITE, 100},
+    {LED1TOP, 0, 0, WHITE, 100},
+  /*  {LED2BOT, 0, 0, BLACK, 100},
+    {LED2TOP, 0, 0, BLACK, 100},
     {LED3BOT, 0, 0, BLACK, 100},
     {LED3TOP, 0, 0, BLACK, 100},
-    {STEPPER1, 0, 0, NOCOLOR},
-    {STEPPER3, 0, 0, NOCOLOR},
+    {LED4BOT, 0, 0, BLACK, 100},
+    {LED4TOP, 0, 0, BLACK, 100},*/
 
-    {STEPPER1, 100, 1000, NOCOLOR},
-    {STEPPER3, 100, 1000, NOCOLOR},
-    {LED1BOT,  100, 0, WHITE, 100},
-    {LED1TOP,  100, 0, WHITE, 100},
+    {STEPPER1, 50, 1000, NOCOLOR},
+    {STEPPER2, 100, 3000, NOCOLOR},
+  //  {STEPPER3, 100, 3000, NOCOLOR},
+  //  {STEPPER4, 100, 3000, NOCOLOR},
+    {LED1BOT,  50, 0, GREEN, 100},
+    {LED1TOP,  50, 0, YELLOW, 100},
+/*    {LED2BOT,  100, 0, WHITE, 100},
+    {LED2TOP,  100, 0, WHITE, 100},
     {LED3BOT,  100, 0, WHITE, 100},
     {LED3TOP,  100, 0, WHITE, 100},
+    {LED4BOT,  100, 0, WHITE, 100},
+    {LED4TOP,  100, 0, WHITE, 100},*/
 
     {STEPPER1, 120, 0, NOCOLOR},
-    {STEPPER3, 120, 0, NOCOLOR},
-    {LED1BOT,  120, 0, BLUE, 100},
-    {LED1TOP,  120, 0, BLUE, 100},
-    {LED3BOT,  120, 0, GREEN, 100},
-    {LED3TOP,  120, 0, GREEN, 100},
+    {STEPPER2, 120, 0, NOCOLOR},
+  /*  {STEPPER3, 120, 0, NOCOLOR},
+    {STEPPER4, 120, 0, NOCOLOR},*/
+    {LED1BOT,  150, 0, BLUE, 100},
+    {LED1TOP,  150, 0, RED, 100},
+  /*  {LED2BOT,  120, 0, GREEN, 100},
+    {LED2TOP,  120, 0, YELLOW, 100},
+    {LED3BOT,  120, 0, LILA, 100},
+    {LED3TOP,  120, 0, YELLOW, 100},
+    {LED4BOT,  120, 0, CYAN, 100},
+    {LED4TOP,  120, 0, WHITE, 100},*/
   };
 
   int rows = sizeof(stepper_test1) / sizeof(stepper_test1[0]);
