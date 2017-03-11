@@ -127,8 +127,8 @@ void setup()
   printf("Hello World\n");
   std::cout << "Start." << std::endl;
 
-  AFMS_a.begin(4000);
-  AFMS_b.begin(4000);
+  AFMS_a.begin(2000);
+  AFMS_b.begin(2000);
 
   // Change the i2c clock to 400KHz
   TWBR = ((F_CPU / 400000l) - 16) / 2;
@@ -136,22 +136,21 @@ void setup()
   printf("7### FREE RAM: %d\n",  freeRam ());
 
   aniop.addStepperWorker(&sworker1);
-  /*aniop.addStepperWorker(&sworker2);
+  aniop.addStepperWorker(&sworker2);
   aniop.addStepperWorker(&sworker3);
-  aniop.addStepperWorker(&sworker4);*/
+  aniop.addStepperWorker(&sworker4);
   aniop.addLedWorker(&rgb1o);
   aniop.addLedWorker(&rgb1u);
-/*  aniop.addLedWorker(&rgb2o);
+  aniop.addLedWorker(&rgb2o);
   aniop.addLedWorker(&rgb2u);
   aniop.addLedWorker(&rgb3o);
   aniop.addLedWorker(&rgb3u);
   aniop.addLedWorker(&rgb4o);
-  aniop.addLedWorker(&rgb4u);*/
+  aniop.addLedWorker(&rgb4u);
 
   aniop.init(SINGLE_ANIMATION, 0, true);
 
   printf("8### FREE RAM: %d\n",  freeRam ());
-//  delay(10000);
 
   //irrecv.enableIRIn(); // Start the IR receiver
 }

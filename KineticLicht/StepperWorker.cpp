@@ -5,7 +5,7 @@
 #define CALIBRATE_SPEED -200
 #define ALLOWED_TARGETTIME_OVERSHOOT 100
 // max speed INTERLEAVE (interl): ca. 350
-// max speed INTERLEAVE (single): ca. 200
+// max speed INTERLEAVE (single): ca. 220
 
 StepperWorker::StepperWorker(int8_t id, AccelStepper &astepper,
                              int8_t endStopPin, bool reverseDirection)
