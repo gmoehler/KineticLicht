@@ -56,34 +56,42 @@ int fr2 = freeRam();
 // you can change these to SINGLE, DOUBLE or INTERLEAVE or MICROSTEP!
 uint8_t style = DOUBLE;
 void forwardstep1() {
-steppermotor1->onestep(FORWARD, style);
+  //steppermotor1->onestep(FORWARD, style);
+    steppermotor1->quickstep(FORWARD);
 }
 void backwardstep1() {
-steppermotor1->onestep(BACKWARD, style);
+ //steppermotor1->onestep(BACKWARD, style);
+ steppermotor1->quickstep(BACKWARD);
 }
 AccelStepper astepper1(forwardstep1, backwardstep1);
 
 void forwardstep2() {
-steppermotor2->onestep(FORWARD, style);
+  //steppermotor2->onestep(FORWARD, style);
+  steppermotor2 ->quickstep(FORWARD);
 }
 void backwardstep2() {
-steppermotor2->onestep(BACKWARD, style);
+  //steppermotor2->onestep(BACKWARD, style);
+  steppermotor2 ->quickstep(BACKWARD);
 }
 AccelStepper astepper2(forwardstep2, backwardstep2);
 
 void forwardstep3() {
-steppermotor3->onestep(FORWARD, style);
+  //steppermotor3->onestep(FORWARD, style);
+  steppermotor3->quickstep(FORWARD);
 }
 void backwardstep3() {
-steppermotor3->onestep(BACKWARD, style);
+  //steppermotor3->onestep(BACKWARD, style);
+  steppermotor3 ->quickstep(BACKWARD);
 }
 AccelStepper astepper3(forwardstep3, backwardstep3);
 
 void forwardstep4() {
-steppermotor4->onestep(FORWARD, style);
+  //steppermotor4->onestep(FORWARD, style);
+  steppermotor4->quickstep(FORWARD);
 }
 void backwardstep4() {
-steppermotor4->onestep(BACKWARD, style);
+  //steppermotor4->onestep(BACKWARD, style);
+  steppermotor4->quickstep(BACKWARD);
 }
 AccelStepper astepper4(forwardstep4, backwardstep4);
 
@@ -131,7 +139,8 @@ void setup()
   AFMS_b.begin(2000);
 
   // Change the i2c clock to 400KHz
-  TWBR = ((F_CPU / 400000l) - 16) / 2;
+  const  long freq=600000l;
+  TWBR = ((F_CPU / freq) - 16) / 2;
 
   printf("7### FREE RAM: %d\n",  freeRam ());
 
