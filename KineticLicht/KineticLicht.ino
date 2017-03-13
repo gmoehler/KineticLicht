@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <ArduinoSTL.h>
 
-#include <Adafruit_MotorShield.h>
+#include <Adafruit_MotorShield_quick.h>
 #include <AccelStepper.h>
 
-#include <Adafruit_TLC5947.h>
+#include <Adafruit_TLC5947_fast.h>
 
 #include <RGB.h>
 #include <StepperWorker.h>

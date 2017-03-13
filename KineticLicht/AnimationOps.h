@@ -6,7 +6,7 @@
   #include "../test/mock_Arduino.h"
 #else
   #include <ArduinoSTL.h>
-  #include "Adafruit_TLC5947.h"
+  #include <Adafruit_TLC5947_fast.h>
 #endif
 
 #include "FiniteStates.h"
