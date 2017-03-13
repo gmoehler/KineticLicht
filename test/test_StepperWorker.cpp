@@ -39,7 +39,7 @@ TEST(StepperWorker_test, active_past_target){
   EXPECT_EQ(125, as.test_getSpeed());
   EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
 
-  elapsedtime=1100;
+  elapsedtime=1050;
   printf("time: %ld\n", elapsedtime);
   sw.loop(elapsedtime);
   sw.loop(elapsedtime);

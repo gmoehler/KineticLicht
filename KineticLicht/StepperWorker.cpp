@@ -7,8 +7,8 @@
 // max speed INTERLEAVE (interl): ca. 350
 // max speed INTERLEAVE (single): ca. 220
 
-StepperWorker::StepperWorker(int8_t id, AccelStepper &astepper,
-                             int8_t endStopPin, bool reverseDirection)
+StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
+                             uint8_t endStopPin, bool reverseDirection)
   : FiniteStateMachine(NUM_STATES, INIT, *this),
     _id(id), _astepper(astepper),
     _currentSpeed(0.0), _endStopPin(endStopPin),
@@ -75,7 +75,7 @@ void StepperWorker::startAnimation(){
   triggerTransition(getState(), ACTIVE);
 }
 
-int8_t StepperWorker::getId(){
+uint8_t StepperWorker::getId(){
   return _id;
 }
 

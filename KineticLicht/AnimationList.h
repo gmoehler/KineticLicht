@@ -26,8 +26,8 @@ public:
 
   ~AnimationList() {
     // recursively deleting multidim array
-    for (int8_t i=0; i <_numAnimations; i++){
-      for (int8_t j=0; j < _numKeyFrames[i]; j++){
+    for (uint8_t i=0; i <_numAnimations; i++){
+      for (uint8_t j=0; j < _numKeyFrames[i]; j++){
         delete[] _allAnimations[i][j];
     }
     delete[] _allAnimations[i];
@@ -40,35 +40,35 @@ public:
 void load();
 
 // needs to be called before we can use _addAsAnimationUint()
-void initNumberOfAnimations(int8_t numAnimations){
+void initNumberOfAnimations(uint8_t numAnimations){
   _numAnimations = numAnimations;
   _numKeyFrames = new int[_numAnimations];
   _allAnimations = new unsigned **[_numAnimations];
 }
 
-int8_t getNumAnimations(){
+uint8_t getNumAnimations(){
   return _numAnimations;
 }
 
-unsigned **getAnimationAsUint(int8_t id){
+unsigned **getAnimationAsUint(uint8_t id){
   return _allAnimations[id];
 }
 
 // number of key frames for each animation
-int getNumKeyFrames(int8_t id){
+int getNumKeyFrames(uint8_t id){
   return _numKeyFrames[id];
 }
 
 
 private:
-  int8_t _numAnimations;
+  uint8_t _numAnimations;
   unsigned ***_allAnimations;
   //animation_as_uint_t* _allAnimations[4];
   int* _numKeyFrames;
 
   // add an animation array to _allAnimations
   // need to call initNumberOfAnimations(numAnimations) before this method
-  void _addAsAnimationUint(unsigned v[][NUM_COLS], int rows, int8_t idx) {
+  void _addAsAnimationUint(unsigned v[][NUM_COLS], int rows, uint8_t idx) {
     if (idx >= getNumAnimations() || idx < 0){
       printf("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
     }
@@ -77,11 +77,11 @@ private:
     // first allocate rows
     _numKeyFrames[idx] = rows;
     _allAnimations[idx] = new unsigned*[rows];
-    for(int8_t j= 0; j < rows; ++j) {
+    for(uint8_t j= 0; j < rows; ++j) {
       // then allocate columns
       _allAnimations[idx][j] = new unsigned[NUM_COLS];
       // then copy over values from initialized array
-      for(int8_t k=0; k< NUM_COLS; ++k) {
+      for(uint8_t k=0; k< NUM_COLS; ++k) {
         _allAnimations[idx][j][k] = v[j][k];
       }
     }

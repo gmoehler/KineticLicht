@@ -35,8 +35,8 @@ enum StepperWorkerState {INIT,                    // 0
 class StepperWorker : public FiniteStateMachine<StepperWorker>
 {
   public:
-    StepperWorker(int8_t id, AccelStepper &astepper,
-                  int8_t endStopPin, bool reverseDirection);
+    StepperWorker(uint8_t id, AccelStepper &astepper,
+                  uint8_t endStopPin, bool reverseDirection);
 
     // to be called in setup()
     void init();
@@ -57,7 +57,7 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
 
     StepperWorkerState getState();
 
-    int8_t getId();
+    uint8_t getId();
 
     void setDebug(bool debug);
 
@@ -104,12 +104,12 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
     // get the current position from the accelstepper
     int _getCurrentPosition();
 
-    int8_t _id;               // stepper id
+    uint8_t _id;               // stepper id
     AccelStepper& _astepper;
 
     double _currentSpeed;     // cached current speed
 
-    int8_t _endStopPin;          // pin of endstop switch
+    uint8_t _endStopPin;          // pin of endstop switch
 
     bool _reverseDirection;   // direction counted in corect/reverse dir
 

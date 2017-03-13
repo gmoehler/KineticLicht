@@ -35,12 +35,12 @@ public:
   void addLedWorker(LedWorker* lw);
 
   // choose an animation to go in production
-  void selectAnimation(int8_t id);
+  void selectAnimation(uint8_t id);
   Animation& _getCurrentAnimation();
-  int8_t getNumAnimations();
+  uint8_t getNumAnimations();
 
   // to be called in setup()
-  void init(AnimationStrategy strategy, int8_t startWithAnimationId, bool repeat);
+  void init(AnimationStrategy strategy, uint8_t startWithAnimationId, bool repeat);
   void loop(); // to be called in loop()
 
 private:
@@ -54,7 +54,7 @@ private:
   long _startTime;
 
   AnimationStrategy _strategy;
-  int8_t _strategy_startWithAnimationId;
+  uint8_t _strategy_startWithAnimationId;
   bool _strategy_repeat;
 
   bool _debug;

@@ -126,7 +126,7 @@ public:
 
 
 private:
-  int8_t _id;
+  uint8_t _id;
   unsigned _timeDs;
   int _targetPosition;
   RGB _targetColor;

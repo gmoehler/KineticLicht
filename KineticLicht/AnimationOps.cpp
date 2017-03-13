@@ -24,11 +24,11 @@ _debug(false), _tlc(tlc)
   addStateAction(ANIMATION_FINISHED, &AnimationOps::_action_finished);
 }
 
-int8_t AnimationOps::getNumAnimations(){
+uint8_t AnimationOps::getNumAnimations(){
   return _animations.getNumAnimations();
 }
 
-void AnimationOps::selectAnimation(int8_t id){
+void AnimationOps::selectAnimation(uint8_t id){
   unsigned **aniUint = _animations.getAnimationAsUint(id);
   int numKf = _animations.getNumKeyFrames(id);
   _currentAnimation = Animation(aniUint, numKf);
@@ -39,7 +39,7 @@ Animation& AnimationOps::_getCurrentAnimation(){
 }
 
 void AnimationOps::init(AnimationStrategy strategy,
-    int8_t startWithAnimationId, bool repeat){
+    uint8_t startWithAnimationId, bool repeat){
 
     _strategy = strategy;
     _strategy_startWithAnimationId = startWithAnimationId;
@@ -73,13 +73,13 @@ void AnimationOps::init(AnimationStrategy strategy,
   }
 
   void AnimationOps::addStepperWorker(StepperWorker* sw){
-    int8_t id = sw->getId();
+    uint8_t id = sw->getId();
     // cannot use operator[] since we do not have an empty constructor of StepperWorker
     _stepperWorkerMap.insert( std::map<int, StepperWorker*>::value_type ( id, sw ));
   }
 
   void AnimationOps::addLedWorker(LedWorker* lw){
-    int8_t id = lw->getId();
+    uint8_t id = lw->getId();
     // cannot use operator[] since we do not have an empty constructor of LedWorker
     _ledWorkerMap.insert( std::map< int, LedWorker* >::value_type ( id, lw ));
   }

@@ -13,7 +13,7 @@ void AnimationList::load(){
   // 4 animations here
   initNumberOfAnimations(4);
 
-  int8_t animationId = 0;
+  uint8_t animationId = 0;
 /*
   unsigned led_test1[][NUM_COLS] = {
     {LED1BOT, 0, 0, BLACK, 0},
@@ -280,7 +280,7 @@ void AnimationList::load(){
   // 3 animations here
   initNumberOfAnimations(3);
 
-  int8_t animationId = 0;
+  uint8_t animationId = 0;
 
   unsigned led_test1[][NUM_COLS] = {
     {LED1TOP, 0, 0, BLACK, 0},
