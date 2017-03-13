@@ -5,6 +5,7 @@
 
 #ifndef WITHIN_UNITTEST
   #include <ArduinoSTL.h>
+  #include <avr/pgmspace.h>
 #else
   #include "../test/mock_Arduino.h"
 #endif

@@ -113,7 +113,6 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
 
     bool _reverseDirection;   // direction counted in corect/reverse dir
 
-//    KeyFrame _previousKeyFrame;// prev target frame
     KeyFrame _targetKeyFrame;  // current target frame
 
     long _time_endstophit;    // time we hit the endstop

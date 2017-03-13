@@ -112,7 +112,7 @@ void AnimationList::load(){
   int rows = sizeof(led_test2) / sizeof(led_test2[0]);
   _addAsAnimationUint(led_test2, rows, animationId++);
 */
-  unsigned stepper_test1[][NUM_COLS] = {
+  unsigned stepper_test1[][NUM_COLS] /*PROGMEM*/ = {
     {STEPPER1, 0, 0, NOCOLOR},
     {STEPPER2, 0, 0, NOCOLOR},
     {STEPPER3, 0, 0, NOCOLOR},

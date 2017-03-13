@@ -26,6 +26,7 @@ class Adafruit_TLC5947 {
 };
 
 
+#define PROGMEM
 #define INPUT_PULLUP 42
 #define LOW 0
 #define HIGH 1

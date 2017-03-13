@@ -13,7 +13,6 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
     _id(id), _astepper(astepper),
     _currentSpeed(0.0), _endStopPin(endStopPin),
     _reverseDirection(reverseDirection),
-  //  _previousKeyFrame(KeyFrame()),
     _targetKeyFrame(KeyFrame()),
     _time_endstophit (0), _targetChanged (false), _elapsedTime(0),
     _debug(true)
