@@ -156,7 +156,7 @@ void AnimationList::load(){
 );
 
 #ifndef WITHIN_UNITTEST
-  _addAsAnimationUint(stepper_test1, animationId++);
+  _addAsAnimationFlashTable(stepper_test1, animationId++);
 #else
   int rows = sizeof(stepper_test1) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test1, rows, animationId++);
