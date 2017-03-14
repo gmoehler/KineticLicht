@@ -29,12 +29,18 @@ public:
   ~AnimationList() {
     // recursively deleting multidim array
     for (uint8_t i=0; i <_numAnimations; i++){
+#ifndef WITHIN_UNITTEST
+      delete _allAnimationTables[i];
+#endif
       for (uint8_t j=0; j < _numKeyFrames[i]; j++){
         delete[] _allAnimations[i][j];
     }
     delete[] _allAnimations[i];
   }
   delete [] _allAnimations;
+#ifndef WITHIN_UNITTEST
+      delete[] _allAnimationTables;
+#endif
 
   delete[] _numKeyFrames;
 }
