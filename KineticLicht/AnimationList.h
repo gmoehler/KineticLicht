@@ -65,14 +65,6 @@ unsigned **getAnimationAsUint(uint8_t id){
   return _allAnimations[id];
 }
 
-#ifndef WITHIN_UNITTEST
-unsigned getAnimationAsUint(uint8_t id, int row, int col){
-  _FLASH_TABLE<unsigned>* animationTable = _allAnimationTables[id];
-  _FLASH_ARRAY<unsigned> animationRow =  (animationTable*)[row];
-  return animationRow[col];
-}
-#endif
-
 // number of key frames for each animation
 int getNumKeyFrames(uint8_t id){
 #ifndef WITHIN_UNITTEST
@@ -115,7 +107,7 @@ private:
   }
 
 #ifndef WITHIN_UNITTEST
-  void _addAsAnimationFlashTable(_FLASH_TABLE<unsigned> table&, uint8_t idx) {
+  void _addAsAnimationFlashTable(_FLASH_TABLE<unsigned>& table, uint8_t idx) {
     if (idx >= getNumAnimations() || idx < 0){
       printf("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
     }

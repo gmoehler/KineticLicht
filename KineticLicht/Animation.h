@@ -5,6 +5,7 @@
   #include <stdio.h>
 #else
   #include <ArduinoSTL.h>
+  #include <Flash.h>
 #endif
 
 #include <vector>
@@ -21,6 +22,9 @@ public:
   Animation();
   Animation(std::vector<KeyFrame> new_kfs);
   Animation(unsigned **v, int length);
+#ifndef WITHIN_UNITTEST
+  Animation(_FLASH_TABLE* ftable);
+#endif
 
   bool isAnimationFinished();
   bool needsTargetFrameUpdate(long elapsedTime);

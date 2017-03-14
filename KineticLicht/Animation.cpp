@@ -19,6 +19,16 @@ Animation::Animation(unsigned **v, int length): Animation() {
   }
 }
 
+#ifndef WITHIN_UNITTEST
+Animation::Animation(_FLASH_TABLE* ftable){
+  for (int i=0; i< table->rows(); i++){
+    _FLASH_ARRAY v = (table*)[i];
+    KeyFrame kf(v[i]);
+    addKeyFrame(kf);
+  }
+}
+#endif
+
 KeyFrame& Animation::getKeyFrame(int id){
 	return _keyFrames[id];
 }
