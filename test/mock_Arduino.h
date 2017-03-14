@@ -31,6 +31,9 @@ class Adafruit_TLC5947 {
 #define LOW 0
 #define HIGH 1
 
+#define FLASH_TABLE(type, name, cols, values...) \
+static const type name##_flash[][cols] PROGMEM = { values };
+
 unsigned long millis();
 void delay(unsigned long ms);
 

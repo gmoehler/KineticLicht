@@ -5,13 +5,14 @@
 
 #ifndef WITHIN_UNITTEST
   #include <ArduinoSTL.h>
-  #include <avr/pgmspace.h>
+  #include <Flash.h>
 #else
   #include "../test/mock_Arduino.h"
 #endif
 
 #include <algorithm>
 #include "Animation.h"
+
 
 #define NUM_COLS 7
 
@@ -45,6 +46,9 @@ void initNumberOfAnimations(uint8_t numAnimations){
   _numAnimations = numAnimations;
   _numKeyFrames = new int[_numAnimations];
   _allAnimations = new unsigned **[_numAnimations];
+#ifndef WITHIN_UNITTEST
+  _allAnimationTables = new _FLASH_TABLE<unsigned>*[_numAnimations];
+#endif
 }
 
 uint8_t getNumAnimations(){
@@ -55,6 +59,14 @@ unsigned **getAnimationAsUint(uint8_t id){
   return _allAnimations[id];
 }
 
+#ifndef WITHIN_UNITTEST
+/*unsigned getAnimationAsUint(uint8_t id, int row, int col){
+  _FLASH_TABLE<unsigned>* animationTable = _allAnimationTables[id];
+  _FLASH_ARRAY<unsigned> animationRow =  animationTable[row];
+  return animationRow[col];
+}*/
+#endif
+
 // number of key frames for each animation
 int getNumKeyFrames(uint8_t id){
   return _numKeyFrames[id];
@@ -64,7 +76,10 @@ int getNumKeyFrames(uint8_t id){
 private:
   uint8_t _numAnimations;
   unsigned ***_allAnimations;
-  //animation_as_uint_t* _allAnimations[4];
+#ifndef WITHIN_UNITTEST
+  _FLASH_TABLE<unsigned>** _allAnimationTables;
+#endif
+
   int* _numKeyFrames;
 
   // add an animation array to _allAnimations
@@ -88,6 +103,18 @@ private:
     }
   }
 
+#ifndef WITHIN_UNITTEST
+  void _addAsAnimationUint(_FLASH_TABLE<unsigned> table, uint8_t idx) {
+    if (idx >= getNumAnimations() || idx < 0){
+      printf("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
+    }
+
+    _allAnimationTables[idx] = &table;
+  }
+#endif
+
 };
+
+//template _FLASH_TABLE<unsigned>::_FLASH_TABLE(iTmp, NUM_COLS, {} );
 
 #endif
