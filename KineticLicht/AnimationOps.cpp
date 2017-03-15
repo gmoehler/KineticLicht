@@ -234,7 +234,7 @@ void AnimationOps::init(AnimationStrategy strategy,
         }
 
         if (!keyFrameHandled){
-          FLASH_PRINTF1(format, a)("### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
+          FLASH_PRINTF1("### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
         }
       }
     }
