@@ -11,6 +11,7 @@
   #include <ArduinoSTL.h>
 #endif
 
+#include "KineticLicht.h"
 #include "KeyFrame.h"
 #include "RGB.h"
 

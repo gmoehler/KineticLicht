@@ -6,6 +6,7 @@
 #ifndef WITHIN_UNITTEST
   #include <Arduino.h>
   #include <AccelStepper.h>
+  #include <avr/pgmspace.h>
 #else
     #include <stdlib.h>
     #include <stdio.h>
@@ -14,6 +15,7 @@
 
 #include <sstream>
 #include <math.h>
+#include <KineticLicht.h>
 #include "KeyFrame.h"
 #include "FiniteStates.h"
 

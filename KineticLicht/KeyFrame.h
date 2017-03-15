@@ -63,7 +63,7 @@ public:
   _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]){}
 
 #ifndef WITHIN_UNITTEST
-  KeyFrame(_FLASH_ARRAY v)
+  KeyFrame(_FLASH_ARRAY<unsigned> v)
   : _id((int) v[0]), _timeDs(v[1]), _targetPosition(v[2]),
   _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]){}
 #endif

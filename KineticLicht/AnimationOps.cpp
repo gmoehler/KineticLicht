@@ -62,7 +62,7 @@ void AnimationOps::init(AnimationStrategy strategy,
       selectAnimation(_currentAnimationId);
     }
     else {
-      printf ("#### ERROR! Cannot start with animation id %d > %d.\n",
+      FLASH_PRINTF2 ("#### ERROR! Cannot start with animation id %d > %d.\n",
       _strategy_startWithAnimationId, getNumAnimations());
     }
 
@@ -85,20 +85,20 @@ void AnimationOps::init(AnimationStrategy strategy,
   }
 
   bool AnimationOps::_init_to_calibrating(){
-    //printf("_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
+    //FLASH_PRINTF1("_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
     return _getCurrentAnimation().containsMotorFrames();
   }
 
 
   void AnimationOps::_entry_calibrating(){
-    printf("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
+    FLASH_PRINTF0("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
 
     //_startTime = millis(); // reset time
-    //printf("+++ startTime: %ld\n", _startTime);
+    //FLASH_PRINTF1("+++ startTime: %ld\n", _startTime);
     for (auto it = _stepperWorkerMap.begin() ;
     it != _stepperWorkerMap.end(); ++it) {
       StepperWorker* sw = it->second;
-      //printf("+++ Starting calibration for sw %d\n", sw->getId());
+      //FLASH_PRINTF1b("+++ Starting calibration for sw %d\n", sw->getId());
       sw->startCalibration();
     }
   }
@@ -127,7 +127,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
   bool AnimationOps::_init_to_active(){
     if (!_getCurrentAnimation().containsMotorFrames()){
-      printf("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
+      FLASH_PRINTF0("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
       return true;
     }
     return false;
@@ -135,7 +135,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
   void AnimationOps::_entry_active(){
     _startTime = millis(); // reset time
-    //printf("+++ startTime: %ld\n", _startTime);
+    //FLASH_PRINTF1("+++ startTime: %ld\n", _startTime);
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
       StepperWorker* sw = it->second;
       sw->startAnimation();
@@ -180,10 +180,10 @@ void AnimationOps::init(AnimationStrategy strategy,
 
     // continue if we have a valid id
     if (_currentAnimationId == NO_CURRENT_ANIMATION){
-      //printf("No more animations available.\n");
+      //FLASH_PRINTF0("No more animations available.\n");
     }
     else {
-      printf("### Proceeding with Animation %d ###.\n", _currentAnimationId);
+      FLASH_PRINTF1("### Proceeding with Animation %d ###.\n", _currentAnimationId);
     }
 
     if (_currentAnimationId != NO_CURRENT_ANIMATION){
@@ -197,7 +197,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
     _elapsedTime = millis() - _startTime;
     if (_debug){
-      printf("+++ elapsed Time: %ld\n", _elapsedTime);
+      FLASH_PRINTF1("+++ elapsed Time: %ld\n", _elapsedTime);
       _getCurrentAnimation().printAnimation();
     }
 
@@ -205,12 +205,12 @@ void AnimationOps::init(AnimationStrategy strategy,
       std::vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
       // no more frames - animation is at an end
       if (kfs.size() == 0){
-        printf("*********************** Need more frames, but there are none\n");
+        FLASH_PRINTF0("*********************** Need more frames, but there are none\n");
         triggerTransition(getState(), ANIMATION_FINISHED);
         return;
       }
       else if (_debug){
-        printf("++++ Number of KeyFrames read: %d\n\n", kfs.size());
+        FLASH_PRINTF1b("++++ Number of KeyFrames read: %d\n\n", kfs.size());
       }
 
       for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
@@ -234,7 +234,7 @@ void AnimationOps::init(AnimationStrategy strategy,
         }
 
         if (!keyFrameHandled){
-          printf("### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
+          FLASH_PRINTF1(format, a)("### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
         }
       }
     }

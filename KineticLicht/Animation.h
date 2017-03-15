@@ -11,6 +11,7 @@
 #include <vector>
 #include <algorithm>    // std::sort
 
+#include "KineticLicht.h"
 #include "KeyFrame.h"
 
 enum LedPosition { TOP, BOTTOM };
@@ -23,7 +24,7 @@ public:
   Animation(std::vector<KeyFrame> new_kfs);
   Animation(unsigned **v, int length);
 #ifndef WITHIN_UNITTEST
-  Animation(_FLASH_TABLE* ftable);
+  Animation(_FLASH_TABLE<unsigned>* ftable);
 #endif
 
   bool isAnimationFinished();

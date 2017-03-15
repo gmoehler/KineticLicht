@@ -79,7 +79,7 @@ uint8_t StepperWorker::getId(){
 }
 
 void StepperWorker::_entry_active(){
-  printf("%d Entering state active\n", _id);
+  FLASH_PRINTF1("%d Entering state active\n", _id);
   double newSpeed = _calculateTargetSpeed();
   _updateSpeed(newSpeed);
 }
@@ -87,7 +87,7 @@ void StepperWorker::_entry_active(){
 void StepperWorker::_action_active(){
   if (_targetChanged){
     if (_debug){
-      printf("Target changed. Calc new speed. ");
+      FLASH_PRINTF0("Target changed. Calc new speed. ");
     }
     double newSpeed = _calculateTargetSpeed();
     _updateSpeed(newSpeed);
@@ -103,13 +103,13 @@ bool StepperWorker::_to_endstop_hit() {
 bool StepperWorker::_endStopActive() {
   int endStop = digitalRead(_endStopPin);
   if (endStop == LOW){
-    printf("%d Endstop hit: %d\n", _id, endStop);
+    FLASH_PRINTF2("%d Endstop hit: %d\n", _id, endStop);
   }
   return (endStop == LOW);
 }
 
 void StepperWorker::_entry_endstop_hit(){
-  printf("%d Entering state endstop_hit\n", _id);
+  FLASH_PRINTF1("%d Entering state endstop_hit\n", _id);
   _updateSpeed(60);
   _time_endstophit = _elapsedTime;
 }
@@ -121,7 +121,7 @@ void StepperWorker::_action_endstop_hit(){
 void StepperWorker::_exit_endstop_hit(){
   if (_debug) {
     long curPos = _getCurrentPosition();
-    printf("%d Reset position, act: %ld\n", _id, curPos);
+    FLASH_PRINTF2("%d Reset position, act: %ld\n", _id, curPos);
   }
   _astepper.setCurrentPosition(0);
 }
@@ -132,7 +132,7 @@ bool StepperWorker::_to_endstop_waiting() {
 }
 
 void StepperWorker::_entry_endstop_waiting(){
-  printf("%d Entering state endstop_waiting\n", _id);
+  FLASH_PRINTF1("%d Entering state endstop_waiting\n", _id);
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
   _time_endstophit = 0;
@@ -156,7 +156,7 @@ void StepperWorker::startCalibration(){
 }
 
 void StepperWorker::_entry_calibrating_up(){
-  printf("%d Entering state entry_calibrating\n", _id);
+  FLASH_PRINTF1("%d Entering state entry_calibrating\n", _id);
   _updateSpeed(CALIBRATE_SPEED);
 }
 
@@ -165,7 +165,7 @@ void StepperWorker::_action_calibrating_up(){
 }
 
 void StepperWorker::_entry_calibration_finished(){
-  printf("%d Entering state calibration_finished\n", _id);
+  FLASH_PRINTF1("%d Entering state calibration_finished\n", _id);
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
 }
@@ -200,10 +200,10 @@ void StepperWorker::_updateSpeed(double speed) {
     }
 
     if (_debug){
-      printf("%d Set speed: %d\n", _id, (int) _currentSpeed);
+      FLASH_PRINTF2("%d Set speed: %d\n", _id, (int) _currentSpeed);
 /*      int curSpeed = 1000 * _currentSpeed;
       int actSpeed = 1000 * act_speed;
-      printf("%d Update Speed to %d Act: %d\n", _id, curSpeed, actSpeed);*/
+      FLASH_PRINTF3("%d Update Speed to %d Act: %d\n", _id, curSpeed, actSpeed);*/
     }
   }
   // when speed was set then new target was used in anyway
@@ -212,7 +212,7 @@ void StepperWorker::_updateSpeed(double speed) {
 
 void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
   if(_debug){
-    printf("%d: New Key frame:\n", _id);
+    FLASH_PRINTF1("%d: New Key frame:\n", _id);
     kf.printKeyFrame();
   }
 //  _previousKeyFrame = _targetKeyFrame;
@@ -240,10 +240,10 @@ void StepperWorker::_entry_past_target(){
   if (_debug) {
     int tgtPos = _targetKeyFrame.getTarget();
     long tgtTime = _targetKeyFrame.getTimeMs();
-    printf("Warning. Passed KeyFrame for %d\n", _id);
+    FLASH_PRINTF1("Warning. Passed KeyFrame for %d\n", _id);
     _targetKeyFrame.printKeyFrame();
-    printf("%d *** Tgt t  : %ld Act t  : %ld\n", _id, tgtTime, _elapsedTime);
-    printf("%d     Tgt pos: %d Act pos: %d\n", _id, tgtPos, _getCurrentPosition());
+    FLASH_PRINTF3("%d *** Tgt t  : %ld Act t  : %ld\n", _id, tgtTime, _elapsedTime);
+    FLASH_PRINTF3b("%d     Tgt pos: %d Act pos: %d\n", _id, tgtPos, _getCurrentPosition());
   }
 }
 
@@ -262,6 +262,6 @@ bool StepperWorker::_past_target_to_active(){
 
 int StepperWorker::_getCurrentPosition() {
   long curPos = _astepper.currentPosition();
-  //serPrintln("%d Current Position: %d", _id, curPos);
+  //FLASH_PRINTF2("%d Current Position: %d", _id, curPos);
   return (int) (_reverseDirection ? -curPos : curPos);
 }

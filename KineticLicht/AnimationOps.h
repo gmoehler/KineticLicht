@@ -9,6 +9,7 @@
   #include <Adafruit_TLC5947_fast.h>
 #endif
 
+#include "KineticLicht.h"
 #include "FiniteStates.h"
 #include "KeyFrame.h"
 #include "Animation.h"

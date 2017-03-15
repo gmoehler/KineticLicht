@@ -20,10 +20,11 @@ Animation::Animation(unsigned **v, int length): Animation() {
 }
 
 #ifndef WITHIN_UNITTEST
-Animation::Animation(_FLASH_TABLE* ftable){
-  for (int i=0; i< table->rows(); i++){
-    _FLASH_ARRAY v = (table*)[i];
-    KeyFrame kf(v[i]);
+Animation::Animation(_FLASH_TABLE<unsigned> *ftable){
+  int numRows = ftable->rows();
+  for (int i=0; i< numRows; i++){
+    _FLASH_ARRAY<unsigned> v = (*ftable)[i];
+    KeyFrame kf(v);
     addKeyFrame(kf);
   }
 }
@@ -53,7 +54,7 @@ bool Animation::needsTargetFrameUpdate(long elapsedTime) {
   }
 
   double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();//_currentKeyFrameIter->getTimeMs();
-  //printf("**** currentTargetTime: %f, elapsedTime: %ld\n", currentTargetTime, elapsedTime);
+  //FLASH_PRINTF2("**** currentTargetTime: %f, elapsedTime: %ld\n", currentTargetTime, elapsedTime);
 
   return (currentTargetTime < elapsedTime);
 }
@@ -122,23 +123,23 @@ void Animation::resetCurrentKeyFrame(){
 }
 
 void Animation::printAnimation(){
-  printf("Animation contains %d frames ", numberOfKeyFrames());
+  FLASH_PRINTF1("Animation contains %d frames ", numberOfKeyFrames());
   if (_withMotor){
-    printf("with motor frames.\n" );
+    FLASH_PRINTF0("with motor frames.\n" );
   }
   else {
-    printf("with no motor frames.\n" );
+    FLASH_PRINTF0b("with no motor frames.\n" );
   }
 
   if (numberOfKeyFrames() > 0){
     if (_currentFrameId < 0){
-        printf("No current frame. \n");
+        FLASH_PRINTF0c("No current frame. \n");
     }
     else {
-      printf("Current frame: \n");
+      FLASH_PRINTF0d("Current frame: \n");
       getKeyFrame(_currentFrameId).printKeyFrame();
     }
   }
 
-  printf("\n");
+  FLASH_PRINTF0e("\n");
 }
