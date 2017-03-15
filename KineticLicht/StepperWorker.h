@@ -8,9 +8,9 @@
   #include <AccelStepper.h>
   #include <avr/pgmspace.h>
 #else
-    #include <stdlib.h>
-    #include <stdio.h>
-    #include "../test/mock_Arduino.h"
+  #include <stdlib.h>
+  #include <stdio.h>
+  #include "../test/mock_Arduino.h"
 #endif
 
 #include <sstream>

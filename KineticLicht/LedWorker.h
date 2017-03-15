@@ -3,15 +3,16 @@
 #ifndef LEDWORKER_H
 #define LEDWORKER_H
 
-#ifdef WITHIN_UNITTEST
-  #include <stdlib.h>
-  #include <stdio.h>
-#else
+#ifndef WITHIN_UNITTEST
   #include <Arduino.h>
   #include <ArduinoSTL.h>
+#else
+  #include <stdlib.h>
+  #include <stdio.h>
+  #include "../test/mock_Arduino.h"
 #endif
 
-#include "KineticLicht.h"
+#include "KineticLicht.h" 
 #include "KeyFrame.h"
 #include "RGB.h"
 

@@ -1,11 +1,12 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#ifdef WITHIN_UNITTEST
-  #include <stdio.h>
-#else
+#ifndef WITHIN_UNITTEST
   #include <ArduinoSTL.h>
   #include <Flash.h>
+#else
+  #include <stdio.h>
+  #include "mock_Arduino.h"
 #endif
 
 #include <vector>
