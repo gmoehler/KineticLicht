@@ -7,10 +7,14 @@
 #else
   #include <stdlib.h>
   #include <stdio.h>
+  #include "../test/mock_Arduino.h"
 #endif
 
-#include <RGB.h>
 #include <string>
+
+#include "KineticLicht.h"
+#include "RGB.h"
+
 
 #define STEPPER_COMPRESSION 16
 
@@ -89,10 +93,11 @@ public:
   }
 
   void printKeyFrame(){
-    printf("KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, 100*(long)_timeDs,
+    FLASH_PRINTF6("KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, 100*(long)_timeDs,
     _targetPosition, _targetColor.red(), _targetColor.green(), _targetColor.blue());
   }
 
+/*
   std::string id2String(unsigned id){
     switch (id) {
       case 0:
@@ -122,7 +127,7 @@ public:
     }
     return "Unknown ID";
   }
-
+*/
 
   KeyFrameType getType(){
     if (_id >= NO_ACTIVATOR) {

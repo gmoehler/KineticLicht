@@ -5,13 +5,15 @@
 #include <AccelStepper.h>
 
 #include <Adafruit_TLC5947_fast.h>
-
-#include <RGB.h>
-#include <StepperWorker.h>
-#include <LedWorker.h>
-#include <Animation.h>
-#include <AnimationOps.h>
 #include <Flash.h>
+
+#include "KineticLicht.h"
+#include "RGB.h"
+#include "StepperWorker.h"
+#include "LedWorker.h"
+#include "Animation.h"
+#include "AnimationOps.h"
+
 
 std::map<long, int> create_NumberButtonMap();
 int freeRam ();
@@ -124,15 +126,15 @@ int fr5 = freeRam();
 void setup()
 {
   Serial.begin(9600);
-  printf("0### FREE RAM: %d\n",  fr0);
-  printf("1### FREE RAM: %d\n",  fr1);
-  printf("2### FREE RAM: %d\n",  fr2);
-  printf("3### FREE RAM: %d\n",  fr3);
-  printf("4### FREE RAM: %d\n",  fr4);
-  printf("5### FREE RAM: %d\n",  fr5);
-  printf("5### FREE RAM: %d\n",  freeRam());
+  FLASH_PRINTF1("0### FREE RAM: %d\n",  fr0);
+  FLASH_PRINTF1b("1### FREE RAM: %d\n",  fr1);
+  FLASH_PRINTF1c("2### FREE RAM: %d\n",  fr2);
+  FLASH_PRINTF1d("3### FREE RAM: %d\n",  fr3);
+  FLASH_PRINTF1e("4### FREE RAM: %d\n",  fr4);
+  FLASH_PRINTF1f("5### FREE RAM: %d\n",  fr5);
+  FLASH_PRINTF1g("5### FREE RAM: %d\n",  freeRam());
 
-  printf("Hello World\n");
+  FLASH_PRINTF0("Hello World\n");
   std::cout << "Start." << std::endl;
 
   AFMS_a.begin(2000);
@@ -142,7 +144,7 @@ void setup()
   const  long freq=600000l;
   TWBR = ((F_CPU / freq) - 16) / 2;
 
-  printf("7### FREE RAM: %d\n",  freeRam ());
+  FLASH_PRINTF1h("7### FREE RAM: %d\n",  freeRam ());
 
   aniop.addStepperWorker(&sworker1);
   aniop.addStepperWorker(&sworker2);
@@ -159,7 +161,7 @@ void setup()
 
   aniop.init(SINGLE_ANIMATION, 0, true);
 
-  printf("8### FREE RAM: %d\n",  freeRam ());
+  FLASH_PRINTF1i("8### FREE RAM: %d\n",  freeRam ());
 
   //irrecv.enableIRIn(); // Start the IR receiver
 }
@@ -188,7 +190,7 @@ void loop()
     aniop.loop();
   }
   else {
-    printf("ERROR! Memory exhausted.\n");
+    FLASH_PRINTF1j("ERROR! Memory exhausted: %d Bytes left\n", fr);
   }
 
 }

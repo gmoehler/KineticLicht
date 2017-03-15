@@ -138,7 +138,7 @@ void FiniteStateMachine<T>::loop(){
   auto iter = _stateActionMap.find(_state);
   if (iter != _stateActionMap.end()){
 #ifdef FSM_DEBUG
-    printf("FSM<%s>: state action %d\n" , _debugString.c_str(), _state);
+    FLASH_PRINTF2("FSM<%s>: state action %d\n" , _debugString.c_str(), _state);
 #endif
     void (T::*saf)(void)  = iter->second;
     (_obj.*saf)();
@@ -151,7 +151,7 @@ void FiniteStateMachine<T>::_transit(uint8_t toState){
   auto it1 = _stateExitActionMap.find(_state);
   if (it1 != _stateExitActionMap.end()){
 #ifdef FSM_DEBUG
-    printf("FSM<%s>: state exit %d\n", _debugString.c_str(), _state);
+    FLASH_PRINTF2("FSM<%s>: state exit %d\n", _debugString.c_str(), _state);
 #endif
     void (T::*sexitaf)(void)  = it1->second;
     (_obj.*sexitaf)();
@@ -164,7 +164,7 @@ void FiniteStateMachine<T>::_transit(uint8_t toState){
   auto it2 = _stateEntryActionMap.find(_state);
   if (it2 != _stateEntryActionMap.end()){
 #ifdef FSM_DEBUG
-        printf("FSM<%s>: state entry %d\n", _debugString.c_str(), _state);
+        FLASH_PRINTF2("FSM<%s>: state entry %d\n", _debugString.c_str(), _state);
 #endif
     void (T::*sentryaf)(void)  = it2->second;
     (_obj.*sentryaf)();

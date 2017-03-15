@@ -11,6 +11,8 @@
 #endif
 
 #include <algorithm>
+
+#include "KineticLicht.h"
 #include "Animation.h"
 
 
@@ -89,7 +91,7 @@ private:
   // need to call initNumberOfAnimations(numAnimations) before this method
   void _addAsAnimationUint(unsigned v[][NUM_COLS], int rows, uint8_t idx) {
     if (idx >= getNumAnimations() || idx < 0){
-      printf("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
+      FLASH_PRINTF2("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
     }
 
     // create a copy on the heap
@@ -109,7 +111,7 @@ private:
 #ifndef WITHIN_UNITTEST
   void _addAsAnimationFlashTable(_FLASH_TABLE<unsigned>& table, uint8_t idx) {
     if (idx >= getNumAnimations() || idx < 0){
-      printf("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
+      FLASH_PRINTF2("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
     }
     _numKeyFrames[idx] = table.rows();
     _allAnimationTables[idx] = new _FLASH_TABLE<unsigned> (table);
