@@ -48,6 +48,15 @@ char pbuffer[PBUFFER_SIZE];
 
 #else // WITH_PROGMEM
 
+#define FPRINTF0(format, msg_name) printf(format);
+#define FPRINTF1(format, msg_name, a) printf(format, a);
+#define FPRINTF2(format, msg_name, a, b) printf(format, a, b);
+#define FPRINTF3(format, msg_name, a, b, c) printf(format, a, b, c);
+#define FPRINTF4(format, msg_name, a, b, c, d) printf(format, a, b, c, d);
+#define FPRINTF5(format, msg_name, a, b, c, d, e) printf(format, a, b, c, d, e);
+#define FPRINTF6(format, msg_name, a, b, c, d, e, f) printf(format, a, b, c, d, e, f);
+
+
 #define FLASH_PRINTF0(format) printf(format);
 #define FLASH_PRINTF0b(format) printf(format);
 #define FLASH_PRINTF0c(format) printf(format);

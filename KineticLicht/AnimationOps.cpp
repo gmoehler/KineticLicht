@@ -68,7 +68,7 @@ void AnimationOps::init(AnimationStrategy strategy,
       selectAnimation(_currentAnimationId);
     }
     else {
-      FLASH_PRINTF2 ("#### ERROR! Cannot start with animation id %d > %d.\n",
+      FPRINTF2 ("#### ERROR! Cannot start with animation id %d > %d.\n", ani0, 
       _strategy_startWithAnimationId, getNumAnimations());
     }
 
