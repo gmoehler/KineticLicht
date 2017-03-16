@@ -2,6 +2,19 @@
 #define KineticLicht_h
 
 #ifdef WITH_PROGMEM
+
+#define PBUFFER_SIZE 100
+char pbuffer[PBUFFER_SIZE];
+
+
+#define FPRINTF0(format, msg_name) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer);
+#define FPRINTF1(format, msg_name, a) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a);
+#define FPRINTF2(format, msg_name, a, b) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b);
+#define FPRINTF3(format, msg_name, a, b, c) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b, c);
+#define FPRINTF4(format, msg_name, a, b, c, d) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b, c, d);
+#define FPRINTF5(format, msg_name, a, b, c, d, e) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b, c, d, e);
+#define FPRINTF6(format, msg_name, a, b, c, d, e, f) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b, c, d, e, f);
+
 #define FLASH_PRINTF0(format) const static char msg0[] PROGMEM = format; printf(msg0);
 #define FLASH_PRINTF0b(format) const static char msg0b[] PROGMEM = format; printf(msg0b);
 #define FLASH_PRINTF0c(format) const static char msg0c[] PROGMEM = format; printf(msg0c);

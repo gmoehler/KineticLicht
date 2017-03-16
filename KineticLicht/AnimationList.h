@@ -69,6 +69,12 @@ unsigned **getAnimationAsUint(uint8_t id){
   return _allAnimations[id];
 }
 
+#ifdef WITH_PROGMEM
+_FLASH_TABLE<unsigned> *getAnimationTable(uint8_t id){
+  return _allAnimationTables[id];
+}
+#endif
+
 // number of key frames for each animation
 int getNumKeyFrames(uint8_t id){
 #ifdef WITH_PROGMEM

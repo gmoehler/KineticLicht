@@ -29,9 +29,15 @@ uint8_t AnimationOps::getNumAnimations(){
 }
 
 void AnimationOps::selectAnimation(uint8_t id){
+#ifdef WITH_PROGMEM
+  _FLASH_TABLE<unsigned> *ftable = getAnimationTable(0);
+  int numKf = _animations.getNumKeyFrames(id);
+  _currentAnimation = Animation(ftable);
+#else
   unsigned **aniUint = _animations.getAnimationAsUint(id);
   int numKf = _animations.getNumKeyFrames(id);
   _currentAnimation = Animation(aniUint, numKf);
+#endif
 }
 
 Animation& AnimationOps::_getCurrentAnimation(){
