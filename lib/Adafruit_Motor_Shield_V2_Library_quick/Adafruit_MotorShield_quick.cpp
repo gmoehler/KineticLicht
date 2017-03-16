@@ -406,17 +406,17 @@ uint8_t Adafruit_StepperMotor::quickstep(uint8_t dir) {
 
   // DOUBLE step only
 
-    if (! (currentstep/(MICROSTEPS/2) % 2)) { // we're at an even step, weird
+  if (! (currentstep/(MICROSTEPS/2) % 2)) { // we're at an even step, weird
       if (dir == FORWARD) {
-   currentstep += MICROSTEPS/2;
+        currentstep += MICROSTEPS/2;
       } else {
-   currentstep -= MICROSTEPS/2;
+        currentstep -= MICROSTEPS/2;
       }
     } else {           // go to the next odd step
       if (dir == FORWARD) {
-   currentstep += MICROSTEPS;
+        currentstep += MICROSTEPS;
       } else {
-   currentstep -= MICROSTEPS;
+        currentstep -= MICROSTEPS;
       }
     }
 

@@ -14,6 +14,7 @@
 #include "Animation.h"
 #include "AnimationOps.h"
 
+//#define USE_QUICKSTEP
 
 std::map<long, int> create_NumberButtonMap();
 int freeRam ();
@@ -58,42 +59,66 @@ int fr2 = freeRam();
 // you can change these to SINGLE, DOUBLE or INTERLEAVE or MICROSTEP!
 uint8_t style = DOUBLE;
 void forwardstep1() {
-  //steppermotor1->onestep(FORWARD, style);
-    steppermotor1->quickstep(FORWARD);
+#ifndef USE_QUICKSTEP
+  steppermotor1->onestep(FORWARD, style);
+#else
+  steppermotor1->quickstep(FORWARD);
+#endif
 }
 void backwardstep1() {
- //steppermotor1->onestep(BACKWARD, style);
- steppermotor1->quickstep(BACKWARD);
+  #ifndef USE_QUICKSTEP
+    steppermotor1->onestep(BACKWARD, style);
+  #else
+    steppermotor1->quickstep(BACKWARD);
+  #endif
 }
 AccelStepper astepper1(forwardstep1, backwardstep1);
 
 void forwardstep2() {
-  //steppermotor2->onestep(FORWARD, style);
-  steppermotor2 ->quickstep(FORWARD);
+  #ifndef USE_QUICKSTEP
+    steppermotor2->onestep(FORWARD, style);
+  #else
+    steppermotor2->quickstep(FORWARD);
+  #endif
 }
 void backwardstep2() {
-  //steppermotor2->onestep(BACKWARD, style);
-  steppermotor2 ->quickstep(BACKWARD);
+  #ifndef USE_QUICKSTEP
+    steppermotor2->onestep(BACKWARD, style);
+  #else
+    steppermotor2->quickstep(BACKWARD);
+  #endif
 }
 AccelStepper astepper2(forwardstep2, backwardstep2);
 
 void forwardstep3() {
-  //steppermotor3->onestep(FORWARD, style);
-  steppermotor3->quickstep(FORWARD);
+  #ifndef USE_QUICKSTEP
+    steppermotor3->onestep(FORWARD, style);
+  #else
+    steppermotor3->quickstep(FORWARD);
+  #endif
 }
 void backwardstep3() {
-  //steppermotor3->onestep(BACKWARD, style);
-  steppermotor3 ->quickstep(BACKWARD);
+  #ifndef USE_QUICKSTEP
+    steppermotor3->onestep(BACKWARD, style);
+  #else
+    steppermotor3->quickstep(BACKWARD);
+  #endif
 }
 AccelStepper astepper3(forwardstep3, backwardstep3);
 
 void forwardstep4() {
-  //steppermotor4->onestep(FORWARD, style);
-  steppermotor4->quickstep(FORWARD);
+  #ifndef USE_QUICKSTEP
+    steppermotor4->onestep(FORWARD, style);
+  #else
+    steppermotor4->quickstep(FORWARD);
+  #endif
 }
 void backwardstep4() {
-  //steppermotor4->onestep(BACKWARD, style);
-  steppermotor4->quickstep(BACKWARD);
+  #ifndef USE_QUICKSTEP
+    steppermotor4->onestep(BACKWARD, style);
+  #else
+    steppermotor4->quickstep(BACKWARD);
+  #endif
 }
 AccelStepper astepper4(forwardstep4, backwardstep4);
 
@@ -126,25 +151,25 @@ int fr5 = freeRam();
 void setup()
 {
   Serial.begin(9600);
-  FLASH_PRINTF1("0### FREE RAM: %d\n",  fr0);
-  FLASH_PRINTF1b("1### FREE RAM: %d\n",  fr1);
-  FLASH_PRINTF1c("2### FREE RAM: %d\n",  fr2);
-  FLASH_PRINTF1d("3### FREE RAM: %d\n",  fr3);
-  FLASH_PRINTF1e("4### FREE RAM: %d\n",  fr4);
-  FLASH_PRINTF1f("5### FREE RAM: %d\n",  fr5);
-  FLASH_PRINTF1g("5### FREE RAM: %d\n",  freeRam());
+  printf("0### FREE RAM: %d\n",  fr0);
+  printf("1### FREE RAM: %d\n",  fr1);
+  printf("2### FREE RAM: %d\n",  fr2);
+  printf("3### FREE RAM: %d\n",  fr3);
+  printf("4### FREE RAM: %d\n",  fr4);
+  printf("5### FREE RAM: %d\n",  fr5);
+  printf("5### FREE RAM: %d\n",  freeRam());
 
-  FLASH_PRINTF0("Hello World\n");
+  printf("Hello World\n");
   std::cout << "Start." << std::endl;
 
   AFMS_a.begin(2000);
   AFMS_b.begin(2000);
 
   // Change the i2c clock to 400KHz
-  const  long freq=600000l;
+  const  long freq=800000l;
   TWBR = ((F_CPU / freq) - 16) / 2;
 
-  FLASH_PRINTF1h("7### FREE RAM: %d\n",  freeRam ());
+  printf("7### FREE RAM: %d\n",  freeRam ());
 
   aniop.addStepperWorker(&sworker1);
   aniop.addStepperWorker(&sworker2);
@@ -161,7 +186,7 @@ void setup()
 
   aniop.init(SINGLE_ANIMATION, 0, true);
 
-  FLASH_PRINTF1i("8### FREE RAM: %d\n",  freeRam ());
+  printf("8### FREE RAM: %d\n",  freeRam ());
 
   //irrecv.enableIRIn(); // Start the IR receiver
 }
@@ -190,7 +215,7 @@ void loop()
     aniop.loop();
   }
   else {
-    FLASH_PRINTF1j("ERROR! Memory exhausted: %d Bytes left\n", fr);
+    printf("ERROR! Memory exhausted: %d Bytes left\n", fr);
   }
 
 }
