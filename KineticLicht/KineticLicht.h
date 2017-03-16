@@ -1,6 +1,7 @@
 #ifndef KineticLicht_h
 #define KineticLicht_h
 
+#ifdef WITH_PROGMEM
 #define FLASH_PRINTF0(format) const static char msg0[] PROGMEM = format; printf(msg0);
 #define FLASH_PRINTF0b(format) const static char msg0b[] PROGMEM = format; printf(msg0b);
 #define FLASH_PRINTF0c(format) const static char msg0c[] PROGMEM = format; printf(msg0c);
@@ -31,5 +32,41 @@
 #define FLASH_PRINTF5b(format, a, b, c, d, e) const static char msg5b[] PROGMEM = format; printf(msg5b, a, b, c, d, e);
 
 #define FLASH_PRINTF6(format, a, b, c, d, e, f) const static char msg6[] PROGMEM = format; printf(msg6, a, b, c, d, e, f);
+
+#else // WITH_PROGMEM
+
+#define FLASH_PRINTF0(format) printf(format);
+#define FLASH_PRINTF0b(format) printf(format);
+#define FLASH_PRINTF0c(format) printf(format);
+#define FLASH_PRINTF0d(format) printf(format);
+#define FLASH_PRINTF0e(format) printf(format);
+
+#define FLASH_PRINTF1(format, a) printf(format, a);
+#define FLASH_PRINTF1b(format, a) printf(format, a);
+#define FLASH_PRINTF1c(format, a) printf(format, a);
+#define FLASH_PRINTF1d(format, a) printf(format, a);
+#define FLASH_PRINTF1e(format, a) printf(format, a);
+#define FLASH_PRINTF1f(format, a) printf(format, a);
+#define FLASH_PRINTF1g(format, a) printf(format, a);
+#define FLASH_PRINTF1h(format, a) printf(format, a);
+#define FLASH_PRINTF1i(format, a) printf(format, a);
+#define FLASH_PRINTF1j(format, a) printf(format, a);
+#define FLASH_PRINTF1k(format, a) printf(format, a);
+#define FLASH_PRINTF1l(format, a) printf(format, a);
+
+#define FLASH_PRINTF2(format, a, b) printf(format, a, b);
+
+#define FLASH_PRINTF3(format, a, b, c) printf(format, a, b, c);
+#define FLASH_PRINTF3b(format, a, b, c) printf(format, a, b, c);
+
+#define FLASH_PRINTF4(format, a, b, c, d) printf(format, a, b, c, d);
+
+#define FLASH_PRINTF5(format, a, b, c, d, e) printf(format, a, b, c, d, e);
+#define FLASH_PRINTF5b(format, a, b, c, d, e) printf(format, a, b, c, d, e);
+
+#define FLASH_PRINTF6(format, a, b, c, d, e, f) printf(format, a, b, c, d, e, f);
+
+
+#endif // WITH_PROGMEM
 
 #endif

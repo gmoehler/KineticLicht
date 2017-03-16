@@ -112,8 +112,11 @@ void AnimationList::load(){
   int rows = sizeof(led_test2) / sizeof(led_test2[0]);
   _addAsAnimationUint(led_test2, rows, animationId++);
 */
+#ifdef WITH_PROGMEM
   FLASH_TABLE(unsigned, stepper_test1, NUM_COLS,
-//    unsigned stepper_test1[][NUM_COLS] = {
+#else
+    unsigned stepper_test1[][NUM_COLS] = {
+#endif
     {STEPPER1, 0, 0, NOCOLOR},
     {STEPPER2, 0, 0, NOCOLOR},
     {STEPPER3, 0, 0, NOCOLOR},
@@ -152,12 +155,12 @@ void AnimationList::load(){
     {LED3TOP,  120, 0, YELLOW, 100},
     {LED4BOT,  120, 0, CYAN, 100},
     {LED4TOP,  120, 0, WHITE, 100},*/
-//  };
-);
 
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
+  );
   _addAsAnimationFlashTable(stepper_test1, animationId++);
 #else
+  };
   int rows = sizeof(stepper_test1) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test1, rows, animationId++);
 #endif

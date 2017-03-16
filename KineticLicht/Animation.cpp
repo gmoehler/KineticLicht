@@ -19,7 +19,7 @@ Animation::Animation(unsigned **v, int length): Animation() {
   }
 }
 
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
 Animation::Animation(_FLASH_TABLE<unsigned> *ftable){
   int numRows = ftable->rows();
   for (int i=0; i< numRows; i++){

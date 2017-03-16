@@ -5,16 +5,18 @@
 
 #ifndef WITHIN_UNITTEST
   #include <ArduinoSTL.h>
-  #include <Flash.h>
 #else
   #include "../test/mock_Arduino.h"
+#endif
+
+#ifdef WITH_PROGMEM
+  #include <Flash.h>
 #endif
 
 #include <algorithm>
 
 #include "KineticLicht.h"
 #include "Animation.h"
-
 
 #define NUM_COLS 7
 
@@ -31,7 +33,7 @@ public:
   ~AnimationList() {
     // recursively deleting multidim array
     for (uint8_t i=0; i <_numAnimations; i++){
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
       delete _allAnimationTables[i];
 #endif
       for (uint8_t j=0; j < _numKeyFrames[i]; j++){
@@ -40,7 +42,7 @@ public:
     delete[] _allAnimations[i];
   }
   delete [] _allAnimations;
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
       delete[] _allAnimationTables;
 #endif
 
@@ -54,7 +56,7 @@ void initNumberOfAnimations(uint8_t numAnimations){
   _numAnimations = numAnimations;
   _numKeyFrames = new int[_numAnimations];
   _allAnimations = new unsigned **[_numAnimations];
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
   _allAnimationTables = new _FLASH_TABLE<unsigned>*[_numAnimations];
 #endif
 }
@@ -69,7 +71,7 @@ unsigned **getAnimationAsUint(uint8_t id){
 
 // number of key frames for each animation
 int getNumKeyFrames(uint8_t id){
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
 _FLASH_TABLE<unsigned>* animationTable = _allAnimationTables[id];
   return animationTable->rows();
 #else
@@ -81,7 +83,7 @@ _FLASH_TABLE<unsigned>* animationTable = _allAnimationTables[id];
 private:
   uint8_t _numAnimations;
   unsigned ***_allAnimations;
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
   _FLASH_TABLE<unsigned>** _allAnimationTables;
 #endif
 
@@ -108,7 +110,7 @@ private:
     }
   }
 
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
   void _addAsAnimationFlashTable(_FLASH_TABLE<unsigned>& table, uint8_t idx) {
     if (idx >= getNumAnimations() || idx < 0){
       FLASH_PRINTF2("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());

@@ -3,10 +3,13 @@
 
 #ifndef WITHIN_UNITTEST
   #include <ArduinoSTL.h>
-  #include <Flash.h>
 #else
   #include <stdio.h>
   #include "mock_Arduino.h"
+#endif
+
+#ifdef WITH_PROGMEM
+  #include <Flash.h>
 #endif
 
 #include <vector>
@@ -24,7 +27,7 @@ public:
   Animation();
   Animation(std::vector<KeyFrame> new_kfs);
   Animation(unsigned **v, int length);
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
   Animation(_FLASH_TABLE<unsigned>* ftable);
 #endif
 

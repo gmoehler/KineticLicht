@@ -3,12 +3,16 @@
 
 #ifndef WITHIN_UNITTEST
   #include <ArduinoSTL.h>
-  #include <Flash.h>
 #else
   #include <stdlib.h>
   #include <stdio.h>
   #include "../test/mock_Arduino.h"
 #endif
+
+#ifdef WITH_PROGMEM
+  #include <Flash.h>
+#endif
+
 
 #include <string>
 
@@ -66,7 +70,7 @@ public:
   : _id((int) v[0]), _timeDs(v[1]), _targetPosition(v[2]),
   _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]){}
 
-#ifndef WITHIN_UNITTEST
+#ifdef WITH_PROGMEM
   KeyFrame(_FLASH_ARRAY<unsigned> v)
   : _id((int) v[0]), _timeDs(v[1]), _targetPosition(v[2]),
   _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]){}
