@@ -30,7 +30,7 @@ uint8_t AnimationOps::getNumAnimations(){
 
 void AnimationOps::selectAnimation(uint8_t id){
 #ifdef WITH_PROGMEM
-  _FLASH_TABLE<unsigned> *ftable = _animations.getAnimationTable(0);
+  _FLASH_TABLE<unsigned> *ftable = _animations.getAnimationTable(id);
   int numKf = _animations.getNumKeyFrames(id);
   _currentAnimation = Animation(ftable);
 #else
@@ -211,7 +211,7 @@ void AnimationOps::init(AnimationStrategy strategy,
       std::vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
       // no more frames - animation is at an end
       if (kfs.size() == 0){
-        FPRINTF0(aops_msg10, "*********************** Need more frames, but there are none\n");
+        FPRINTF0(aops_msg10, "******** Need more frames, but there are none ***********\n");
         triggerTransition(getState(), ANIMATION_FINISHED);
         return;
       }
