@@ -18,6 +18,7 @@
 
 std::map<long, int> create_NumberButtonMap();
 int freeRam ();
+char pbuffer[PBUFFER_SIZE];
 
 /*******************
  Create LED objects

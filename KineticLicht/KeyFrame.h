@@ -97,7 +97,7 @@ public:
   }
 
   void printKeyFrame(){
-    FLASH_PRINTF6("KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, 100*(long)_timeDs,
+    FPRINTF6(kf_msg0, "KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, 100*(long)_timeDs,
     _targetPosition, _targetColor.red(), _targetColor.green(), _targetColor.blue());
   }
 

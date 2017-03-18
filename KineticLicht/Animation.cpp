@@ -54,7 +54,7 @@ bool Animation::needsTargetFrameUpdate(long elapsedTime) {
   }
 
   double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();//_currentKeyFrameIter->getTimeMs();
-  //FLASH_PRINTF2("**** currentTargetTime: %f, elapsedTime: %ld\n", currentTargetTime, elapsedTime);
+  //FPRINTF2(ani_msg6, "**** currentTargetTime: %f, elapsedTime: %ld\n", currentTargetTime, elapsedTime);
 
   return (currentTargetTime < elapsedTime);
 }
@@ -123,23 +123,23 @@ void Animation::resetCurrentKeyFrame(){
 }
 
 void Animation::printAnimation(){
-  FLASH_PRINTF1("Animation contains %d frames ", numberOfKeyFrames());
+  FPRINTF1(ani_msg0, "Animation contains %d frames ", numberOfKeyFrames());
   if (_withMotor){
-    FLASH_PRINTF0("with motor frames.\n" );
+    FPRINTF0(ani_msg1,"with motor frames.\n" );
   }
   else {
-    FLASH_PRINTF0b("with no motor frames.\n" );
+    FPRINTF0(ani_msg2,"with no motor frames.\n" );
   }
 
   if (numberOfKeyFrames() > 0){
     if (_currentFrameId < 0){
-        FLASH_PRINTF0c("No current frame. \n");
+        FPRINTF0(ani_ms32,"No current frame. \n");
     }
     else {
-      FLASH_PRINTF0d("Current frame: \n");
+      FPRINTF0(ani_msg4, "Current frame: \n");
       getKeyFrame(_currentFrameId).printKeyFrame();
     }
   }
 
-  FLASH_PRINTF0e("\n");
+  FPRINTF0(ani_msg5, "\n");
 }

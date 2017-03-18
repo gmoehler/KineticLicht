@@ -30,7 +30,7 @@ uint8_t AnimationOps::getNumAnimations(){
 
 void AnimationOps::selectAnimation(uint8_t id){
 #ifdef WITH_PROGMEM
-  _FLASH_TABLE<unsigned> *ftable = getAnimationTable(0);
+  _FLASH_TABLE<unsigned> *ftable = _animations.getAnimationTable(0);
   int numKf = _animations.getNumKeyFrames(id);
   _currentAnimation = Animation(ftable);
 #else
@@ -68,7 +68,7 @@ void AnimationOps::init(AnimationStrategy strategy,
       selectAnimation(_currentAnimationId);
     }
     else {
-      FPRINTF2 ("#### ERROR! Cannot start with animation id %d > %d.\n", ani0, 
+      FPRINTF2 (aops_msg0, "#### ERROR! Cannot start with animation id %d > %d.\n",
       _strategy_startWithAnimationId, getNumAnimations());
     }
 
@@ -91,20 +91,20 @@ void AnimationOps::init(AnimationStrategy strategy,
   }
 
   bool AnimationOps::_init_to_calibrating(){
-    //FLASH_PRINTF1("_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
+    //FPRINTF1(aops_msg1, "_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
     return _getCurrentAnimation().containsMotorFrames();
   }
 
 
   void AnimationOps::_entry_calibrating(){
-    FLASH_PRINTF0("### Proceeding to state ANIMATION_CALIBRATING. ###\n");
+    FPRINTF0(aops_msg2, "### Proceeding to state ANIMATION_CALIBRATING. ###\n");
 
     //_startTime = millis(); // reset time
-    //FLASH_PRINTF1("+++ startTime: %ld\n", _startTime);
+    //FPRINTF1(aops_msg3, "+++ startTime: %ld\n", _startTime);
     for (auto it = _stepperWorkerMap.begin() ;
     it != _stepperWorkerMap.end(); ++it) {
       StepperWorker* sw = it->second;
-      //FLASH_PRINTF1b("+++ Starting calibration for sw %d\n", sw->getId());
+      //FPRINTF1b(aops_msg4, "+++ Starting calibration for sw %d\n", sw->getId());
       sw->startCalibration();
     }
   }
@@ -133,7 +133,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
   bool AnimationOps::_init_to_active(){
     if (!_getCurrentAnimation().containsMotorFrames()){
-      FLASH_PRINTF0("### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
+      FPRINTF0(aops_msg5, "### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
       return true;
     }
     return false;
@@ -141,7 +141,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
   void AnimationOps::_entry_active(){
     _startTime = millis(); // reset time
-    //FLASH_PRINTF1("+++ startTime: %ld\n", _startTime);
+    //FPRINTF1(aops_msg6, "+++ startTime: %ld\n", _startTime);
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
       StepperWorker* sw = it->second;
       sw->startAnimation();
@@ -186,10 +186,10 @@ void AnimationOps::init(AnimationStrategy strategy,
 
     // continue if we have a valid id
     if (_currentAnimationId == NO_CURRENT_ANIMATION){
-      //FLASH_PRINTF0("No more animations available.\n");
+      //FPRINTF0(aops_msg7, "No more animations available.\n");
     }
     else {
-      FLASH_PRINTF1("### Proceeding with Animation %d ###.\n", _currentAnimationId);
+      FPRINTF1(aops_msg8, "### Proceeding with Animation %d ###.\n", _currentAnimationId);
     }
 
     if (_currentAnimationId != NO_CURRENT_ANIMATION){
@@ -203,7 +203,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
     _elapsedTime = millis() - _startTime;
     if (_debug){
-      FLASH_PRINTF1("+++ elapsed Time: %ld\n", _elapsedTime);
+      FPRINTF1(aops_msg9, "+++ elapsed Time: %ld\n", _elapsedTime);
       _getCurrentAnimation().printAnimation();
     }
 
@@ -211,12 +211,12 @@ void AnimationOps::init(AnimationStrategy strategy,
       std::vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
       // no more frames - animation is at an end
       if (kfs.size() == 0){
-        FLASH_PRINTF0("*********************** Need more frames, but there are none\n");
+        FPRINTF0(aops_msg10, "*********************** Need more frames, but there are none\n");
         triggerTransition(getState(), ANIMATION_FINISHED);
         return;
       }
       else if (_debug){
-        FLASH_PRINTF1b("++++ Number of KeyFrames read: %d\n\n", kfs.size());
+        FPRINTF1(aops_msg11, "++++ Number of KeyFrames read: %d\n\n", kfs.size());
       }
 
       for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
@@ -240,7 +240,7 @@ void AnimationOps::init(AnimationStrategy strategy,
         }
 
         if (!keyFrameHandled){
-          FLASH_PRINTF1("### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
+          FPRINTF1(aops_msg12,"### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
         }
       }
     }

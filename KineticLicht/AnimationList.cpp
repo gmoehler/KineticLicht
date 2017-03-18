@@ -121,40 +121,40 @@ void AnimationList::load(){
     {STEPPER2, 0, 0, NOCOLOR},
     {STEPPER3, 0, 0, NOCOLOR},
     {STEPPER4, 0, 0, NOCOLOR},
-    {LED1BOT, 0, 0, WHITE, 100},
-    {LED1TOP, 0, 0, WHITE, 100},
-  /*  {LED2BOT, 0, 0, BLACK, 100},
-    {LED2TOP, 0, 0, BLACK, 100},
-    {LED3BOT, 0, 0, BLACK, 100},
-    {LED3TOP, 0, 0, BLACK, 100},
-    {LED4BOT, 0, 0, BLACK, 100},
-    {LED4TOP, 0, 0, BLACK, 100},*/
+    {LED1BOT, 1, 0, YELLOW, 100},
+    {LED1TOP, 1, 0, YELLOW, 100},
+    {LED2BOT, 1, 0, YELLOW, 100},
+    {LED2TOP, 1, 0, YELLOW, 100},
+    {LED3BOT, 1, 0, YELLOW, 100},
+    {LED3TOP, 1, 0, YELLOW, 100},
+    {LED4BOT, 1, 0, YELLOW, 100},
+    {LED4TOP, 1, 0, YELLOW, 100},
 
-    {STEPPER1, 50, 3000, NOCOLOR},
-    {STEPPER2, 50, 3000, NOCOLOR},
-    {STEPPER3, 50, 3000, NOCOLOR},
-    {STEPPER4, 50, 3000, NOCOLOR},
-    {LED1BOT,  50, 0, GREEN, 100},
-    {LED1TOP,  50, 0, YELLOW, 100},
-    {LED2BOT,  100, 0, WHITE, 100},
-    {LED2TOP,  100, 0, WHITE, 100},
-    {LED3BOT,  100, 0, WHITE, 100},
-    {LED3TOP,  100, 0, WHITE, 100},
-    {LED4BOT,  100, 0, WHITE, 100},
-    {LED4TOP,  100, 0, WHITE, 100},
+    {STEPPER1, 80, 3000, NOCOLOR},
+    {STEPPER2, 80, 3000, NOCOLOR},
+    {STEPPER3, 80, 3000, NOCOLOR},
+    {STEPPER4, 80, 3000, NOCOLOR},
+    {LED1BOT,  80, 0, RED, 100},
+    {LED1TOP,  80, 0, RED, 100},
+    {LED2BOT,  80, 0, RED, 100},
+    {LED2TOP,  80, 0, RED, 100},
+    {LED3BOT,  80, 0, RED, 100},
+    {LED3TOP,  80, 0, RED, 100},
+    {LED4BOT,  80, 0, RED, 100},
+    {LED4TOP,  80, 0, RED, 100},
 
     {STEPPER1, 120, 0, NOCOLOR},
     {STEPPER2, 120, 0, NOCOLOR},
     {STEPPER3, 120, 0, NOCOLOR},
     {STEPPER4, 120, 0, NOCOLOR},
-    {LED1BOT,  150, 0, BLUE, 100},
-    {LED1TOP,  150, 0, RED, 100},
-  /*  {LED2BOT,  120, 0, GREEN, 100},
+    {LED1BOT,  120, 0, BLUE, 100},
+    {LED1TOP,  120, 0, RED, 100},
+    {LED2BOT,  120, 0, GREEN, 100},
     {LED2TOP,  120, 0, YELLOW, 100},
     {LED3BOT,  120, 0, LILA, 100},
     {LED3TOP,  120, 0, YELLOW, 100},
     {LED4BOT,  120, 0, CYAN, 100},
-    {LED4TOP,  120, 0, WHITE, 100},*/
+    {LED4TOP,  120, 0, WHITE, 100}
 
 #ifdef WITH_PROGMEM
   );
@@ -164,6 +164,63 @@ void AnimationList::load(){
   int rows = sizeof(stepper_test1) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test1, rows, animationId++);
 #endif
+
+#ifdef WITH_PROGMEM
+  FLASH_TABLE(unsigned, stepper_test2, NUM_COLS,
+#else
+    unsigned stepper_test2[][NUM_COLS] = {
+#endif
+    {STEPPER1, 0, 0, NOCOLOR},
+    {STEPPER2, 0, 0, NOCOLOR},
+    {STEPPER3, 0, 0, NOCOLOR},
+    {STEPPER4, 0, 0, NOCOLOR},
+    {LED1BOT, 1, 0, CYAN, 100},
+    {LED1TOP, 1, 0, CYAN, 100},
+    {LED2BOT, 1, 0, BLACK, 100},
+    {LED2TOP, 1, 0, BLACK, 100},
+    {LED3BOT, 1, 0, BLACK, 100},
+    {LED3TOP, 1, 0, BLACK, 100},
+    {LED4BOT, 1, 0, BLACK, 100},
+    {LED4TOP, 1, 0, BLACK, 100},
+
+    {STEPPER2, 20, 0, NOCOLOR},
+    {LED2BOT,  20, 0, RED, 100},
+    {LED2TOP,  20, 0, RED, 100},
+
+    {STEPPER3, 40, 0, NOCOLOR},
+    {LED3BOT,  40, 0, CYAN, 100},
+    {LED3TOP,  40, 0, CYAN, 100},
+
+    {STEPPER4, 60, 0, NOCOLOR},
+    {LED4BOT,  60, 0, RED, 100},
+    {LED4TOP,  60, 0, RED, 100},
+
+    {STEPPER1, 80, 3000, NOCOLOR},
+    {LED1BOT,  80, 0, GREEN, 100},
+    {LED1TOP,  80, 0, GREEN, 100},
+
+    {STEPPER2, 100, 3000, NOCOLOR},
+    {LED2BOT,  100, 0, YELLOW, 100},
+    {LED2TOP,  100, 0, YELLOW, 100},
+
+    {STEPPER3, 120, 0, NOCOLOR},
+    {LED3BOT,  120, 0, GREEN, 100},
+    {LED3TOP,  120, 0, GREEN, 100},
+
+    {STEPPER4, 140, 0, NOCOLOR},
+    {LED4BOT,  140, 0, YELLOW, 100},
+    {LED4TOP,  140, 0, YELLOW, 100},
+
+
+#ifdef WITH_PROGMEM
+  );
+  _addAsAnimationFlashTable(stepper_test2, animationId++);
+#else
+  };
+  int rows = sizeof(stepper_test2) / sizeof(stepper_test1[0]);
+  _addAsAnimationUint(stepper_test2, rows, animationId++);
+#endif
+
 
 /*
   unsigned a1[][NUM_COLS] = {

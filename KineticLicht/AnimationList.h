@@ -99,7 +99,7 @@ private:
   // need to call initNumberOfAnimations(numAnimations) before this method
   void _addAsAnimationUint(unsigned v[][NUM_COLS], int rows, uint8_t idx) {
     if (idx >= getNumAnimations() || idx < 0){
-      FLASH_PRINTF2("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
+      FPRINTF2(al_msg0, "Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
     }
 
     // create a copy on the heap
@@ -119,7 +119,7 @@ private:
 #ifdef WITH_PROGMEM
   void _addAsAnimationFlashTable(_FLASH_TABLE<unsigned>& table, uint8_t idx) {
     if (idx >= getNumAnimations() || idx < 0){
-      FLASH_PRINTF2("Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
+      FPRINTF2(al_msg1, "Cannot store animation uint at index %d, max index is %d.\n", idx, getNumAnimations());
     }
     _numKeyFrames[idx] = table.rows();
     _allAnimationTables[idx] = new _FLASH_TABLE<unsigned> (table);

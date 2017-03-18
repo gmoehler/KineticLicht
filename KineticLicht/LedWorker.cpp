@@ -23,7 +23,7 @@ void LedWorker::init(){
 void LedWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 
   if(_debug){
-    FLASH_PRINTF2("LED%d %ld New Key frame: \n", _ledId, elapsedTime);
+    FPRINTF2(lw_msg0, "LED%d %ld New Key frame: \n", _ledId, elapsedTime);
     kf.printKeyFrame();
   }
 
@@ -33,7 +33,7 @@ void LedWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
   _pastTargetKeyFrame = false;
 
   if (_debug) {
-    FLASH_PRINTF5("LED%d %ld Update frame Speed: %d %d %d\n", getId(), elapsedTime,
+    FPRINTF5(lw_msg1, "LED%d %ld Update frame Speed: %d %d %d\n", getId(), elapsedTime,
       (int) (1000*_currentRedSpeed),  (int) (1000*_currentGreenSpeed),  (int) (1000*_currentBlueSpeed));
   }
 }
@@ -46,7 +46,7 @@ void LedWorker::checkAnimation(long elapsedTime) {
     // did we run past the target key frame
     if (elapsedTime > targetTime) {
       if (_debug) {
-        FLASH_PRINTF3("Warning. Passed KeyFrame: LED%d, Target time: %ld, Elapsed time: %ld\n", getId(), targetTime, elapsedTime);
+        FPRINTF3(lw_msg2, "Warning. Passed KeyFrame: LED%d, Target time: %ld, Elapsed time: %ld\n", getId(), targetTime, elapsedTime);
       }
       _pastTargetKeyFrame = true;
       _needsUpdate = true;
@@ -78,8 +78,8 @@ void LedWorker::loop(long elapsedTime) {
     abs(_expectedColor.green() - _currentColor.green()) > _needsUpdateDelta ||
     abs(_expectedColor.blue()  - _currentColor.blue())  > _needsUpdateDelta;
     if (_debug) {
-      FLASH_PRINTF5("LED%d %ld CUR %d %d %d\n", getId(), elapsedTime, _currentColor.red(), _currentColor.green(), _currentColor.blue());
-      FLASH_PRINTF5b("LED%d %ld EXP %d %d %d\n", getId(), elapsedTime, _expectedColor.red(), _expectedColor.green(), _expectedColor.blue());
+      FPRINTF5(lw_msg3, "LED%d %ld CUR %d %d %d\n", getId(), elapsedTime, _currentColor.red(), _currentColor.green(), _currentColor.blue());
+      FPRINTF5(lw_msg4, "LED%d %ld EXP %d %d %d\n", getId(), elapsedTime, _expectedColor.red(), _expectedColor.green(), _expectedColor.blue());
     }
   }
 }
@@ -93,7 +93,7 @@ RGB LedWorker::getColorForUpdate() {
   _currentColor = _expectedColor;
   _needsUpdate = false;
   if (_debug) {
-    FLASH_PRINTF4("LED%d Read color %d %d %d\n", _ledId, _currentColor.red(), _currentColor.green(), _currentColor.blue());
+    FPRINTF4(lw_msg5, "LED%d Read color %d %d %d\n", _ledId, _currentColor.red(), _currentColor.green(), _currentColor.blue());
   }
   return _expectedColor;
 }
@@ -112,7 +112,7 @@ void LedWorker::calculateCurrentSpeed() {
   _currentBlueSpeed =  ((double)(targetColor.blue() - prevColor.blue()))
     / (targetTime - prevTime);
   if (_debug) {
-    FLASH_PRINTF4("LED%d Update Current Speed: %d, %d, %d\n", getId(),
+    FPRINTF4(lw_msg6, "LED%d Update Current Speed: %d, %d, %d\n", getId(),
     (int) (1000*_currentRedSpeed), (int) (1000*_currentGreenSpeed), (int)(1000*_currentBlueSpeed));
   }
 }
