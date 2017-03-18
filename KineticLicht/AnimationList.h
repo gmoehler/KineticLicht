@@ -1,4 +1,5 @@
 // AnimationList.h
+// Class holding a list of animations
 
 #ifndef ANIMATIONLIST_H
 #define ANIMATIONLIST_H

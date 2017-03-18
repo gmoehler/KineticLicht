@@ -53,6 +53,7 @@ private:
   bool _isSorted;
   bool _withMotor;
   KeyFrame _emptyKeyFrame; // return this one in case of errors
+  void _doSort();
 };
 
 #endif

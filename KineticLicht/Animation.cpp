@@ -17,6 +17,7 @@ Animation::Animation(unsigned **v, int length): Animation() {
     KeyFrame kf(v[i]);
     addKeyFrame(kf);
   }
+  doSort();
 }
 
 #ifdef WITH_PROGMEM
@@ -27,6 +28,7 @@ Animation::Animation(_FLASH_TABLE<unsigned> *ftable){
     KeyFrame kf(v);
     addKeyFrame(kf);
   }
+  doSort();
 }
 #endif
 
@@ -78,11 +80,7 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
   // need resorting
   if (!_isSorted){
-    std::sort (_keyFrames.begin(), _keyFrames.end(), keyFrameCompare);
-    if (numberOfKeyFrames() > 0){
-      _currentFrameId = -1;
-      _isSorted = true;
-    }
+    doSort();
   }
 
   std::vector<KeyFrame> nextKeyFrames;
@@ -95,6 +93,16 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
   }
 
   return nextKeyFrames;
+}
+
+void Animation::_doSort(){
+  FPRINTF0("Sorting new animation...");
+  std::sort (_keyFrames.begin(), _keyFrames.end(), keyFrameCompare);
+  if (numberOfKeyFrames() > 0){
+    _currentFrameId = -1;
+    _isSorted = true;
+  }
+  FPRINTF0("done.");
 }
 
 void Animation::addKeyFrame(KeyFrame kf) {
