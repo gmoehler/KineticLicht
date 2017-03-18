@@ -12,6 +12,7 @@
   #include <Flash.h>
 #endif
 
+#include <map>
 #include <vector>
 #include <algorithm>    // std::sort
 
@@ -49,7 +50,9 @@ public:
 
 private:
   std::vector<KeyFrame> _keyFrames;
+  std::map<uint8_t, std::vector<KeyFrame>> _keyFrameMap;
   int _currentFrameId;
+  std::map<uint8_t, uint8_t> _currentFrameMap;
   bool _isSorted;
   bool _withMotor;
   KeyFrame _emptyKeyFrame; // return this one in case of errors

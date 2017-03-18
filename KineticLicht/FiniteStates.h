@@ -49,11 +49,11 @@ private:
   std::string _debugString;
 
   T& _obj;   // the object to apply the functions on
-  std::map<int,std::map<int,TransitionCondFunction>> _transitionMap;
-  std::map<int,StateActionFunction> _stateActionMap;
-  std::map<int,StateActionFunction> _stateEntryActionMap;
-  std::map<int,StateActionFunction> _stateExitActionMap;
-  std::map<int,int> _transitionTriggerMap;
+  std::map<uint8_t,std::map<uint8_t,TransitionCondFunction>> _transitionMap;
+  std::map<uint8_t,StateActionFunction> _stateActionMap;
+  std::map<uint8_t,StateActionFunction> _stateEntryActionMap;
+  std::map<uint8_t,StateActionFunction> _stateExitActionMap;
+  std::map<uint8_t,uint8_t> _transitionTriggerMap;
 
   void _transit(uint8_t toState);
 };
@@ -119,8 +119,8 @@ void FiniteStateMachine<T>::loop(){
     auto it2 = _transitionMap.find(_state);
     // transitionConfFunctions found
     if (it2 != _transitionMap.end()){
-      std::map<int,TransitionCondFunction> innerTransMap = it2->second;
-      for(typename std::map<int,TransitionCondFunction>::iterator it3 = innerTransMap.begin();
+      std::map<uint8_t,TransitionCondFunction> innerTransMap = it2->second;
+      for(typename std::map<uint8_t,TransitionCondFunction>::iterator it3 = innerTransMap.begin();
           it3 != innerTransMap.end(); ++it3) {
 
         bool (T::*tf)(void)  = it3->second;

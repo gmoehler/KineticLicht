@@ -96,7 +96,13 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 }
 
 void Animation::_doSort(){
-  FPRINTF0(ani_msg6, "Sorting new animation...");
+  FPRINTF0(ani_msg6, "Sorting animation...");
+
+  for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
+    std::vector<KeyFrame> kfs = it-> second;
+    std::sort (kfs.begin(), kfs.end(), keyFrameCompare);
+  }
+
   std::sort (_keyFrames.begin(), _keyFrames.end(), keyFrameCompare);
   if (numberOfKeyFrames() > 0){
     _currentFrameId = -1;
@@ -106,6 +112,8 @@ void Animation::_doSort(){
 }
 
 void Animation::addKeyFrame(KeyFrame kf) {
+    uint8_t id = kf.getId();
+    _keyFrameMap[id].push_back(kf);
     _keyFrames.push_back(kf);
     if (kf.getType() == MOTORFRAME) {
       _withMotor = true;
@@ -125,7 +133,6 @@ void Animation::addKeyFrames(std::vector<KeyFrame> kfs) {
 
 void Animation::resetCurrentKeyFrame(){
   if (numberOfKeyFrames() > 0){
-    //_currentKeyFrameIter = _keyFrames.begin();
     _currentFrameId = 0;
   }
 }
