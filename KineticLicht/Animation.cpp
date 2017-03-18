@@ -55,7 +55,7 @@ bool Animation::needsTargetFrameUpdate(long elapsedTime) {
     return true;
   }
 
-  double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();//_currentKeyFrameIter->getTimeMs();
+  double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();
   //FPRINTF2(ani_msg6, "**** currentTargetTime: %f, elapsedTime: %ld\n", currentTargetTime, elapsedTime);
 
   return (currentTargetTime < elapsedTime);
@@ -70,8 +70,8 @@ bool Animation::nextFrameWithSameTime() {
     return false;
   }
 
-  double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();//_currentKeyFrameIter->getTimeMs();
-  double nextTargetTime = getKeyFrame(_currentFrameId+1).getTimeMs();//_currentKeyFrameIter->getTimeMs();
+  double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();
+  double nextTargetTime = getKeyFrame(_currentFrameId+1).getTimeMs();
 
 return currentTargetTime == nextTargetTime;
 }
@@ -102,7 +102,7 @@ void Animation::_doSort(){
     _currentFrameId = -1;
     _isSorted = true;
   }
-  FPRINTF0(ani_msg7, "done.");
+  FPRINTF0(ani_msg7, "done.\n");
 }
 
 void Animation::addKeyFrame(KeyFrame kf) {

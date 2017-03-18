@@ -73,9 +73,16 @@ TEST(Animation_tests, noMotorFrames){
 
     a.addKeyFrames({
       {STEPPER1, 0, 0},
-      {STEPPER2, 2000, 1000},
-      {STEPPER3, 9000, 2600},
-      {LED1TOP, 1500, YELLOW, 50}
+      {STEPPER2, 10, 1000},
+      {STEPPER2, 20, 1000},
+      {STEPPER1, 30, 2600},
+      {STEPPER1, 100, 1000},
+      {STEPPER1, 100, 2600},
     });
 
+    EXPECT_TRUE(a.needsTargetFrameUpdate(5));
+    std::vector<KeyFrame> kfs  = a.getNextTargetKeyFrames(5);
+
+    // up to second kf for each of the 2 steppers
+    EXPECT_EQ(4u, kfs.size());
 }
