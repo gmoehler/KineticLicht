@@ -19,26 +19,29 @@ TEST(Animation_tests, test1){
     {LED1TOP, 1500, YELLOW, 50}
   });
 
-  //a.printAnimation();
+  a.printAnimation();
 
   EXPECT_EQ(4, a.numberOfKeyFrames());
   EXPECT_EQ(true,a.containsMotorFrames());
 
 
-  EXPECT_TRUE(a.needsTargetFrameUpdate(0));
+  //EXPECT_TRUE(a.needsTargetFrameUpdate(0));
   std::vector<KeyFrame> kfs =a.getNextTargetKeyFrames(0);
 
   ASSERT_EQ(1, (int) kfs.size());
   KeyFrame kf = kfs.front();
   expectKeyFrame(kf, STEPPER1, 0,0,0,0,0);
 
-  EXPECT_TRUE(a.needsTargetFrameUpdate(1000));
-  kfs =a.getNextTargetKeyFrames(1000);
+  //EXPECT_TRUE(a.needsTargetFrameUpdate(1000));
+  kfs = a.getNextTargetKeyFrames(1500);
   ASSERT_EQ(1, (int) kfs.size());
+  for (int i=0; i < kfs.size(); i++){
+    kfs[i].printKeyFrame();
+  }
   kf = kfs.front();
   expectKeyFrame(kf, LED1TOP, 1500,0,RGB_MAX_VAL/2,RGB_MAX_VAL/2,0);
 
-  EXPECT_TRUE(a.needsTargetFrameUpdate(1600));
+  //EXPECT_TRUE(a.needsTargetFrameUpdate(1600));
   kfs =a.getNextTargetKeyFrames(1600);
   ASSERT_EQ(1, (int)kfs.size());
   kf = kfs.front();
@@ -46,10 +49,10 @@ TEST(Animation_tests, test1){
 
   EXPECT_FALSE(a.isAnimationFinished());
 
-  EXPECT_TRUE(a.needsTargetFrameUpdate(2100));
+  //EXPECT_TRUE(a.needsTargetFrameUpdate(2100));
   kfs =a.getNextTargetKeyFrames(2100);
   //a.printAnimation();
-  EXPECT_TRUE(a.needsTargetFrameUpdate(10000));
+  //EXPECT_TRUE(a.needsTargetFrameUpdate(10000));
   EXPECT_TRUE(a.isAnimationFinished());
 
 }
@@ -80,7 +83,7 @@ TEST(Animation_tests, noMotorFrames){
       {STEPPER1, 100, 2600},
     });
 
-    EXPECT_TRUE(a.needsTargetFrameUpdate(5));
+    //EXPECT_TRUE(a.needsTargetFrameUpdate(5));
     std::vector<KeyFrame> kfs  = a.getNextTargetKeyFrames(5);
 
     // up to second kf for each of the 2 steppers

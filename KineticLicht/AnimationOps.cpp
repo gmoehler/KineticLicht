@@ -207,43 +207,42 @@ void AnimationOps::init(AnimationStrategy strategy,
       _getCurrentAnimation().printAnimation();
     }
 
-    if (_getCurrentAnimation().needsTargetFrameUpdate(_elapsedTime)) {
-      std::vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
-      // no more frames - animation is at an end
-      if (kfs.size() == 0){
-        FPRINTF0(aops_msg10, "******** Need more frames, but there are none ***********\n");
-        triggerTransition(getState(), ANIMATION_FINISHED);
-        return;
+    std::vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
+    // no more frames - animation is at an end
+    if (kfs.size() == 0){
+      FPRINTF0(aops_msg10, "******** Need more frames, but there are none ***********\n");
+      triggerTransition(getState(), ANIMATION_FINISHED);
+      return;
+    }
+    else if (_debug){
+      FPRINTF1(aops_msg11, "++++ Number of KeyFrames read: %d\n\n", kfs.size());
+    }
+
+    for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
+      KeyFrame kf = *kf_it;
+
+      bool keyFrameHandled = false;
+      // check whether this is an update for a stepper worker
+      auto sit =_stepperWorkerMap.find(kf_it->getId());
+      if(sit != _stepperWorkerMap.end()) {
+        StepperWorker* sw = sit->second;
+        sw->updateTargetKeyFrame(_elapsedTime, kf);
+        keyFrameHandled = true;
       }
-      else if (_debug){
-        FPRINTF1(aops_msg11, "++++ Number of KeyFrames read: %d\n\n", kfs.size());
+
+      // check whether this is an update for a stepper worker
+      auto lit =_ledWorkerMap.find(kf_it->getId());
+      if(lit != _ledWorkerMap.end()) {
+        LedWorker* lw = lit->second;
+        lw->updateTargetKeyFrame(_elapsedTime, kf);
+        keyFrameHandled = true;
       }
 
-      for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
-        KeyFrame kf = *kf_it;
-
-        bool keyFrameHandled = false;
-        // check whether this is an update for a stepper worker
-        auto sit =_stepperWorkerMap.find(kf_it->getId());
-        if(sit != _stepperWorkerMap.end()) {
-          StepperWorker* sw = sit->second;
-          sw->updateTargetKeyFrame(_elapsedTime, kf);
-          keyFrameHandled = true;
-        }
-
-        // check whether this is an update for a stepper worker
-        auto lit =_ledWorkerMap.find(kf_it->getId());
-        if(lit != _ledWorkerMap.end()) {
-          LedWorker* lw = lit->second;
-          lw->updateTargetKeyFrame(_elapsedTime, kf);
-          keyFrameHandled = true;
-        }
-
-        if (!keyFrameHandled){
-          FPRINTF1(aops_msg12,"### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
-        }
+      if (!keyFrameHandled){
+        FPRINTF1(aops_msg12,"### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
       }
     }
+
 
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
       StepperWorker* sw = it->second;

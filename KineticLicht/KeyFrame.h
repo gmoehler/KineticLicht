@@ -51,6 +51,10 @@ public:
   KeyFrame(long timeMs, int targetPosition)
   : _id(0), _timeDs(timeMs/100), _targetPosition(targetPosition){}
 
+  // for initial values
+  KeyFrame(int id)
+  : _id(id), _timeDs(0), _targetPosition(0), _targetColor(BLACK){}
+
   // keyframe for motor movement
   KeyFrame(int id, long timeMs, int targetPosition)
   : _id(id), _timeDs(timeMs/100), _targetPosition(targetPosition), _targetColor(BLACK){}

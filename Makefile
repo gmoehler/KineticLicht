@@ -39,7 +39,8 @@ INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
 SOURCES      := $(SRCDIR)/RGB.cpp $(SRCDIR)/Animation.cpp $(SRCDIR)/AnimationOps.cpp \
 								$(SRCDIR)/LedWorker.cpp $(SRCDIR)/StepperWorker.cpp $(SRCDIR)/AnimationList.cpp
 TESTSOURCES  := $(TESTDIR)/test_base.cpp $(TESTDIR)/mock_Arduino.cpp  \
-								$(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
+								$(TESTDIR)/test_Animation.cpp
+								#$(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
 								$(TESTDIR)/test_Animation.cpp  $(TESTDIR)/test_AnimationOps.cpp \
 								$(TESTDIR)/test_LedWorker.cpp $(TESTDIR)/test_StepperWorker.cpp \
 								$(TESTDIR)/test_FiniteStates.cpp
