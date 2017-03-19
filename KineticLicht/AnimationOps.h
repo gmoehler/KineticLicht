@@ -17,6 +17,8 @@
 #include "StepperWorker.h"
 #include "LedWorker.h"
 
+//#define AOPS_DEBUG
+
 enum AnimationState { ANIMATION_INIT,           // 0
                       ANIMATION_CALIBRATING,    // 1
                       ANIMATION_ACTIVE,         // 2
@@ -58,14 +60,13 @@ private:
   uint8_t _strategy_startWithAnimationId;
   bool _strategy_repeat;
 
-  bool _debug;
-
   Adafruit_TLC5947 _tlc;
 
   bool _init_to_calibrating();
   bool _init_to_active();
   bool _calibrating_to_active();
   bool _finished_to_init();
+  bool _active_to_finished();
 
   void _entry_calibrating();
   void _action_calibrating();

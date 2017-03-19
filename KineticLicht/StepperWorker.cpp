@@ -14,8 +14,7 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
     _currentSpeed(0.0), _endStopPin(endStopPin),
     _reverseDirection(reverseDirection),
     _targetKeyFrame(KeyFrame()),
-    _time_endstophit (0), _targetChanged (false), _elapsedTime(0),
-    _debug(true)
+    _time_endstophit (0), _targetChanged (false), _elapsedTime(0)
 {
   std::stringstream sstr;
   sstr << "StepperWorker-" << _id;
@@ -86,9 +85,9 @@ void StepperWorker::_entry_active(){
 
 void StepperWorker::_action_active(){
   if (_targetChanged){
-    if (_debug){
+#ifdef SW_DEBUG
       FPRINTF0(sw_msg1, "Target changed. Calc new speed. ");
-    }
+#endif
     double newSpeed = _calculateTargetSpeed();
     _updateSpeed(newSpeed);
   }
@@ -119,10 +118,10 @@ void StepperWorker::_action_endstop_hit(){
 }
 
 void StepperWorker::_exit_endstop_hit(){
-  if (_debug) {
+#ifdef SW_DEBUG
     long curPos = _getCurrentPosition();
     FPRINTF2(sw_msg4, "%d Reset position, act: %ld\n", _id, curPos);
-  }
+#endif
   _astepper.setCurrentPosition(0);
 }
 
@@ -199,29 +198,25 @@ void StepperWorker::_updateSpeed(double speed) {
       _astepper.setSpeed(act_speed);
     }
 
-    if (_debug){
+#ifdef SW_DEBUG
       FPRINTF2(sw_msg8, "%d Set speed: %d\n", _id, (int) _currentSpeed);
 /*      int curSpeed = 1000 * _currentSpeed;
       int actSpeed = 1000 * act_speed;
       FPRINTF3(sw_msg9, "%d Update Speed to %d Act: %d\n", _id, curSpeed, actSpeed);*/
-    }
+#endif
   }
   // when speed was set then new target was used in anyway
   _targetChanged = false;
 }
 
 void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
-  if(_debug){
+#ifdef SW_DEBUG
     FPRINTF1(sw_msg10, "%d: New Key frame:\n", _id);
     kf.printKeyFrame();
-  }
+#endif
 //  _previousKeyFrame = _targetKeyFrame;
   _targetKeyFrame  = kf;
   _targetChanged = true;
-}
-
-void StepperWorker::setDebug(bool debug){
-  _debug = debug;
 }
 
 StepperWorkerState StepperWorker::getState(){
@@ -237,14 +232,14 @@ void StepperWorker::_entry_past_target(){
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
 
-  if (_debug) {
+#ifdef SW_DEBUG
     int tgtPos = _targetKeyFrame.getTarget();
     long tgtTime = _targetKeyFrame.getTimeMs();
     FPRINTF1(sw_msg12, "Warning. Passed KeyFrame for %d\n", _id);
     _targetKeyFrame.printKeyFrame();
     FPRINTF3(sw_msg13, "%d *** Tgt t  : %ld Act t  : %ld\n", _id, tgtTime, _elapsedTime);
     FPRINTF3(sw_msg14, "%d     Tgt pos: %d Act pos: %d\n", _id, tgtPos, _getCurrentPosition());
-  }
+#endif
 }
 
 void StepperWorker::_action_past_target(){

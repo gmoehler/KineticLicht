@@ -12,9 +12,11 @@
   #include "../test/mock_Arduino.h"
 #endif
 
-#include "KineticLicht.h" 
+#include "KineticLicht.h"
 #include "KeyFrame.h"
 #include "RGB.h"
+
+#define LW_DEBUG
 
 class LedWorker
 {
@@ -30,8 +32,6 @@ public:
     uint8_t  getId();
     uint8_t  getTlc5947_id();
     bool hasPassedTargetKeyFrame();
-
-    void setDebug(bool debug);
 
 private:
     // calculates the current Speed
@@ -53,8 +53,6 @@ private:
     int _needsUpdateDelta;
     bool _pastTargetKeyFrame;
     bool _needsUpdate;
-
-    bool _debug;
 
     KeyFrame _previousKeyFrame;
     KeyFrame _targetKeyFrame;

@@ -6,7 +6,7 @@ AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
 _animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION), _elapsedTime(0), _startTime(-1),
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
-_debug(false), _tlc(tlc)
+_tlc(tlc)
 {
   setDebugString(std::string("AnimationOps"));
   _tlc = tlc;
@@ -14,6 +14,7 @@ _debug(false), _tlc(tlc)
   addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOps::_init_to_calibrating);
   addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationOps::_init_to_active);
   addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationOps::_calibrating_to_active);
+  addTransition(ANIMATION_ACTIVE, ANIMATION_FINISHED, &AnimationOps::_active_to_finished);
   addTransition(ANIMATION_FINISHED, ANIMATION_INIT, &AnimationOps::_finished_to_init);
 
   addStateEntryAction(ANIMATION_CALIBRATING,&AnimationOps::_entry_calibrating);
@@ -199,25 +200,22 @@ void AnimationOps::init(AnimationStrategy strategy,
     return false;
   }
 
+  bool AnimationOps::_active_to_finished(){
+    return _getCurrentAnimation().isAnimationFinished(_elapsedTime);
+  }
+
   void AnimationOps::_action_active(){
 
     _elapsedTime = millis() - _startTime;
-    if (_debug){
+#ifdef AOPS_DEBUG
       FPRINTF1(aops_msg9, "+++ elapsed Time: %ld\n", _elapsedTime);
       _getCurrentAnimation().printAnimation();
-    }
+#endif
 
     std::vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
-    // no more frames - animation is at an end
-    if (kfs.size() == 0){
-      FPRINTF0(aops_msg10, "******** Need more frames, but there are none ***********\n");
-      triggerTransition(getState(), ANIMATION_FINISHED);
-      return;
-    }
-    else if (_debug){
+#ifdef AOPS_DEBUG
       FPRINTF1(aops_msg11, "++++ Number of KeyFrames read: %d\n\n", kfs.size());
-    }
-
+#endif
     for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
       KeyFrame kf = *kf_it;
 

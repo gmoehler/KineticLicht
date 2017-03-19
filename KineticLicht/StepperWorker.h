@@ -19,6 +19,9 @@
 #include "KeyFrame.h"
 #include "FiniteStates.h"
 
+#define SW_DEBUG
+
+
 // State diagram:
 // INIT -> CALIBRATING_UP ->(endstop is hit)-> CALIBRATING_ENDSTOPHIT[going downward] ->(endstop is released)-> CALIBRATION_FINISHED
 // ACTIVE ->(endstop is hit)-> ENDSTOP_HIT[going downward] ->(300ms & endstop is released)-> AT_ENDSTOP_WAITING ->(speed is downward)-> ACTIVE
@@ -60,8 +63,6 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
     StepperWorkerState getState();
 
     uint8_t getId();
-
-    void setDebug(bool debug);
 
   private:
     // state functions
@@ -121,7 +122,6 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
     bool _targetChanged;      // whether we got a new target
     long _elapsedTime;        // current elapsed time
 
-    bool _debug;              // print out debug information
 };
 
 #endif

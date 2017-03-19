@@ -51,10 +51,6 @@ public:
   KeyFrame(long timeMs, int targetPosition)
   : _id(0), _timeDs(timeMs/100), _targetPosition(targetPosition){}
 
-  // for initial values
-  KeyFrame(int id)
-  : _id(id), _timeDs(0), _targetPosition(0), _targetColor(BLACK){}
-
   // keyframe for motor movement
   KeyFrame(int id, long timeMs, int targetPosition)
   : _id(id), _timeDs(timeMs/100), _targetPosition(targetPosition), _targetColor(BLACK){}
@@ -69,12 +65,13 @@ public:
   KeyFrame()
   : _id(NO_ACTIVATOR), _timeDs(0), _targetPosition(0), _targetColor(0,0,0){}
 
-  // constructor from unsigned array
+  // constructor from unsigned array, time in 1/10 secs
   KeyFrame(unsigned v[7])
   : _id((int) v[0]), _timeDs(v[1]), _targetPosition(v[2]),
   _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]){}
 
 #ifdef WITH_PROGMEM
+  // constructor from flash array, time in 1/10 secs
   KeyFrame(_FLASH_ARRAY<unsigned> v)
   : _id((int) v[0]), _timeDs(v[1]), _targetPosition(v[2]),
   _targetColor((int) v[3], (int) v[4], (int) v[5], (int) v[6]){}
@@ -101,7 +98,7 @@ public:
   }
 
   void printKeyFrame(){
-    FPRINTF6(kf_msg0, "KeyFrame %d: %ld ms, tPos: %d, red: %d, green: %d, blue: %d\n", _id, 100*(long)_timeDs,
+    FPRINTF6(kf_msg0, "KeyFrame %d: %5ld ms, pos: %5d, rgb: %4d %4d %4d\n", _id, 100*(long)_timeDs,
     _targetPosition, _targetColor.red(), _targetColor.green(), _targetColor.blue());
   }
 

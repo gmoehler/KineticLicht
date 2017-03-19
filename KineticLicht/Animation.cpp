@@ -5,8 +5,11 @@ bool keyFrameCompare (KeyFrame i, KeyFrame j) {
 }
 
 Animation::Animation() :
+   _initialValuesRetrieved(false),
    _isSorted(false),
-   _withMotor(false) {}
+   _withMotor(false),
+   _finishedActuators(0),
+   _finishTime(0) {}
 
 Animation::Animation(std::vector<KeyFrame> kfs): Animation() {
   addKeyFrames(kfs);
@@ -32,11 +35,7 @@ Animation::Animation(_FLASH_TABLE<unsigned> *ftable){
   _doSort();
 }
 #endif
-/*
-KeyFrame& Animation::getKeyFrame(int id){
-	return _keyFrames[id];
-}
-*/
+
 int Animation::numberOfKeyFrames(){
   int num = 0;
   for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
@@ -51,41 +50,11 @@ int Animation::numberOfKeyFrames(){
  	return _withMotor;
  }
 
-bool Animation::isAnimationFinished() {
-  // TODO implement this
-  //return numberOfKeyFrames() == 0 || _currentFrameId >= numberOfKeyFrames() -1;
-  return false;
+bool Animation::isAnimationFinished(long elapsedTime) {
+  printf("act: %d size %d finTime: %ld\n",  _finishedActuators, _keyFrameMap.size(), _finishTime);
+  return _finishedActuators == _keyFrameMap.size() && elapsedTime > _finishTime;
 }
 
-/*
-bool Animation::needsTargetFrameUpdate(long elapsedTime) {
-
-  // nothing read so far
-  if (_currentFrameId < 0){
-    return true;
-  }
-
-  double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();
-  //FPRINTF2(ani_msg6, "**** currentTargetTime: %f, elapsedTime: %ld\n", currentTargetTime, elapsedTime);
-
-  return (currentTargetTime < elapsedTime);
-}
-
-bool Animation::nextFrameWithSameTime() {
-  // nothing read so far
-  if (_currentFrameId < 0){
-    return true;
-  }
-  if (isAnimationFinished()){
-    return false;
-  }
-
-  double currentTargetTime = getKeyFrame(_currentFrameId).getTimeMs();
-  double nextTargetTime = getKeyFrame(_currentFrameId+1).getTimeMs();
-
-  return currentTargetTime == nextTargetTime;
-}
-*/
 std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
   // need resorting
@@ -95,42 +64,56 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
   std::vector<KeyFrame> nextKeyFrames;
 
+  // add initial key frames for all activators
+  if (!_initialValuesRetrieved){
+    for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
+      std::vector<KeyFrame> kfs = it-> second;
+      KeyFrame currentKeyFrame = kfs[0];
+      nextKeyFrames.push_back(currentKeyFrame);
+      if (kfs.size()==1){
+        _finishedActuators++;
+        //printf("Finished: %u\n", it-> first);
+      }
+      _initialValuesRetrieved = true;
+    }
+  }
+
+  // get next key frames
   for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
 
     uint8_t id = it-> first;
     std::vector<KeyFrame> kfs = it-> second;
     uint8_t currentFrameId = _currentFrameIdMap[id];
 
+    KeyFrame currentKeyFrame = kfs[currentFrameId];
+
     if (currentFrameId == kfs.size()-1){
       // we are at the last key frame
       continue;
     }
 
-    KeyFrame currentKeyFrame = kfs[currentFrameId];
-
     double currentTargetTime = currentKeyFrame.getTimeMs();
+    bool finished = false;
 
     // read next one if we passed the last target
-    while (elapsedTime > currentTargetTime ) {
+    while (elapsedTime > currentTargetTime && !finished) {
 
       ++currentFrameId;
       currentKeyFrame = kfs[currentFrameId];
       nextKeyFrames.push_back(currentKeyFrame);
       _currentFrameIdMap[id] = currentFrameId;
 
+      if (currentFrameId == kfs.size()-1){
+        finished = true;
+        _finishedActuators++;
+        printf("Finished: %d\n", id);
+      }
+
       // look at next frame already
       currentTargetTime = currentKeyFrame.getTimeMs();
     }
   }
 
-/*
-  while (!isAnimationFinished() &&
-    (needsTargetFrameUpdate(elapsedTime) || nextFrameWithSameTime())){
-    // for first frame the iterator is already pointing to the correct frame
-    _currentFrameId++;
-    nextKeyFrames.push_back(getKeyFrame(_currentFrameId));
-  }
-*/
   return nextKeyFrames;
 }
 
@@ -145,27 +128,15 @@ void Animation::_doSort(){
   _isSorted = true;
   resetCurrentKeyFrame();
 
-/*
-  std::sort (_keyFrames.begin(), _keyFrames.end(), keyFrameCompare);
-  if (numberOfKeyFrames() > 0){
-    _currentFrameId = -1;
-    _isSorted = true;
-  }*/
   FPRINTF0(ani_msg7, "done.\n");
 }
 
 void Animation::addKeyFrame(KeyFrame kf) {
     uint8_t id = kf.getId();
-    std::vector<KeyFrame> kfs = _keyFrameMap[id];
-    if (kfs.size() == 0){
-      // add initial value
-      KeyFrame *initial_kf = new KeyFrame(id);
-      // TODO: clean up this initial value
-      _keyFrameMap[id].push_back(*initial_kf);
-    }
-
     _keyFrameMap[id].push_back(kf);
-    //_keyFrames.push_back(kf);
+    if (kf.getTimeMs() > _finishTime){
+      _finishTime = kf.getTimeMs();
+    }
     if (kf.getType() == MOTORFRAME) {
       _withMotor = true;
     }
@@ -190,12 +161,10 @@ void Animation::resetCurrentKeyFrame(){
     _currentFrameIdMap[id] = 0;
   }
 
+  // we still need to retrieve the first key frames
+  _initialValuesRetrieved = false;
+  _finishedActuators = 0;
 
-/*
-  if (numberOfKeyFrames() > 0){
-    _currentFrameId = 0;
-  }
-  */
 }
 
 void Animation::printAnimation(){
@@ -208,6 +177,11 @@ void Animation::printAnimation(){
   }
 
   if (numberOfKeyFrames() > 0){
+
+    if (!_initialValuesRetrieved){
+      FPRINTF0(ani_msg8, "No key frames in action.\n");
+      return;
+    }
 
     // need resorting
     if (!_isSorted){

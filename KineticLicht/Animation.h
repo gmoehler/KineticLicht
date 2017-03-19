@@ -32,15 +32,12 @@ public:
   Animation(_FLASH_TABLE<unsigned>* ftable);
 #endif
 
-  bool isAnimationFinished();
-  // bool needsTargetFrameUpdate(long elapsedTime);
-  //bool nextFrameWithSameTime();
+  bool isAnimationFinished(long elapsedTime);
   std::vector<KeyFrame> getNextTargetKeyFrames(long elapsedTime);
 
   // add new key frames - sort is done on first getNextTargetKeyFrames()
   void addKeyFrame(KeyFrame kf);
   void addKeyFrames(std::vector<KeyFrame> new_kfs);
-  //KeyFrame& getKeyFrame(int id);
   void resetCurrentKeyFrame();
   int numberOfKeyFrames();
 
@@ -54,9 +51,14 @@ private:
   //int _currentFrameId;
   std::map<uint8_t, uint8_t> _currentFrameIdMap;
   //unsigned _numberOfKeyFrames;
+  bool _initialValuesRetrieved;
   bool _isSorted;
   bool _withMotor;
+  uint8_t _finishedActuators;
+  long _finishTime;
+
   void _doSort();
+
 };
 
 #endif

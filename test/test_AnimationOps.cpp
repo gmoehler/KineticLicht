@@ -193,7 +193,6 @@ TEST(AnimationOps_tests, scenario_single){
   AccelStepper acs = AccelStepper();
   int pin = 22;
   StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
-  sw.setDebug(true);
 
   LedWorker lw = LedWorker (LED1TOP, 0);
 
@@ -202,6 +201,12 @@ TEST(AnimationOps_tests, scenario_single){
 
   ao.init(SINGLE_ANIMATION, 0, false);
   EXPECT_EQ(ao.getState(), ANIMATION_INIT);
+  /*
+  {LED1TOP, 0, 0, BLACK, 0},
+  {LED1TOP, 20, 0, BLACK, 0},
+  {LED1TOP, 40, 0, RED, 100},
+  {LED4TOP, 180, 0, BLACK, 0}
+*/
 
   for (int i=0;i<22;i++){
     ao.loop();
@@ -225,7 +230,6 @@ TEST(AnimationOps_tests, scenario_loop){
   AccelStepper acs = AccelStepper();
   int pin = 22;
   StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
-  sw.setDebug(true);
 
   LedWorker lw = LedWorker (LED1TOP, 0);
 
@@ -266,7 +270,6 @@ AnimationOps as(tlc);
 AccelStepper acs = AccelStepper();
 int pin = 22;
 StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
-sw.setDebug(true);
 
 LedWorker lw = LedWorker (LED1TOP, 0);
 

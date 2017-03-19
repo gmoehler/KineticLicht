@@ -45,7 +45,6 @@ public:
 private:
   uint8_t _numStates;
   uint8_t _state;
-  bool _debug;
   std::string _debugString;
 
   T& _obj;   // the object to apply the functions on
@@ -59,18 +58,13 @@ private:
 };
 
 template<class T>
-void FiniteStateMachine<T>::setDebug(bool debug){
-  _debug = debug;
-}
-
-template<class T>
 void FiniteStateMachine<T>::setDebugString(const std::string debugString){
   _debugString = debugString;
 }
 
 template<class T>
 FiniteStateMachine<T>::FiniteStateMachine(uint8_t numberOfStates, uint8_t initialState, T& obj) :
-_numStates(numberOfStates), _state(initialState), _debug(true),
+_numStates(numberOfStates), _state(initialState),
 _obj(obj), _transitionMap(), _transitionTriggerMap(){
 }
 template<class T>
