@@ -11,7 +11,7 @@ bool Compare_Rows(const unsigned a[NUM_COLS], const unsigned b[NUM_COLS])
 void AnimationList::load(){
 
   // 4 animations here
-  initNumberOfAnimations(4);
+  initNumberOfAnimations(1);
 
   uint8_t animationId = 0;
 /*
@@ -118,9 +118,10 @@ void AnimationList::load(){
     unsigned stepper_test1[][NUM_COLS] = {
 #endif
     {STEPPER1, 0, 0, NOCOLOR},
-    {STEPPER2, 0, 0, NOCOLOR},
+    {STEPPER1, 30, 3000, NOCOLOR},
+/*    {STEPPER2, 0, 0, NOCOLOR},
     {STEPPER3, 0, 0, NOCOLOR},
-    {STEPPER4, 0, 0, NOCOLOR},
+    {STEPPER4, 0, 0, NOCOLOR}
     {LED1BOT, 1, 0, YELLOW, 100},
     {LED1TOP, 1, 0, YELLOW, 100},
     {LED2BOT, 1, 0, YELLOW, 100},
@@ -155,7 +156,7 @@ void AnimationList::load(){
     {LED3TOP,  120, 0, YELLOW, 100},
     {LED4BOT,  120, 0, CYAN, 100},
     {LED4TOP,  120, 0, WHITE, 100}
-
+*/
 #ifdef WITH_PROGMEM
   );
   _addAsAnimationFlashTable(stepper_test1, animationId++);
@@ -164,7 +165,7 @@ void AnimationList::load(){
   int rows = sizeof(stepper_test1) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test1, rows, animationId++);
 #endif
-
+/*
 #ifdef WITH_PROGMEM
   FLASH_TABLE(unsigned, stepper_test2, NUM_COLS,
 #else
@@ -217,10 +218,10 @@ void AnimationList::load(){
   _addAsAnimationFlashTable(stepper_test2, animationId++);
 #else
   };
-  int rows = sizeof(stepper_test2) / sizeof(stepper_test1[0]);
+  rows = sizeof(stepper_test2) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test2, rows, animationId++);
 #endif
-
+*/
 
 /*
   unsigned a1[][NUM_COLS] = {

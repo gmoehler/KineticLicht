@@ -82,7 +82,7 @@ public:
   }
 
   long getTimeMs() {
-    return _timeDs * 100;
+    return ((long)_timeDs) * 100;
   }
 
   int getTarget() {

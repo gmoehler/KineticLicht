@@ -38,6 +38,8 @@ void AnimationOps::selectAnimation(uint8_t id){
   unsigned **aniUint = _animations.getAnimationAsUint(id);
   int numKf = _animations.getNumKeyFrames(id);
   _currentAnimation = Animation(aniUint, numKf);
+  FPRINF0(aop_msg13, "Selecting new Animation:\n");
+  _currentAnimation.printAnimation();
 #endif
 }
 
@@ -208,13 +210,13 @@ void AnimationOps::init(AnimationStrategy strategy,
 
     _elapsedTime = millis() - _startTime;
 #ifdef AOPS_DEBUG
-      FPRINTF1(aops_msg9, "+++ elapsed Time: %ld\n", _elapsedTime);
-      _getCurrentAnimation().printAnimation();
+//      FPRINTF1(aops_msg9, "+++ elapsed Time: %ld\n", _elapsedTime);
+//      _getCurrentAnimation().printAnimation();
 #endif
 
     std::vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
 #ifdef AOPS_DEBUG
-      FPRINTF1(aops_msg11, "++++ Number of KeyFrames read: %d\n\n", kfs.size());
+//      FPRINTF1(aops_msg11, "++++ Number of KeyFrames read: %d\n\n", kfs.size());
 #endif
     for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
       KeyFrame kf = *kf_it;

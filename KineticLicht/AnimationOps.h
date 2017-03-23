@@ -17,7 +17,7 @@
 #include "StepperWorker.h"
 #include "LedWorker.h"
 
-//#define AOPS_DEBUG
+#define AOPS_DEBUG
 
 enum AnimationState { ANIMATION_INIT,           // 0
                       ANIMATION_CALIBRATING,    // 1

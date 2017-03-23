@@ -9,7 +9,7 @@ Animation::Animation() :
    _isSorted(false),
    _withMotor(false),
    _finishedActuators(0),
-   _finishTime(0) {}
+   _finishTime(0L) {}
 
 Animation::Animation(std::vector<KeyFrame> kfs): Animation() {
   addKeyFrames(kfs);
@@ -21,11 +21,10 @@ Animation::Animation(unsigned **v, int length): Animation() {
     addKeyFrame(kf);
   }
   _doSort();
-
 }
 
 #ifdef WITH_PROGMEM
-Animation::Animation(_FLASH_TABLE<unsigned> *ftable){
+Animation::Animation(_FLASH_TABLE<unsigned> *ftable): Animation() {
   int numRows = ftable->rows();
   for (int i=0; i< numRows; i++){
     _FLASH_ARRAY<unsigned> v = (*ftable)[i];
@@ -51,7 +50,6 @@ int Animation::numberOfKeyFrames(){
  }
 
 bool Animation::isAnimationFinished(long elapsedTime) {
-  printf("act: %d size %d finTime: %ld\n",  _finishedActuators, _keyFrameMap.size(), _finishTime);
   return _finishedActuators == _keyFrameMap.size() && elapsedTime > _finishTime;
 }
 
@@ -106,7 +104,7 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
       if (currentFrameId == kfs.size()-1){
         finished = true;
         _finishedActuators++;
-        printf("Finished: %d\n", id);
+        FPRINTF1(ani_msg8, "Finished: %d\n", id);
       }
 
       // look at next frame already
@@ -134,6 +132,7 @@ void Animation::_doSort(){
 void Animation::addKeyFrame(KeyFrame kf) {
     uint8_t id = kf.getId();
     _keyFrameMap[id].push_back(kf);
+    printf("add to Map %d size %d %d\n", id, _keyFrameMap.size(), _keyFrameMap[id].size());
     if (kf.getTimeMs() > _finishTime){
       _finishTime = kf.getTimeMs();
     }
@@ -168,7 +167,7 @@ void Animation::resetCurrentKeyFrame(){
 }
 
 void Animation::printAnimation(){
-  FPRINTF1(ani_msg0, "Animation contains %u frames ", numberOfKeyFrames());
+  FPRINTF2(ani_msg0, "Animation finishes at %ld and contains %u frames ", _finishTime, numberOfKeyFrames());
   if (_withMotor){
     FPRINTF0(ani_msg1,"with motor frames.\n" );
   }
