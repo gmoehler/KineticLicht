@@ -38,7 +38,7 @@ void AnimationOps::selectAnimation(uint8_t id){
   unsigned **aniUint = _animations.getAnimationAsUint(id);
   int numKf = _animations.getNumKeyFrames(id);
   _currentAnimation = Animation(aniUint, numKf);
-  FPRINF0(aop_msg13, "Selecting new Animation:\n");
+  FPRINTF0(aop_msg13, "Selecting new Animation:\n");
   _currentAnimation.printAnimation();
 #endif
 }

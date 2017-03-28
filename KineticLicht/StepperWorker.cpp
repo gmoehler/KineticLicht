@@ -78,7 +78,7 @@ uint8_t StepperWorker::getId(){
 }
 
 void StepperWorker::_entry_active(){
-  FPRINTF1(sw_msg0, "%d Entering state active\n", _id);
+  FPRINTF1(sw_msg0, "STP %d: Entering state active\n", _id);
   double newSpeed = _calculateTargetSpeed();
   _updateSpeed(newSpeed);
 }
@@ -86,7 +86,7 @@ void StepperWorker::_entry_active(){
 void StepperWorker::_action_active(){
   if (_targetChanged){
 #ifdef SW_DEBUG
-      FPRINTF0(sw_msg1, "Target changed. Calc new speed. ");
+      FPRINTF1(sw_msg1, "STP %d: Target changed. ", _id);
 #endif
     double newSpeed = _calculateTargetSpeed();
     _updateSpeed(newSpeed);
@@ -102,13 +102,13 @@ bool StepperWorker::_to_endstop_hit() {
 bool StepperWorker::_endStopActive() {
   int endStop = digitalRead(_endStopPin);
   if (endStop == LOW){
-    FPRINTF2(sw_msg2, "%d Endstop hit: %d\n", _id, endStop);
+    FPRINTF2(sw_msg2, "STP %d: Endstop hit: %d\n", _id, endStop);
   }
   return (endStop == LOW);
 }
 
 void StepperWorker::_entry_endstop_hit(){
-  FPRINTF1(sw_msg3, "%d Entering state endstop_hit\n", _id);
+  FPRINTF1(sw_msg3, "STP: %d Entering state endstop_hit\n", _id);
   _updateSpeed(60);
   _time_endstophit = _elapsedTime;
 }
@@ -120,7 +120,7 @@ void StepperWorker::_action_endstop_hit(){
 void StepperWorker::_exit_endstop_hit(){
 #ifdef SW_DEBUG
     long curPos = _getCurrentPosition();
-    FPRINTF2(sw_msg4, "%d Reset position, act: %ld\n", _id, curPos);
+    FPRINTF2(sw_msg4, "STP %d: Reset position, act: %ld\n", _id, curPos);
 #endif
   _astepper.setCurrentPosition(0);
 }
@@ -131,7 +131,7 @@ bool StepperWorker::_to_endstop_waiting() {
 }
 
 void StepperWorker::_entry_endstop_waiting(){
-  FPRINTF1(sw_msg5, "%d Entering state endstop_waiting\n", _id);
+  FPRINTF1(sw_msg5, "STP %d: Entering state endstop_waiting\n", _id);
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
   _time_endstophit = 0;
@@ -155,7 +155,7 @@ void StepperWorker::startCalibration(){
 }
 
 void StepperWorker::_entry_calibrating_up(){
-  FPRINTF1(sw_msg6, "%d Entering state entry_calibrating\n", _id);
+  FPRINTF1(sw_msg6, "STP %d: Entering state entry_calibrating\n", _id);
   _updateSpeed(CALIBRATE_SPEED);
 }
 
@@ -164,7 +164,7 @@ void StepperWorker::_action_calibrating_up(){
 }
 
 void StepperWorker::_entry_calibration_finished(){
-  FPRINTF1(sw_msg7, "%d Entering state calibration_finished\n", _id);
+  FPRINTF1(sw_msg7, "STP %d: Entering state calibration_finished\n", _id);
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
 }
@@ -199,7 +199,7 @@ void StepperWorker::_updateSpeed(double speed) {
     }
 
 #ifdef SW_DEBUG
-      FPRINTF2(sw_msg8, "%d Set speed: %d\n", _id, (int) _currentSpeed);
+      FPRINTF2(sw_msg8, "STP %d: Set speed: %d\n", _id, (int) _currentSpeed);
 /*      int curSpeed = 1000 * _currentSpeed;
       int actSpeed = 1000 * act_speed;
       FPRINTF3(sw_msg9, "%d Update Speed to %d Act: %d\n", _id, curSpeed, actSpeed);*/
@@ -211,10 +211,8 @@ void StepperWorker::_updateSpeed(double speed) {
 
 void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 #ifdef SW_DEBUG
-    FPRINTF1(sw_msg10, "%d: New Key frame:\n", _id);
-    kf.printKeyFrame();
+    kf.printNewKeyFrame("STP");
 #endif
-//  _previousKeyFrame = _targetKeyFrame;
   _targetKeyFrame  = kf;
   _targetChanged = true;
 }
@@ -235,10 +233,10 @@ void StepperWorker::_entry_past_target(){
 #ifdef SW_DEBUG
     int tgtPos = _targetKeyFrame.getTarget();
     long tgtTime = _targetKeyFrame.getTimeMs();
-    FPRINTF1(sw_msg12, "Warning. Passed KeyFrame for %d\n", _id);
+    FPRINTF1(sw_msg12, "STP %d: Passed KeyFrame ", _id);
     _targetKeyFrame.printKeyFrame();
-    FPRINTF3(sw_msg13, "%d *** Tgt t  : %ld Act t  : %ld\n", _id, tgtTime, _elapsedTime);
-    FPRINTF3(sw_msg14, "%d     Tgt pos: %d Act pos: %d\n", _id, tgtPos, _getCurrentPosition());
+    FPRINTF3(sw_msg13, "STP %d Tgt t  : %ld Act t  : %ld\n", _id, tgtTime, _elapsedTime);
+    FPRINTF3(sw_msg14, "STP %d Tgt pos: %d Act pos: %d\n", _id, tgtPos, _getCurrentPosition());
 #endif
 }
 
@@ -257,6 +255,6 @@ bool StepperWorker::_past_target_to_active(){
 
 int StepperWorker::_getCurrentPosition() {
   long curPos = _astepper.currentPosition();
-  //FPRINTF2(sw_msg15, "%d Current Position: %d", _id, curPos);
+  //FPRINTF2(sw_msg15, "STP %d: Current Position: %d", _id, curPos);
   return (int) (_reverseDirection ? -curPos : curPos);
 }

@@ -13,6 +13,8 @@ extern char pbuffer[PBUFFER_SIZE];
 #define FPRINTF4(msg_name, format, a, b, c, d) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b, c, d);
 #define FPRINTF5(msg_name, format, a, b, c, d, e) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b, c, d, e);
 #define FPRINTF6(msg_name, format, a, b, c, d, e, f) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b, c, d, e, f);
+#define FPRINTF7(msg_name, format, a, b, c, d, e, f, g) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b, c, d, e, f, g);
+#define FPRINTF8(msg_name, format, a, b, c, d, e, f, g, h) FLASH_STRING(msg_name, format); msg_name.copy(pbuffer, PBUFFER_SIZE); printf(pbuffer, a, b, c, d, e, f, g, h);
 
 #else // WITH_PROGMEM
 
@@ -23,6 +25,8 @@ extern char pbuffer[PBUFFER_SIZE];
 #define FPRINTF4(msg_name, format, a, b, c, d) printf(format, a, b, c, d);
 #define FPRINTF5(msg_name, format, a, b, c, d, e) printf(format, a, b, c, d, e);
 #define FPRINTF6(msg_name, format, a, b, c, d, e, f) printf(format, a, b, c, d, e, f);
+#define FPRINTF7(msg_name, format, a, b, c, d, e, f, g) printf(format, a, b, c, d, e, f, g);
+#define FPRINTF8(msg_name, format, a, b, c, d, e, f, g, h) printf(format, a, b, c, d, e, f, g, h);
 
 #endif // WITH_PROGMEM
 

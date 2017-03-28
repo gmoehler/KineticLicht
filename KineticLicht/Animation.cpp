@@ -1,5 +1,12 @@
 #include "Animation.h"
 
+int freeRam1 ()
+{
+  extern int __heap_start, *__brkval;
+  int v;
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+}
+
 bool keyFrameCompare (KeyFrame i, KeyFrame j) {
   return (i.getTimeMs()<j.getTimeMs());
 }
@@ -30,6 +37,9 @@ Animation::Animation(_FLASH_TABLE<unsigned> *ftable): Animation() {
     _FLASH_ARRAY<unsigned> v = (*ftable)[i];
     KeyFrame kf(v);
     addKeyFrame(kf);
+    if (freeRam1() < 200){
+        FPRINTF1(kin_msg10, "ERROR! Memory exhausted: %d Bytes left\n", freeRam1());
+    }
   }
   _doSort();
 }
@@ -104,7 +114,7 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
       if (currentFrameId == kfs.size()-1){
         finished = true;
         _finishedActuators++;
-        FPRINTF1(ani_msg8, "Finished: %d\n", id);
+        FPRINTF1(ani_msg8, "*** %d: Finished Animation\n", id);
       }
 
       // look at next frame already
@@ -132,7 +142,7 @@ void Animation::_doSort(){
 void Animation::addKeyFrame(KeyFrame kf) {
     uint8_t id = kf.getId();
     _keyFrameMap[id].push_back(kf);
-    printf("add to Map %d size %d %d\n", id, _keyFrameMap.size(), _keyFrameMap[id].size());
+//    printf("add to Map %d size %d %d\n", id, _keyFrameMap.size(), _keyFrameMap[id].size());
     if (kf.getTimeMs() > _finishTime){
       _finishTime = kf.getTimeMs();
     }

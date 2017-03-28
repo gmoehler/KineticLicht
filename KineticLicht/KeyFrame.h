@@ -13,12 +13,9 @@
   #include <Flash.h>
 #endif
 
-
 #include <string>
-
 #include "KineticLicht.h"
 #include "RGB.h"
-
 
 #define STEPPER_COMPRESSION 16
 
@@ -97,6 +94,12 @@ public:
     return _targetColor;
   }
 
+  void printNewKeyFrame(const char* prefix){
+    FPRINTF7(kf_msg0, "%s %d: New KeyFrame %5ld ms, pos: %5d, rgb: %4d %4d %4d\n",
+    prefix, _id, 100*(long)_timeDs,
+    _targetPosition, _targetColor.red(), _targetColor.green(), _targetColor.blue());
+
+  }
   void printKeyFrame(){
     FPRINTF6(kf_msg0, "KeyFrame %d: %5ld ms, pos: %5d, rgb: %4d %4d %4d\n", _id, 100*(long)_timeDs,
     _targetPosition, _targetColor.red(), _targetColor.green(), _targetColor.blue());

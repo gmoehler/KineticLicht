@@ -152,15 +152,15 @@ int fr5 = freeRam();
 void setup()
 {
   Serial.begin(9600);
-  printf("0### FREE RAM: %d\n",  fr0);
-  printf("1### FREE RAM: %d\n",  fr1);
-  printf("2### FREE RAM: %d\n",  fr2);
-  printf("3### FREE RAM: %d\n",  fr3);
-  printf("4### FREE RAM: %d\n",  fr4);
-  printf("5### FREE RAM: %d\n",  fr5);
-  printf("5### FREE RAM: %d\n",  freeRam());
+  FPRINTF1(kin_msg0, "0### FREE RAM: %d\n",  fr0);
+  FPRINTF1(kin_msg1, "1### FREE RAM: %d\n",  fr1);
+  FPRINTF1(kin_msg2, "2### FREE RAM: %d\n",  fr2);
+  FPRINTF1(kin_msg3, "3### FREE RAM: %d\n",  fr3);
+  FPRINTF1(kin_msg4, "4### FREE RAM: %d\n",  fr4);
+  FPRINTF1(kin_msg5, "5### FREE RAM: %d\n",  fr5);
+  FPRINTF1(kin_msg6, "5### FREE RAM: %d\n",  freeRam());
 
-  printf("Hello World\n");
+  //printf("Hello World\n");
   std::cout << "Start." << std::endl;
 
   AFMS_a.begin(2000);
@@ -170,7 +170,7 @@ void setup()
   const  long freq=800000l;
   TWBR = ((F_CPU / freq) - 16) / 2;
 
-  printf("7### FREE RAM: %d\n",  freeRam ());
+  FPRINTF1(kin_msg7,"7### FREE RAM: %d\n",  freeRam ());
 
   aniop.addStepperWorker(&sworker1);
   aniop.addStepperWorker(&sworker2);
@@ -187,7 +187,7 @@ void setup()
 
   aniop.init(SINGLE_ANIMATION, 0, true);
 
-  printf("8### FREE RAM: %d\n",  freeRam ());
+  FPRINTF1(kin_msg8,"8### FREE RAM: %d\n",  freeRam ());
 
   //irrecv.enableIRIn(); // Start the IR receiver
 }
@@ -195,6 +195,8 @@ void setup()
 /************
     Loop
 ************/
+
+long loopNo = 0;
 
 void loop()
 {
@@ -211,12 +213,17 @@ void loop()
   irrecv.resume(); // Receive the next value
 }
 */
+  loopNo++;
   int fr = freeRam();
+  if (loopNo % 500 == 0){
+    FPRINTF1(kin_msg9, "******** MEMORY: %d *******\n", fr);
+  }
+
   if (fr > 200){
     aniop.loop();
   }
   else {
-    printf("ERROR! Memory exhausted: %d Bytes left\n", fr);
+    FPRINTF1(kin_msg10, "ERROR! Memory exhausted: %d Bytes left\n", fr);
   }
 
 }
