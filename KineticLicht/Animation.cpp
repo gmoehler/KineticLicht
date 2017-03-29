@@ -35,8 +35,11 @@ Animation::Animation(_FLASH_TABLE<unsigned> *ftable): Animation() {
   int numRows = ftable->rows();
   for (int i=0; i< numRows; i++){
     _FLASH_ARRAY<unsigned> v = (*ftable)[i];
+    FPRINTF(ani_msg20, "read %d array   %d bytes", i, free1());
     KeyFrame kf(v);
+    FPRINTF(ani_msg21, "read %d keyframe %d bytes", i, free1());
     addKeyFrame(kf);
+    FPRINTF(ani_msg22, "read %d add      %d bytes", i, free1());
     if (freeRam1() < 200){
         FPRINTF1(kin_msg10, "ERROR! Memory exhausted: %d Bytes left\n", freeRam1());
     }
