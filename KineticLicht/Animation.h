@@ -26,17 +26,17 @@ class Animation
 public:
 
   Animation();
-  Animation(std::vector<KeyFrame> new_kfs);
-  Animation(unsigned **v, int length);
+  void init(std::vector<KeyFrame> new_kfs);
+  void init(unsigned **v, int length);
 #ifdef WITH_PROGMEM
-  Animation(_FLASH_TABLE<unsigned>* ftable);
+  void init(_FLASH_TABLE<unsigned>* ftable);
 #endif
 
   bool isAnimationFinished(long elapsedTime);
   std::vector<KeyFrame> getNextTargetKeyFrames(long elapsedTime);
 
   // add new key frames - sort is done on first getNextTargetKeyFrames()
-  void addKeyFrame(KeyFrame kf);
+  void addKeyFrame(KeyFrame& kf);
   void addKeyFrames(std::vector<KeyFrame> new_kfs);
   void resetCurrentKeyFrame();
   int numberOfKeyFrames();
@@ -58,6 +58,10 @@ private:
   long _finishTime;
 
   void _doSort();
+
+  // make copy constructor private
+  // should not be used because it waists memory
+  Animation (const Animation&);
 
 };
 

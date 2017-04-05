@@ -28,18 +28,18 @@ char pbuffer[PBUFFER_SIZE];
 #define LED_CLOCK  5
 #define LED_LATCH  6
 // these are hard-wired in the lib using fast data write
-Adafruit_TLC5947 tlc = Adafruit_TLC5947(1, LED_CLOCK, LED_DATA, LED_LATCH);
+Adafruit_TLC5947 tlc(1, LED_CLOCK, LED_DATA, LED_LATCH);
 
 int fr0 = freeRam();
 
-LedWorker rgb1o = LedWorker (LED1TOP, 6);
-LedWorker rgb1u = LedWorker (LED1BOT, 7);
-LedWorker rgb2o = LedWorker (LED2TOP, 4);
-LedWorker rgb2u = LedWorker (LED2BOT, 5);
-LedWorker rgb3o = LedWorker (LED3TOP, 1);
-LedWorker rgb3u = LedWorker (LED3BOT, 0);
-LedWorker rgb4o = LedWorker (LED4TOP, 3);
-LedWorker rgb4u = LedWorker (LED4BOT, 2);
+LedWorker rgb1o(LED1TOP, 6);
+LedWorker rgb1u(LED1BOT, 7);
+LedWorker rgb2o(LED2TOP, 4);
+LedWorker rgb2u(LED2BOT, 5);
+LedWorker rgb3o(LED3TOP, 1);
+LedWorker rgb3u(LED3BOT, 0);
+LedWorker rgb4o(LED4TOP, 3);
+LedWorker rgb4u(LED4BOT, 2);
 
 int fr1 = freeRam();
 
@@ -125,10 +125,10 @@ AccelStepper astepper4(forwardstep4, backwardstep4);
 
 int fr3 = freeRam();
 
-StepperWorker  sworker1 = StepperWorker(STEPPER1, astepper1, 53, true);
-StepperWorker  sworker2 = StepperWorker(STEPPER2, astepper2, 49, true); // true seems wrong, but does the right thing...
-StepperWorker  sworker3 = StepperWorker(STEPPER3, astepper3, 51, false);
-StepperWorker  sworker4 = StepperWorker(STEPPER4, astepper4, 47, true);
+StepperWorker  *sworker1 = new StepperWorker(STEPPER1, astepper1, 53, true);
+StepperWorker  *sworker2 = new StepperWorker(STEPPER2, astepper2, 49, true); // true seems wrong, but does the right thing...
+StepperWorker  *sworker3 = new StepperWorker(STEPPER3, astepper3, 51, false);
+StepperWorker  *sworker4 = new StepperWorker(STEPPER4, astepper4, 47, true);
 
 /****************************
   Create IR remote objects
@@ -158,7 +158,7 @@ void setup()
   FPRINTF1(kin_msg3, "3### FREE RAM: %d\n",  fr3);
   FPRINTF1(kin_msg4, "4### FREE RAM: %d\n",  fr4);
   FPRINTF1(kin_msg5, "5### FREE RAM: %d\n",  fr5);
-  FPRINTF1(kin_msg6, "5### FREE RAM: %d\n",  freeRam());
+  FPRINTF1(kin_msg6, "6### FREE RAM: %d\n",  freeRam());
 
   //printf("Hello World\n");
   std::cout << "Start." << std::endl;
@@ -172,10 +172,10 @@ void setup()
 
   FPRINTF1(kin_msg7,"7### FREE RAM: %d\n",  freeRam ());
 
-  aniop.addStepperWorker(&sworker1);
-  aniop.addStepperWorker(&sworker2);
-  aniop.addStepperWorker(&sworker3);
-  aniop.addStepperWorker(&sworker4);
+  aniop.addStepperWorker(sworker1);
+  aniop.addStepperWorker(sworker2);
+  aniop.addStepperWorker(sworker3);
+  aniop.addStepperWorker(sworker4);
   aniop.addLedWorker(&rgb1o);
   aniop.addLedWorker(&rgb1u);
   aniop.addLedWorker(&rgb2o);
@@ -185,7 +185,7 @@ void setup()
   aniop.addLedWorker(&rgb4o);
   aniop.addLedWorker(&rgb4u);
 
-  aniop.init(SINGLE_ANIMATION, 0, true);
+  aniop.init(SINGLE_ANIMATION, 0, false);
 
   FPRINTF1(kin_msg8,"8### FREE RAM: %d\n",  freeRam ());
 
@@ -216,7 +216,7 @@ void loop()
   loopNo++;
   int fr = freeRam();
   if (loopNo % 500 == 0){
-    FPRINTF1(kin_msg9, "******** MEMORY: %d *******\n", fr);
+   FPRINTF1(kin_msg9, "******** MEMORY: %d *******\n", fr);
   }
 
   if (fr > 200){

@@ -178,7 +178,8 @@ TEST(AnimationOps, animationList){
 
   printf("Done.\n");
   int numKf = al.getNumKeyFrames(0);
-  Animation animation(ani, numKf);
+  Animation animation;
+  animation.init(ani, numKf);
   EXPECT_EQ( numKf, animation.numberOfKeyFrames());
   animation.printAnimation();
 
@@ -192,9 +193,9 @@ TEST(AnimationOps_tests, scenario_single){
 
   AccelStepper acs = AccelStepper();
   int pin = 22;
-  StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
+  StepperWorker sw(STEPPER1, acs, pin, false);
 
-  LedWorker lw = LedWorker (LED1TOP, 0);
+  LedWorker lw(LED1TOP, 0);
 
   ao.addStepperWorker(&sw);
   ao.addLedWorker(&lw);
@@ -229,9 +230,9 @@ TEST(AnimationOps_tests, scenario_loop){
 
   AccelStepper acs = AccelStepper();
   int pin = 22;
-  StepperWorker sw = StepperWorker (STEPPER1, acs, pin, false);
+  StepperWorker sw(STEPPER1, acs, pin, false);
 
-  LedWorker lw = LedWorker (LED1TOP, 0);
+  LedWorker lw(LED1TOP, 0);
 
   ao.addStepperWorker(&sw);
   ao.addLedWorker(&lw);

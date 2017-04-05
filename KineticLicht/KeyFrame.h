@@ -150,6 +150,7 @@ private:
   unsigned _timeDs;
   int _targetPosition;
   RGB _targetColor;
+
 };
 
 #endif

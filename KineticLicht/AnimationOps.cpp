@@ -2,6 +2,18 @@
 
 // full height: 4200 = 2100mm
 
+int freeRam2 ()
+{
+#ifndef WITHIN_UNITTEST
+  extern int __heap_start, *__brkval;
+  int v;
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+#else
+  return 0;
+#endif
+}
+
+
 AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
 _animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION), _elapsedTime(0), _startTime(-1),
@@ -33,11 +45,13 @@ void AnimationOps::selectAnimation(uint8_t id){
 #ifdef WITH_PROGMEM
   _FLASH_TABLE<unsigned> *ftable = _animations.getAnimationTable(id);
   int numKf = _animations.getNumKeyFrames(id);
-  _currentAnimation = Animation(ftable);
+  FPRINTF1(aop_msg16, "ani selecting. free: %d\n", freeRam2())
+  _currentAnimation.init(ftable);
+  FPRINTF1(aop_msg14, "ani selected. free: %d\n", freeRam2())
 #else
   unsigned **aniUint = _animations.getAnimationAsUint(id);
   int numKf = _animations.getNumKeyFrames(id);
-  _currentAnimation = Animation(aniUint, numKf);
+  _currentAnimation.init(aniUint, numKf);
   FPRINTF0(aop_msg13, "Selecting new Animation:\n");
   _currentAnimation.printAnimation();
 #endif
@@ -69,6 +83,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     if (_strategy_startWithAnimationId < getNumAnimations()){
       _currentAnimationId = _strategy_startWithAnimationId;
       selectAnimation(_currentAnimationId);
+      FPRINTF1(aop_msg15, "ani selected2. free: %d\n", freeRam2())
     }
     else {
       FPRINTF2 (aops_msg0, "#### ERROR! Cannot start with animation id %d > %d.\n",
@@ -219,14 +234,13 @@ void AnimationOps::init(AnimationStrategy strategy,
 //      FPRINTF1(aops_msg11, "++++ Number of KeyFrames read: %d\n\n", kfs.size());
 #endif
     for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
-      KeyFrame kf = *kf_it;
 
       bool keyFrameHandled = false;
       // check whether this is an update for a stepper worker
       auto sit =_stepperWorkerMap.find(kf_it->getId());
       if(sit != _stepperWorkerMap.end()) {
         StepperWorker* sw = sit->second;
-        sw->updateTargetKeyFrame(_elapsedTime, kf);
+        sw->updateTargetKeyFrame(_elapsedTime, *kf_it);
         keyFrameHandled = true;
       }
 
@@ -234,7 +248,7 @@ void AnimationOps::init(AnimationStrategy strategy,
       auto lit =_ledWorkerMap.find(kf_it->getId());
       if(lit != _ledWorkerMap.end()) {
         LedWorker* lw = lit->second;
-        lw->updateTargetKeyFrame(_elapsedTime, kf);
+        lw->updateTargetKeyFrame(_elapsedTime, *kf_it);
         keyFrameHandled = true;
       }
 

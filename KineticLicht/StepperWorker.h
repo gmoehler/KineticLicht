@@ -122,6 +122,10 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
     bool _targetChanged;      // whether we got a new target
     long _elapsedTime;        // current elapsed time
 
+    // make copy constructor private
+    // should not be used because it waists memory
+    StepperWorker (const StepperWorker&);
+
 };
 
 #endif

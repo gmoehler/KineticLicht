@@ -49,6 +49,7 @@ class RGB {
 
     void _checkInput(int r, int g, int b);
     uint8_t _delimitCompress (int val);
+
 };
 
 #endif

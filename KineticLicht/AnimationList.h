@@ -96,6 +96,10 @@ private:
 
   int* _numKeyFrames;
 
+  // make copy constructor private
+  // should not be used because it waists memory
+  AnimationList (const AnimationList&);
+
   // add an animation array to _allAnimations
   // need to call initNumberOfAnimations(numAnimations) before this method
   void _addAsAnimationUint(unsigned v[][NUM_COLS], int rows, uint8_t idx) {

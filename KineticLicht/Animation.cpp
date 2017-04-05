@@ -2,9 +2,13 @@
 
 int freeRam1 ()
 {
+#ifndef WITHIN_UNITTEST
   extern int __heap_start, *__brkval;
   int v;
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+#else
+  return 0;
+#endif
 }
 
 bool keyFrameCompare (KeyFrame i, KeyFrame j) {
@@ -18,11 +22,11 @@ Animation::Animation() :
    _finishedActuators(0),
    _finishTime(0L) {}
 
-Animation::Animation(std::vector<KeyFrame> kfs): Animation() {
+void Animation::init(std::vector<KeyFrame> kfs) {
   addKeyFrames(kfs);
 }
 
-Animation::Animation(unsigned **v, int length): Animation() {
+void Animation::init(unsigned **v, int length) {
   for (int i=0; i< length; i++){
     KeyFrame kf(v[i]);
     addKeyFrame(kf);
@@ -31,20 +35,22 @@ Animation::Animation(unsigned **v, int length): Animation() {
 }
 
 #ifdef WITH_PROGMEM
-Animation::Animation(_FLASH_TABLE<unsigned> *ftable): Animation() {
+void Animation::init(_FLASH_TABLE<unsigned> *ftable) {
   int numRows = ftable->rows();
   for (int i=0; i< numRows; i++){
     _FLASH_ARRAY<unsigned> v = (*ftable)[i];
-    FPRINTF(ani_msg20, "read %d array   %d bytes", i, free1());
+    FPRINTF2(ani_msg20, "read %d array   %d bytes", i, freeRam1());
     KeyFrame kf(v);
-    FPRINTF(ani_msg21, "read %d keyframe %d bytes", i, free1());
+    FPRINTF2(ani_msg21, "read %d keyframe %d bytes", i, freeRam1());
     addKeyFrame(kf);
-    FPRINTF(ani_msg22, "read %d add      %d bytes", i, free1());
+    FPRINTF2(ani_msg22, "read %d add      %d bytes\n", i, freeRam1());
     if (freeRam1() < 200){
         FPRINTF1(kin_msg10, "ERROR! Memory exhausted: %d Bytes left\n", freeRam1());
     }
   }
   _doSort();
+  FPRINTF1(ani_msg22, "sorted:      %d bytes\n", freeRam1());
+
 }
 #endif
 
@@ -79,7 +85,7 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
   if (!_initialValuesRetrieved){
     for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
       std::vector<KeyFrame> kfs = it-> second;
-      KeyFrame currentKeyFrame = kfs[0];
+      KeyFrame& currentKeyFrame = kfs[0];
       nextKeyFrames.push_back(currentKeyFrame);
       if (kfs.size()==1){
         _finishedActuators++;
@@ -96,7 +102,7 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
     std::vector<KeyFrame> kfs = it-> second;
     uint8_t currentFrameId = _currentFrameIdMap[id];
 
-    KeyFrame currentKeyFrame = kfs[currentFrameId];
+    KeyFrame& currentKeyFrame = kfs[currentFrameId];
 
     if (currentFrameId == kfs.size()-1){
       // we are at the last key frame
@@ -142,9 +148,14 @@ void Animation::_doSort(){
   FPRINTF0(ani_msg7, "done.\n");
 }
 
-void Animation::addKeyFrame(KeyFrame kf) {
+void Animation::addKeyFrame(KeyFrame& kf) {
+    FPRINTF1(ani_msg25, "addKeyFrame1   %d bytes ", freeRam1());
     uint8_t id = kf.getId();
+    FPRINTF1(ani_msg28, "addKeyFrame1a   %d bytes ", freeRam1());
+    KeyFrame kkf(0,0,0);
+    FPRINTF1(ani_msg29, "addKeyFrame1b   %d bytes ", freeRam1());
     _keyFrameMap[id].push_back(kf);
+    FPRINTF1(ani_msg26, "addKeyFrame2   %d bytes ", freeRam1());
 //    printf("add to Map %d size %d %d\n", id, _keyFrameMap.size(), _keyFrameMap[id].size());
     if (kf.getTimeMs() > _finishTime){
       _finishTime = kf.getTimeMs();
@@ -155,6 +166,7 @@ void Animation::addKeyFrame(KeyFrame kf) {
 
     // trigger resorting
     _isSorted = false;
+    FPRINTF1(ani_msg27, "addKeyFrame3   %d bytes", freeRam1());
 }
 
 void Animation::addKeyFrames(std::vector<KeyFrame> kfs) {
@@ -206,7 +218,7 @@ void Animation::printAnimation(){
       uint8_t currentId = it-> second;
 
       std::vector<KeyFrame> kfs = _keyFrameMap[id];
-      KeyFrame ckf = kfs[currentId];
+      KeyFrame& ckf = kfs[currentId];
       ckf.printKeyFrame();
     }
   }

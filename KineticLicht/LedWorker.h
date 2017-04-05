@@ -57,6 +57,11 @@ private:
     KeyFrame _previousKeyFrame;
     KeyFrame _targetKeyFrame;
 
+    // make copy constructor private
+    // should not be used because it waists memory
+    LedWorker (const LedWorker&);
+
+
 };
 
 #endif
