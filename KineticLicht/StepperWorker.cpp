@@ -9,7 +9,7 @@
 
 StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
   uint8_t endStopPin, bool reverseDirection)
-  : _currentState(INIT), _prevState(INIT),
+  : _currentState(INIT), _nextState(INIT),
   _id(id), _astepper(astepper),
   _currentSpeed(0.0), _endStopPin(endStopPin),
   _reverseDirection(reverseDirection),
@@ -211,21 +211,19 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
   }
 
   void StepperWorker::_triggerTransition(StepperWorkerState toState){
-    _prevState = _currentState;
-    _currentState = toState;
+    _nextState = toState;
   }
 
   // work on transitions, exit functions, entry functions and actions
   void StepperWorker::loop(long elapsedTime) {
     _elapsedTime = elapsedTime;
 
-
-    FPRINTF2(x11,"***%d -> %d\n", _prevState, _currentState);
+    FPRINTF2(x11,"***%d -> %d\n", _currentState, _nextState);
     // transitions
     // don't allow 2 transitions without actions function
     // so skipt if transition was triggered before
-    // i.e. when _prevState != _current state
-    if (_prevState == _currentState){
+    // i.e. when _nextState != _current state
+    if (_nextState == _currentState){
       switch (_currentState) {
         case INIT:
         // transition triggered elsewhere
@@ -287,9 +285,9 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
       }
     }
 
-    // exit functions of previous state
-    if (_prevState != _currentState){
-      switch (_prevState) {
+    // exit functions of current state
+    if (_nextState != _currentState){
+      switch (_currentState) {
 
         case CALIBRATING_ENDSTOPHIT:
         case ENDSTOP_HIT:
@@ -311,7 +309,9 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
       }
     }
 
-    _prevState = _currentState;
+    // switch to next state
+    bool stateChanged = (  _currentState != _nextState);
+    _currentState = _nextState;
 
     // entry functions and actions
     switch (_currentState) {
@@ -320,49 +320,49 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
       break;
 
       case CALIBRATING_UP:
-      if (_prevState != _currentState){
+      if (stateChanged){
         _entry_calibrating_up();
       }
       _action_calibrating_up();
       break;
 
       case CALIBRATING_ENDSTOPHIT:
-      if (_prevState != _currentState){
+      if (stateChanged){
         _entry_endstop_hit();
       }
       _action_endstop_hit();
       break;
 
       case CALIBRATION_FINISHED:
-      if (_prevState != _currentState){
+      if (stateChanged){
         _entry_calibration_finished();
       }
       _action_calibration_finished();
       break;
 
       case ACTIVE:
-      if (_prevState != _currentState){
+      if (stateChanged){
         _entry_active();
       }
       _action_active();
       break;
 
       case PAST_TARGET:
-      if (_prevState != _currentState){
+      if (stateChanged){
         _entry_past_target();
       }
       _action_past_target();
       break;
 
       case ENDSTOP_HIT:
-      if (_prevState != _currentState){
+      if (stateChanged){
         _entry_endstop_hit();
       }
       _action_endstop_hit();
       break;
 
       case ENDSTOP_WAITING:
-      if (_prevState != _currentState){
+      if (stateChanged){
         _entry_endstop_waiting();
       }
       _action_endstop_waiting();

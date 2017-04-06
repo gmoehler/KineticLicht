@@ -110,7 +110,7 @@ class StepperWorker
     void _triggerTransition(StepperWorkerState toState);
 
     StepperWorkerState _currentState;
-    StepperWorkerState _prevState;
+    StepperWorkerState _nextState;
 
     uint8_t _id;               // stepper id
     AccelStepper& _astepper;
