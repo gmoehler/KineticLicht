@@ -59,7 +59,7 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
   }
 
   void StepperWorker::_entry_endstop_hit(){
-    FPRINTF1(sw_msg3, "STP: %d Entering state endstop_hit\n", _id);
+    FPRINTF2(sw_msg3, "STP: %d Entering state endstop_hit at %ld\n", _id, _elapsedTime);
     _updateSpeed(60);
     _time_endstophit = _elapsedTime;
   }
@@ -218,8 +218,9 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
   // work on transitions, exit functions, entry functions and actions
   void StepperWorker::loop(long elapsedTime) {
     _elapsedTime = elapsedTime;
-    StepperWorkerState nextState = _currentState;
 
+
+    FPRINTF2(x11,"***%d -> %d\n", _prevState, _currentState);
     // transitions
     // don't allow 2 transitions without actions function
     // so skipt if transition was triggered before
@@ -232,13 +233,15 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
 
         case CALIBRATING_UP:
         if (_to_endstop_hit()){
-          nextState = ENDSTOP_HIT;
+          FPRINTF0(x0,"***calup _to_endstop_hit\n");
+          _triggerTransition(ENDSTOP_HIT);
         }
         break;
 
         case CALIBRATING_ENDSTOPHIT:
         if (_to_endstop_waiting()){
-          nextState = ENDSTOP_WAITING;
+          FPRINTF0(x1,"***calehit 2 _to_endstop_waiting\n");
+          _triggerTransition(ENDSTOP_WAITING);
         }
         break;
 
@@ -248,28 +251,33 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
 
         case ACTIVE:
         if (_to_endstop_hit()){
-          nextState = ENDSTOP_HIT;
+        FPRINTF0(x2,"*** act 2 _to_endstop_hit\n");
+          _triggerTransition(ENDSTOP_HIT);
         }
         else if (_to_past_target()){
-          nextState = PAST_TARGET;
+          FPRINTF0(x3,"*** _to_past_target\n");
+          _triggerTransition(PAST_TARGET);
         }
         break;
 
         case PAST_TARGET:
         if (_past_target_to_active()){
-          nextState = ACTIVE;
+          FPRINTF0(x4,"*** pt 2 _past_target_to_active\n");
+          _triggerTransition(ACTIVE);
         }
         break;
 
         case ENDSTOP_HIT:
         if (_to_endstop_waiting()){
-          nextState = ENDSTOP_WAITING;
+          FPRINTF0(x5,"*** esh 2 _to_endstop_waitin\ng");
+          _triggerTransition(ENDSTOP_WAITING);
         }
         break;
 
         case ENDSTOP_WAITING:
         if (_endstop_waiting_to_active()){
-          nextState = ACTIVE;
+          FPRINTF0(x6,"*** esh 2 _endstop_waiting_to_activ\ne");
+          _triggerTransition(ACTIVE);
         }
         break;
 
@@ -302,6 +310,8 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
         break;
       }
     }
+
+    _prevState = _currentState;
 
     // entry functions and actions
     switch (_currentState) {
@@ -363,7 +373,4 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
       break;
     }
 
-    // update states
-    _prevState = _currentState;
-    _currentState = nextState;
   }

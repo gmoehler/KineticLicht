@@ -9,7 +9,7 @@
 
 #include "KineticLicht.h"
 #include "RGB.h"
-#include "StepperWorkerFSM.h"
+#include "StepperWorker.h"
 #include "LedWorker.h"
 #include "Animation.h"
 #include "AnimationOps.h"
@@ -125,10 +125,10 @@ AccelStepper astepper4(forwardstep4, backwardstep4);
 
 int fr3 = freeRam();
 
-StepperWorkerFSM  *sworker1 = new StepperWorkerFSM(STEPPER1, astepper1, 53, true);
-StepperWorkerFSM  *sworker2 = new StepperWorkerFSM(STEPPER2, astepper2, 49, true); // true seems wrong, but does the right thing...
-StepperWorkerFSM  *sworker3 = new StepperWorkerFSM(STEPPER3, astepper3, 51, false);
-StepperWorkerFSM  *sworker4 = new StepperWorkerFSM(STEPPER4, astepper4, 47, true);
+StepperWorker  *sworker1 = new StepperWorker(STEPPER1, astepper1, 53, true);
+StepperWorker  *sworker2 = new StepperWorker(STEPPER2, astepper2, 49, true); // true seems wrong, but does the right thing...
+StepperWorker  *sworker3 = new StepperWorker(STEPPER3, astepper3, 51, false);
+StepperWorker  *sworker4 = new StepperWorker(STEPPER4, astepper4, 47, true);
 
 /****************************
   Create IR remote objects

@@ -1,5 +1,5 @@
 #include "test.h"
-
+/*
 TEST(StepperWorker_test, active_past_target){
   AccelStepper as = AccelStepper();
   int pin = 22;
@@ -54,7 +54,7 @@ TEST(StepperWorker_test, active_past_target){
   EXPECT_EQ(1, as.test_getSpeed()); // stopped: we use speed 1 instead of 0 due to lib bug
   EXPECT_EQ(StepperWorkerState::PAST_TARGET, sw.getState());
 }
-
+*/
 TEST(StepperWorker_test, endstopTest){
   AccelStepper as = AccelStepper();
   int pin = 22;
@@ -120,7 +120,7 @@ TEST(StepperWorker_test, endstopTest){
   EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
 
 }
-
+/*
 TEST(StepperWorker_test, calibrationTest){
   AccelStepper as = AccelStepper();
   int pin = 22;
@@ -170,3 +170,4 @@ TEST(StepperWorker_test, calibrationTest){
   sw.loop(elapsedtime);
   EXPECT_EQ(StepperWorkerState::ACTIVE, sw.getState());
 }
+*/

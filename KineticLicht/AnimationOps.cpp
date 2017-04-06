@@ -69,7 +69,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     _strategy_repeat = repeat;
 
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorkerFSM* sw = it->second;
+      StepperWorker* sw = it->second;
       sw->init();
     }
 
@@ -96,10 +96,10 @@ void AnimationOps::init(AnimationStrategy strategy,
     FiniteStateMachine::loop();
   }
 
-  void AnimationOps::addStepperWorker(StepperWorkerFSM* sw){
+  void AnimationOps::addStepperWorker(StepperWorker* sw){
     uint8_t id = sw->getId();
     // cannot use operator[] since we do not have an empty constructor of StepperWorker
-    _stepperWorkerMap.insert( std::map<int, StepperWorkerFSM*>::value_type ( id, sw ));
+    _stepperWorkerMap.insert( std::map<int, StepperWorker*>::value_type ( id, sw ));
   }
 
   void AnimationOps::addLedWorker(LedWorker* lw){
@@ -121,7 +121,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     //FPRINTF1(aops_msg3, "+++ startTime: %ld\n", _startTime);
     for (auto it = _stepperWorkerMap.begin() ;
     it != _stepperWorkerMap.end(); ++it) {
-      StepperWorkerFSM* sw = it->second;
+      StepperWorker* sw = it->second;
       //FPRINTF1b(aops_msg4, "+++ Starting calibration for sw %d\n", sw->getId());
       sw->startCalibration();
     }
@@ -132,7 +132,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     _elapsedTime = millis() - _startTime;
 
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorkerFSM* sw = it->second;
+      StepperWorker* sw = it->second;
       sw->loop(_elapsedTime);
     }
   }
@@ -141,7 +141,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     // return true if all calibrations are finished
     for (auto it = _stepperWorkerMap.begin() ;
     it != _stepperWorkerMap.end(); ++it) {
-      StepperWorkerFSM* sw = it->second;
+      StepperWorker* sw = it->second;
       if (sw->getState() != CALIBRATION_FINISHED){
         return false;
       }
@@ -161,7 +161,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     _startTime = millis(); // reset time
     //FPRINTF1(aops_msg6, "+++ startTime: %ld\n", _startTime);
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorkerFSM* sw = it->second;
+      StepperWorker* sw = it->second;
       sw->startAnimation();
     }
   }
@@ -239,7 +239,7 @@ void AnimationOps::init(AnimationStrategy strategy,
       // check whether this is an update for a stepper worker
       auto sit =_stepperWorkerMap.find(kf_it->getId());
       if(sit != _stepperWorkerMap.end()) {
-        StepperWorkerFSM* sw = sit->second;
+        StepperWorker* sw = sit->second;
         sw->updateTargetKeyFrame(_elapsedTime, *kf_it);
         keyFrameHandled = true;
       }
@@ -259,7 +259,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
 
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorkerFSM* sw = it->second;
+      StepperWorker* sw = it->second;
       sw->loop(_elapsedTime);
     }
 
