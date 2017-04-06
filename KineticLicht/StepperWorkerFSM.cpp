@@ -27,7 +27,7 @@ StepperWorkerFSM::StepperWorkerFSM(uint8_t id, AccelStepper &astepper,
 
   addStateEntryAction(ENDSTOP_HIT, &StepperWorkerFSM::_entry_endstop_hit);
   addStateAction(ENDSTOP_HIT, &StepperWorkerFSM::_action_endstop_hit);
-  addStateAction(ENDSTOP_HIT, &StepperWorkerFSM::_exit_endstop_hit);
+  addStateExitAction(ENDSTOP_HIT, &StepperWorkerFSM::_exit_endstop_hit);
 
   addTransition(ENDSTOP_HIT, ENDSTOP_WAITING, &StepperWorkerFSM::_to_endstop_waiting);
 

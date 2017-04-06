@@ -107,6 +107,8 @@ class StepperWorker
     // get the current position from the accelstepper
     int _getCurrentPosition();
 
+    void _triggerTransition(StepperWorkerState toState);
+
     StepperWorkerState _currentState;
     StepperWorkerState _prevState;
 

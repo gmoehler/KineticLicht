@@ -21,8 +21,7 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
   }
 
   void StepperWorker::startAnimation(){
-    _prevState = _currentState;
-    _currentState = ACTIVE;
+    _triggerTransition(ACTIVE);
   }
 
   uint8_t StepperWorker::getId(){
@@ -103,8 +102,7 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
   }
 
   void StepperWorker::startCalibration(){
-    _prevState = _currentState;
-    _currentState = CALIBRATING_UP;
+    _triggerTransition(CALIBRATING_UP);
   }
 
   void StepperWorker::_entry_calibrating_up(){
@@ -212,6 +210,11 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
     return (int) (_reverseDirection ? -curPos : curPos);
   }
 
+  void StepperWorker::_triggerTransition(StepperWorkerState toState){
+    _prevState = _currentState;
+    _currentState = toState;
+  }
+
   // work on transitions, exit functions, entry functions and actions
   void StepperWorker::loop(long elapsedTime) {
     _elapsedTime = elapsedTime;
@@ -220,6 +223,7 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
     // transitions
     // don't allow 2 transitions without actions function
     // so skipt if transition was triggered before
+    // i.e. when _prevState != _current state
     if (_prevState == _currentState){
       switch (_currentState) {
         case INIT:
@@ -278,34 +282,17 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
     // exit functions of previous state
     if (_prevState != _currentState){
       switch (_prevState) {
-        case INIT:
-        // no exit function
-        break;
-
-        case CALIBRATING_UP:
-        // no exit function
-        break;
 
         case CALIBRATING_ENDSTOPHIT:
-        _exit_endstop_hit();
-        break;
-
-        case CALIBRATION_FINISHED:
-        // no exit function
-        break;
-
-        case ACTIVE:
-        // no exit function
-        break;
-
-        case PAST_TARGET:
-        // no exit function
-        break;
-
         case ENDSTOP_HIT:
         _exit_endstop_hit();
         break;
 
+        case INIT:
+        case CALIBRATING_UP:
+        case CALIBRATION_FINISHED:
+        case ACTIVE:
+        case PAST_TARGET:
         case ENDSTOP_WAITING:
         // no exit function
         break;
