@@ -65,51 +65,27 @@ void StepperWorker::loop(long elapsedTime) {
   _elapsedTime = elapsedTime;
   StepperWorkerState nextState = _currentState;
 
-  if (_prevState != _currentState){
+  // transitions (if no transition was triggered before)
+  if (_prevState == _currentState){
     switch (_currentState) {
       case INIT:
         // transition triggered elsewhere
-        // no action
       break;
 
       case CALIBRATING_UP:
         if (_to_endstop_hit()){
           nextState = ENDSTOP_HIT;
         }
-        if (nextState != _currentState){
-          // no exit function
-          break;
-        }
-        if (_prevState != _currentState){
-          _entry_calibrating_up();
-        }
-        _action_calibrating_up();
       break;
 
       case CALIBRATING_ENDSTOPHIT:
         if (_to_endstop_waiting()){
           nextState = ENDSTOP_WAITING;
         }
-        if (nextState != _currentState){
-          _exit_endstop_hit();
-          break;
-        }
-        if (_prevState != _currentState){
-          _entry_endstop_hit();
-        }
-        _action_endstop_hit();
       break;
 
       case CALIBRATION_FINISHED:
         // transition triggered elsewhere
-        if (nextState != _currentState){
-          // no exit function
-          break;
-        }
-        if (_prevState != _currentState){
-          _entry_calibration_finished();
-        }
-        _action_calibration_finished();
       break;
 
       case ACTIVE:
@@ -119,80 +95,81 @@ void StepperWorker::loop(long elapsedTime) {
         else if (_to_past_target()){
           nextState = PAST_TARGET;
         }
-        if(nextState != _currentState){
-          // no exit function
-          break;
-        }
-        if (_prevState != _currentState){
-          _entry_active();
-        }
-        _action_active();
       break;
 
       case PAST_TARGET:
         if (_past_target_to_active()){
           nextState = ACTIVE;
         }
-        if(nextState != _currentState){
-          // no exit function
-          break;
-        }
-        if (_prevState != _currentState){
-          _entry_past_target();
-        }
-        _action_past_target();
       break;
 
       case ENDSTOP_HIT:
         if (_to_endstop_waiting()){
           nextState = ENDSTOP_WAITING;
         }
-        if (nextState != _currentState){
-          _exit_endstop_hit();
-          break;
-        }
-        if (_prevState != _currentState){
-          _entry_endstop_hit();
-        }
-        _action_endstop_hit();
       break;
 
       case ENDSTOP_WAITING:
         if (_endstop_waiting_to_active()){
           nextState = ACTIVE;
         }
-        if (nextState != _currentState){
-          // no exit function
-          break;
-        }
-        if (_prevState != _currentState){
-          _entry_endstop_waiting();
-        }
-        _action_endstop_waiting();
       break;
 
       default:
         // no other valid state
       break;
     }
-
   }
 
 
+  // exit functions
+  if (_prevState != _currentState){
   switch (_currentState) {
     case INIT:
-      // transition triggered elsewhere
+      // no exit function
+    break;
+
+    case CALIBRATING_UP:
+        // no exit function
+    break;
+
+    case CALIBRATING_ENDSTOPHIT:
+        _exit_endstop_hit();
+    break;
+
+    case CALIBRATION_FINISHED:
+        // no exit function
+    break;
+
+    case ACTIVE:
+        // no exit function
+    break;
+
+    case PAST_TARGET:
+        // no exit function
+    break;
+
+    case ENDSTOP_HIT:
+        _exit_endstop_hit();
+    break;
+
+    case ENDSTOP_WAITING:
+        // no exit function
+    break;
+
+    default:
+      // no other valid state
+    break;
+  }
+}
+
+  // entry functions and actions
+  switch (_currentState) {
+    case INIT:
       // no action
     break;
 
     case CALIBRATING_UP:
-      if (_to_endstop_hit()){
-        nextState = ENDSTOP_HIT;
-      }
-      if (nextState != _currentState){
-        // no exit function
-        break;
-      }
       if (_prevState != _currentState){
         _entry_calibrating_up();
       }
@@ -200,13 +177,6 @@ void StepperWorker::loop(long elapsedTime) {
     break;
 
     case CALIBRATING_ENDSTOPHIT:
-      if (_to_endstop_waiting()){
-        nextState = ENDSTOP_WAITING;
-      }
-      if (nextState != _currentState){
-        _exit_endstop_hit();
-        break;
-      }
       if (_prevState != _currentState){
         _entry_endstop_hit();
       }
@@ -214,11 +184,6 @@ void StepperWorker::loop(long elapsedTime) {
     break;
 
     case CALIBRATION_FINISHED:
-      // transition triggered elsewhere
-      if (nextState != _currentState){
-        // no exit function
-        break;
-      }
       if (_prevState != _currentState){
         _entry_calibration_finished();
       }
@@ -226,16 +191,6 @@ void StepperWorker::loop(long elapsedTime) {
     break;
 
     case ACTIVE:
-      if (_to_endstop_hit()){
-        nextState = ENDSTOP_HIT;
-      }
-      else if (_to_past_target()){
-        nextState = PAST_TARGET;
-      }
-      if(nextState != _currentState){
-        // no exit function
-        break;
-      }
       if (_prevState != _currentState){
         _entry_active();
       }
@@ -243,13 +198,6 @@ void StepperWorker::loop(long elapsedTime) {
     break;
 
     case PAST_TARGET:
-      if (_past_target_to_active()){
-        nextState = ACTIVE;
-      }
-      if(nextState != _currentState){
-        // no exit function
-        break;
-      }
       if (_prevState != _currentState){
         _entry_past_target();
       }
@@ -257,13 +205,6 @@ void StepperWorker::loop(long elapsedTime) {
     break;
 
     case ENDSTOP_HIT:
-      if (_to_endstop_waiting()){
-        nextState = ENDSTOP_WAITING;
-      }
-      if (nextState != _currentState){
-        _exit_endstop_hit();
-        break;
-      }
       if (_prevState != _currentState){
         _entry_endstop_hit();
       }
@@ -271,13 +212,6 @@ void StepperWorker::loop(long elapsedTime) {
     break;
 
     case ENDSTOP_WAITING:
-      if (_endstop_waiting_to_active()){
-        nextState = ACTIVE;
-      }
-      if (nextState != _currentState){
-        // no exit function
-        break;
-      }
       if (_prevState != _currentState){
         _entry_endstop_waiting();
       }
