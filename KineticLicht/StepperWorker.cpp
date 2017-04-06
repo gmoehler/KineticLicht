@@ -258,11 +258,14 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
     return (int) (_reverseDirection ? -curPos : curPos);
   }
 
+  // work on transitions, exit functions, entry functions and actions
   void StepperWorker::loop(long elapsedTime) {
     _elapsedTime = elapsedTime;
     StepperWorkerState nextState = _currentState;
 
-    // transitions (if no transition was triggered before)
+    // transitions
+    // don't allow 2 transitions without actions function
+    // so skipt if transition was triggered before
     if (_prevState == _currentState){
       switch (_currentState) {
         case INIT:
@@ -318,10 +321,9 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
       }
     }
 
-
-    // exit functions
+    // exit functions of previous state
     if (_prevState != _currentState){
-      switch (_currentState) {
+      switch (_prevState) {
         case INIT:
         // no exit function
         break;
