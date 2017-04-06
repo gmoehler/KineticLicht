@@ -1,4 +1,4 @@
-#include "StepperWorker.h"
+#include "StepperWorkerFSM.h"
 
 #define ARDBUFFER 80
 // max speed SINGLE: ca. 220 (with one light: down:350, up: 230)
@@ -7,7 +7,7 @@
 #define CALIBRATE_SPEED -200
 #define ALLOWED_TARGETTIME_OVERSHOOT 100
 
-StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
+StepperWorkerFSM::StepperWorkerFSM(uint8_t id, AccelStepper &astepper,
                              uint8_t endStopPin, bool reverseDirection)
   : FiniteStateMachine(NUM_STATES, INIT, *this),
     _id(id), _astepper(astepper),
@@ -17,73 +17,73 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
     _time_endstophit (0), _targetChanged (false), _elapsedTime(0)
 {
   std::stringstream sstr;
-  sstr << "StepperWorker-" << _id;
+  sstr << "StepperWorkerFSM-" << _id;
   setDebugString(sstr.str());
 
-  addStateEntryAction(ACTIVE, &StepperWorker::_entry_active);
-  addStateAction(ACTIVE,  &StepperWorker::_action_active);
+  addStateEntryAction(ACTIVE, &StepperWorkerFSM::_entry_active);
+  addStateAction(ACTIVE,  &StepperWorkerFSM::_action_active);
 
-  addTransition (ACTIVE, ENDSTOP_HIT, &StepperWorker::_to_endstop_hit);
+  addTransition (ACTIVE, ENDSTOP_HIT, &StepperWorkerFSM::_to_endstop_hit);
 
-  addStateEntryAction(ENDSTOP_HIT, &StepperWorker::_entry_endstop_hit);
-  addStateAction(ENDSTOP_HIT, &StepperWorker::_action_endstop_hit);
-  addStateAction(ENDSTOP_HIT, &StepperWorker::_exit_endstop_hit);
+  addStateEntryAction(ENDSTOP_HIT, &StepperWorkerFSM::_entry_endstop_hit);
+  addStateAction(ENDSTOP_HIT, &StepperWorkerFSM::_action_endstop_hit);
+  addStateAction(ENDSTOP_HIT, &StepperWorkerFSM::_exit_endstop_hit);
 
-  addTransition(ENDSTOP_HIT, ENDSTOP_WAITING, &StepperWorker::_to_endstop_waiting);
+  addTransition(ENDSTOP_HIT, ENDSTOP_WAITING, &StepperWorkerFSM::_to_endstop_waiting);
 
-  addStateEntryAction(ENDSTOP_WAITING, &StepperWorker::_entry_endstop_waiting);
-  addStateAction(ENDSTOP_WAITING, &StepperWorker::_action_endstop_waiting);
+  addStateEntryAction(ENDSTOP_WAITING, &StepperWorkerFSM::_entry_endstop_waiting);
+  addStateAction(ENDSTOP_WAITING, &StepperWorkerFSM::_action_endstop_waiting);
 
-  addTransition(ENDSTOP_WAITING, ACTIVE, &StepperWorker::_endstop_waiting_to_active);
+  addTransition(ENDSTOP_WAITING, ACTIVE, &StepperWorkerFSM::_endstop_waiting_to_active);
 
-  addStateEntryAction(CALIBRATING_UP, &StepperWorker::_entry_calibrating_up);
-  addStateAction(CALIBRATING_UP, &StepperWorker::_action_calibrating_up);
+  addStateEntryAction(CALIBRATING_UP, &StepperWorkerFSM::_entry_calibrating_up);
+  addStateAction(CALIBRATING_UP, &StepperWorkerFSM::_action_calibrating_up);
 
   // same as for normal endstop hit
-  addTransition (CALIBRATING_UP, CALIBRATING_ENDSTOPHIT, &StepperWorker::_to_endstop_hit);
+  addTransition (CALIBRATING_UP, CALIBRATING_ENDSTOPHIT, &StepperWorkerFSM::_to_endstop_hit);
 
-  addStateEntryAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_entry_endstop_hit);
-  addStateAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_action_endstop_hit);
-  addStateExitAction(CALIBRATING_ENDSTOPHIT, &StepperWorker::_exit_endstop_hit);
+  addStateEntryAction(CALIBRATING_ENDSTOPHIT, &StepperWorkerFSM::_entry_endstop_hit);
+  addStateAction(CALIBRATING_ENDSTOPHIT, &StepperWorkerFSM::_action_endstop_hit);
+  addStateExitAction(CALIBRATING_ENDSTOPHIT, &StepperWorkerFSM::_exit_endstop_hit);
 
-  addTransition(CALIBRATING_ENDSTOPHIT, CALIBRATION_FINISHED, &StepperWorker::_to_endstop_waiting);
+  addTransition(CALIBRATING_ENDSTOPHIT, CALIBRATION_FINISHED, &StepperWorkerFSM::_to_endstop_waiting);
 
-  addStateEntryAction(CALIBRATION_FINISHED, &StepperWorker::_entry_calibration_finished);
-  addStateAction(CALIBRATION_FINISHED, &StepperWorker::_action_calibration_finished);
+  addStateEntryAction(CALIBRATION_FINISHED, &StepperWorkerFSM::_entry_calibration_finished);
+  addStateAction(CALIBRATION_FINISHED, &StepperWorkerFSM::_action_calibration_finished);
 
-  addTransition(ACTIVE, PAST_TARGET, &StepperWorker::_to_past_target);
+  addTransition(ACTIVE, PAST_TARGET, &StepperWorkerFSM::_to_past_target);
 
-  addStateEntryAction(PAST_TARGET, &StepperWorker::_entry_past_target);
-  addStateAction(PAST_TARGET, &StepperWorker::_action_past_target);
+  addStateEntryAction(PAST_TARGET, &StepperWorkerFSM::_entry_past_target);
+  addStateAction(PAST_TARGET, &StepperWorkerFSM::_action_past_target);
 
-  addTransition(PAST_TARGET, ACTIVE, &StepperWorker::_past_target_to_active);
+  addTransition(PAST_TARGET, ACTIVE, &StepperWorkerFSM::_past_target_to_active);
 
 }
 
-void StepperWorker::init() {
+void StepperWorkerFSM::init() {
   pinMode(_endStopPin, INPUT_PULLUP);
 }
 
-void StepperWorker::loop(long elapsedTime) {
+void StepperWorkerFSM::loop(long elapsedTime) {
   _elapsedTime = elapsedTime;
   FiniteStateMachine::loop();
 }
 
-void StepperWorker::startAnimation(){
+void StepperWorkerFSM::startAnimation(){
   triggerTransition(getState(), ACTIVE);
 }
 
-uint8_t StepperWorker::getId(){
+uint8_t StepperWorkerFSM::getId(){
   return _id;
 }
 
-void StepperWorker::_entry_active(){
+void StepperWorkerFSM::_entry_active(){
   FPRINTF1(sw_msg0, "STP %d: Entering state active\n", _id);
   double newSpeed = _calculateTargetSpeed();
   _updateSpeed(newSpeed);
 }
 
-void StepperWorker::_action_active(){
+void StepperWorkerFSM::_action_active(){
   if (_targetChanged){
 #ifdef SW_DEBUG
       FPRINTF1(sw_msg1, "STP %d: Target changed. ", _id);
@@ -95,11 +95,11 @@ void StepperWorker::_action_active(){
 }
 
 
-bool StepperWorker::_to_endstop_hit() {
+bool StepperWorkerFSM::_to_endstop_hit() {
   return _endStopActive();
 }
 
-bool StepperWorker::_endStopActive() {
+bool StepperWorkerFSM::_endStopActive() {
   int endStop = digitalRead(_endStopPin);
   if (endStop == LOW){
     FPRINTF2(sw_msg2, "STP %d: Endstop hit: %d\n", _id, endStop);
@@ -107,17 +107,17 @@ bool StepperWorker::_endStopActive() {
   return (endStop == LOW);
 }
 
-void StepperWorker::_entry_endstop_hit(){
+void StepperWorkerFSM::_entry_endstop_hit(){
   FPRINTF1(sw_msg3, "STP: %d Entering state endstop_hit\n", _id);
   _updateSpeed(60);
   _time_endstophit = _elapsedTime;
 }
 
-void StepperWorker::_action_endstop_hit(){
+void StepperWorkerFSM::_action_endstop_hit(){
   _astepper.runSpeed();
 }
 
-void StepperWorker::_exit_endstop_hit(){
+void StepperWorkerFSM::_exit_endstop_hit(){
 #ifdef SW_DEBUG
     long curPos = _getCurrentPosition();
     FPRINTF2(sw_msg4, "STP %d: Reset position, act: %ld\n", _id, curPos);
@@ -126,22 +126,22 @@ void StepperWorker::_exit_endstop_hit(){
 }
 
 // when endstop is not pressed down anymore and more then 300 ms passed
-bool StepperWorker::_to_endstop_waiting() {
+bool StepperWorkerFSM::_to_endstop_waiting() {
     return (_elapsedTime - _time_endstophit) > 300 && ! _endStopActive();
 }
 
-void StepperWorker::_entry_endstop_waiting(){
+void StepperWorkerFSM::_entry_endstop_waiting(){
   FPRINTF1(sw_msg5, "STP %d: Entering state endstop_waiting\n", _id);
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
   _time_endstophit = 0;
 }
 
-void StepperWorker::_action_endstop_waiting() {
+void StepperWorkerFSM::_action_endstop_waiting() {
 	// nothing to be done
 }
 
-bool StepperWorker::_endstop_waiting_to_active() {
+bool StepperWorkerFSM::_endstop_waiting_to_active() {
 	// continue when it goes down again
     if (_targetChanged && _calculateTargetSpeed() > 0.0){
       _targetChanged = false;
@@ -150,30 +150,30 @@ bool StepperWorker::_endstop_waiting_to_active() {
     return false;
 }
 
-void StepperWorker::startCalibration(){
+void StepperWorkerFSM::startCalibration(){
     triggerTransition(getState(), CALIBRATING_UP);
 }
 
-void StepperWorker::_entry_calibrating_up(){
+void StepperWorkerFSM::_entry_calibrating_up(){
   FPRINTF1(sw_msg6, "STP %d: Entering state entry_calibrating\n", _id);
   _updateSpeed(CALIBRATE_SPEED);
 }
 
-void StepperWorker::_action_calibrating_up(){
+void StepperWorkerFSM::_action_calibrating_up(){
   _astepper.runSpeed();
 }
 
-void StepperWorker::_entry_calibration_finished(){
+void StepperWorkerFSM::_entry_calibration_finished(){
   FPRINTF1(sw_msg7, "STP %d: Entering state calibration_finished\n", _id);
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
 }
 
-void StepperWorker::_action_calibration_finished(){
+void StepperWorkerFSM::_action_calibration_finished(){
   // just wait
 }
 
-double StepperWorker::_calculateTargetSpeed() {
+double StepperWorkerFSM::_calculateTargetSpeed() {
   long curPos = _getCurrentPosition();
   //  double newSpeed =  1000 * ((double)(_targetKeyFrame.getTarget() - _previousKeyFrame.getTarget()))
   //                     / (_targetKeyFrame.getTimeMs() - _previousKeyFrame.getTimeMs());
@@ -182,7 +182,7 @@ double StepperWorker::_calculateTargetSpeed() {
 }
 
 
-void StepperWorker::_updateSpeed(double speed) {
+void StepperWorkerFSM::_updateSpeed(double speed) {
   if (speed != _currentSpeed) {
     if (fabs(speed) > MAX_SPEED) {
       speed = speed > 0 ? MAX_SPEED : -MAX_SPEED;
@@ -209,7 +209,7 @@ void StepperWorker::_updateSpeed(double speed) {
   _targetChanged = false;
 }
 
-void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
+void StepperWorkerFSM::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
 #ifdef SW_DEBUG
     kf.printNewKeyFrame("STP");
 #endif
@@ -217,16 +217,16 @@ void StepperWorker::updateTargetKeyFrame(long elapsedTime, KeyFrame& kf) {
   _targetChanged = true;
 }
 
-StepperWorkerState StepperWorker::getState(){
-  return StepperWorkerState(FiniteStateMachine::getState());
+StepperWorkerFSMState StepperWorkerFSM::getState(){
+  return StepperWorkerFSMState(FiniteStateMachine::getState());
 }
 
-bool StepperWorker::_to_past_target(){
+bool StepperWorkerFSM::_to_past_target(){
   long targetTime = _targetKeyFrame.getTimeMs();
   return _elapsedTime >= targetTime + ALLOWED_TARGETTIME_OVERSHOOT;
 }
 
-void StepperWorker::_entry_past_target(){
+void StepperWorkerFSM::_entry_past_target(){
   _updateSpeed(0);
   _astepper.runSpeed(); // required?
 
@@ -240,11 +240,11 @@ void StepperWorker::_entry_past_target(){
 #endif
 }
 
-void StepperWorker::_action_past_target(){
+void StepperWorkerFSM::_action_past_target(){
   // just wait
 }
 
-bool StepperWorker::_past_target_to_active(){
+bool StepperWorkerFSM::_past_target_to_active(){
   // continue with next target when we received one
     if (_targetChanged){
       _targetChanged = false;
@@ -253,7 +253,7 @@ bool StepperWorker::_past_target_to_active(){
     return false;
 }
 
-int StepperWorker::_getCurrentPosition() {
+int StepperWorkerFSM::_getCurrentPosition() {
   long curPos = _astepper.currentPosition();
   //FPRINTF2(sw_msg15, "STP %d: Current Position: %d", _id, curPos);
   return (int) (_reverseDirection ? -curPos : curPos);

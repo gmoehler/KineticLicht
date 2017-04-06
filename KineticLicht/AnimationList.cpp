@@ -395,9 +395,9 @@ void AnimationList::load(){
     {LED1TOP, 30, 0, RED, 100},
     {LED1TOP, 60, 0, GREEN, 100},
     {LED1TOP, 90, 0, BLUE, 100},
-    {LED1TOP, 120, 0, RED, 0},
-    {LED1TOP, 150, 0, LILA, 0},
-    {LED2BOT, 150, 0, LILA, 0},
+    {LED1TOP, 120, 0, RED, 100},
+    {LED1TOP, 150, 0, GREEN, 100},
+    {LED2BOT, 150, 0, BLUE, 100},
   };
 
   rows = sizeof(led_test2) / sizeof(led_test2[0]);

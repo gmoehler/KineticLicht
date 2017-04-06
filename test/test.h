@@ -10,7 +10,7 @@
 #include <Animation.h>
 #include <AnimationOps.h>
 #include <LedWorker.h>
-#include <StepperWorker.h>
+#include <StepperWorkerFSM.h>
 #include <FiniteStates.h>
 
 int compressExpand(int val);

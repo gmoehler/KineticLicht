@@ -27,7 +27,7 @@
 // ACTIVE ->(endstop is hit)-> ENDSTOP_HIT[going downward] ->(300ms & endstop is released)-> AT_ENDSTOP_WAITING ->(speed is downward)-> ACTIVE
 //        ->(time is past target time)-> PAST_TARGET ->(new target provided)-> ACTIVE
 
-enum StepperWorkerState {INIT,                    // 0
+enum StepperWorkerFSMState {INIT,                    // 0
                          CALIBRATING_UP,          // 1
                          CALIBRATING_ENDSTOPHIT,  // 2
                          CALIBRATION_FINISHED,    // 3
@@ -37,10 +37,10 @@ enum StepperWorkerState {INIT,                    // 0
                          ENDSTOP_WAITING,         // 7
                          NUM_STATES};             // only used for nbr of states
 
-class StepperWorker : public FiniteStateMachine<StepperWorker>
+class StepperWorkerFSM : public FiniteStateMachine<StepperWorkerFSM>
 {
   public:
-    StepperWorker(uint8_t id, AccelStepper &astepper,
+    StepperWorkerFSM(uint8_t id, AccelStepper &astepper,
                   uint8_t endStopPin, bool reverseDirection);
 
     // to be called in setup()
@@ -60,7 +60,7 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
     // AT_ENDSTOP_WAITING states
     void updateTargetKeyFrame(long elapsedTime, KeyFrame& kf);
 
-    StepperWorkerState getState();
+    StepperWorkerFSMState getState();
 
     uint8_t getId();
 
@@ -124,7 +124,7 @@ class StepperWorker : public FiniteStateMachine<StepperWorker>
 
     // make copy constructor private
     // should not be used because it waists memory
-    StepperWorker (const StepperWorker&);
+    StepperWorkerFSM (const StepperWorkerFSM&);
 
 };
 

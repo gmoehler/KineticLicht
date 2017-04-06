@@ -193,7 +193,7 @@ TEST(AnimationOps_tests, scenario_single){
 
   AccelStepper acs = AccelStepper();
   int pin = 22;
-  StepperWorker sw(STEPPER1, acs, pin, false);
+  StepperWorkerFSM sw(STEPPER1, acs, pin, false);
 
   LedWorker lw(LED1TOP, 0);
 
@@ -230,7 +230,7 @@ TEST(AnimationOps_tests, scenario_loop){
 
   AccelStepper acs = AccelStepper();
   int pin = 22;
-  StepperWorker sw(STEPPER1, acs, pin, false);
+  StepperWorkerFSM sw(STEPPER1, acs, pin, false);
 
   LedWorker lw(LED1TOP, 0);
 

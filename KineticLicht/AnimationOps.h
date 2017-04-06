@@ -14,7 +14,7 @@
 #include "KeyFrame.h"
 #include "Animation.h"
 #include "AnimationList.h"
-#include "StepperWorker.h"
+#include "StepperWorkerFSM.h"
 #include "LedWorker.h"
 
 #define AOPS_DEBUG
@@ -34,7 +34,7 @@ class AnimationOps : public FiniteStateMachine<AnimationOps> {
 public:
   AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations=true);
 
-  void addStepperWorker(StepperWorker* sw);
+  void addStepperWorker(StepperWorkerFSM* sw);
   void addLedWorker(LedWorker* lw);
 
   // choose an animation to go in production
@@ -48,7 +48,7 @@ public:
 
 private:
   AnimationList _animations;
-  std::map<int,StepperWorker*> _stepperWorkerMap;
+  std::map<int,StepperWorkerFSM*> _stepperWorkerMap;
   std::map<int,LedWorker*> _ledWorkerMap;
 
   Animation _currentAnimation;
