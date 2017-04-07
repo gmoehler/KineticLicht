@@ -43,11 +43,11 @@ void Animation::init(_FLASH_TABLE<unsigned> *ftable) {
   int numRows = ftable->rows();
   for (int i=0; i< numRows; i++){
     _FLASH_ARRAY<unsigned> v = (*ftable)[i];
-    FPRINTF2(ani_msg20, "read %d array   %d bytes", i, freeRam1());
+  //  FPRINTF2(ani_msg20, "read %d array   %d bytes", i, freeRam1());
     KeyFrame kf(v);
-    FPRINTF2(ani_msg21, "read %d keyframe %d bytes", i, freeRam1());
+  //  FPRINTF2(ani_msg21, "read %d keyframe %d bytes", i, freeRam1());
     addKeyFrame(kf);
-    FPRINTF2(ani_msg22, "read %d add      %d bytes\n", i, freeRam1());
+  //  FPRINTF2(ani_msg22, "read %d add      %d bytes\n", i, freeRam1());
     if (freeRam1() < 200){
         FPRINTF1(kin_msg10, "ERROR! Memory exhausted: %d Bytes left\n", freeRam1());
     }
@@ -171,13 +171,13 @@ void Animation::_doSort(){
 }
 
 void Animation::addKeyFrame(KeyFrame& kf) {
-    FPRINTF1(ani_msg25, "addKeyFrame1   %d bytes ", freeRam1());
+  //  FPRINTF1(ani_msg25, "addKeyFrame1   %d bytes ", freeRam1());
     uint8_t id = kf.getId();
-    FPRINTF1(ani_msg28, "addKeyFrame1a   %d bytes ", freeRam1());
+  //  FPRINTF1(ani_msg28, "addKeyFrame1a   %d bytes ", freeRam1());
     KeyFrame kkf(0,0,0);
-    FPRINTF1(ani_msg29, "addKeyFrame1b   %d bytes ", freeRam1());
+  //  FPRINTF1(ani_msg29, "addKeyFrame1b   %d bytes ", freeRam1());
     _keyFrameMap[id].push_back(kf);
-    FPRINTF1(ani_msg26, "addKeyFrame2   %d bytes ", freeRam1());
+//    FPRINTF1(ani_msg26, "addKeyFrame2   %d bytes ", freeRam1());
 //    printf("add to Map %d size %d %d\n", id, _keyFrameMap.size(), _keyFrameMap[id].size());
     if (kf.getTimeMs() > _finishTime){
       _finishTime = kf.getTimeMs();
@@ -190,7 +190,7 @@ void Animation::addKeyFrame(KeyFrame& kf) {
 
     // trigger resorting
     _isSorted = false;
-    FPRINTF1(ani_msg27, "addKeyFrame3   %d bytes\n", freeRam1());
+    //FPRINTF1(ani_msg27, "addKeyFrame3   %d bytes\n", freeRam1());
 }
 
 void Animation::addKeyFrames(std::vector<KeyFrame> kfs) {

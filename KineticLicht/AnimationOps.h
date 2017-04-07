@@ -46,6 +46,8 @@ public:
   void init(AnimationStrategy strategy, uint8_t startWithAnimationId, bool repeat);
   void loop(); // to be called in loop()
 
+  bool isProgramFinished();
+
 private:
   AnimationList _animations;
   std::map<int,StepperWorker*> _stepperWorkerMap;
@@ -55,6 +57,7 @@ private:
   int8_t _currentAnimationId; // -1 if no current animation
   long _elapsedTime;
   long _startTime;
+  bool _programFinished;
 
   AnimationStrategy _strategy;
   uint8_t _strategy_startWithAnimationId;

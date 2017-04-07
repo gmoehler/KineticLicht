@@ -185,7 +185,7 @@ void setup()
   aniop.addLedWorker(&rgb4o);
   aniop.addLedWorker(&rgb4u);
 
-  aniop.init(SINGLE_ANIMATION, 0, false);
+  aniop.init(SINGLE_ANIMATION, 0, true);
 
   FPRINTF1(kin_msg8,"8### FREE RAM: %d\n",  freeRam ());
 
@@ -215,12 +215,12 @@ void loop()
 */
   loopNo++;
   int fr = freeRam();
-  if (loopNo % 500 == 0){
-//    FPRINTF1(kin_msg9, "******** MEMORY: %d *******\n", fr);
+  if (loopNo % 500 == 0 && ! aniop.isProgramFinished()){
+    FPRINTF1(kin_msg9, "******** MEMORY: %d *******\n", fr);
   }
 
   if (fr > 200){
-  //  aniop.loop();
+    aniop.loop();
   }
   else {
     FPRINTF1(kin_msg10, "ERROR! Memory exhausted: %d Bytes left\n", fr);

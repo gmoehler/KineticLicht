@@ -17,6 +17,7 @@ int freeRam2 ()
 AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
 _animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION), _elapsedTime(0), _startTime(-1),
+_programFinished(false),
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
 _tlc(tlc)
 {
@@ -59,6 +60,10 @@ void AnimationOps::selectAnimation(uint8_t id){
 
 Animation& AnimationOps::_getCurrentAnimation(){
   return _currentAnimation;
+}
+
+bool AnimationOps::isProgramFinished(){
+  return _programFinished;
 }
 
 void AnimationOps::init(AnimationStrategy strategy,
@@ -176,7 +181,7 @@ void AnimationOps::init(AnimationStrategy strategy,
         _currentAnimationId = NO_CURRENT_ANIMATION;
       }
     }
-    else {
+    else { // loop
       _currentAnimationId++;
       if (_currentAnimationId >= getNumAnimations()) {
         if (_strategy_repeat){
@@ -194,6 +199,9 @@ void AnimationOps::init(AnimationStrategy strategy,
         prevAnimationId != _currentAnimationId){
       selectAnimation(_currentAnimationId);
     }
+    else if (_currentAnimationId == NO_CURRENT_ANIMATION){
+      _programFinished = true;
+    }
   }
 
   void AnimationOps::_action_finished(){
@@ -206,7 +214,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
     // continue if we have a valid id
     if (_currentAnimationId == NO_CURRENT_ANIMATION){
-      FPRINTF0(aops_msg7, "No more animations available.\n");
+      //FPRINTF0(aops_msg7, "No more animations available.\n");
     }
     else {
       FPRINTF1(aops_msg8, "### Proceeding with Animation %d ###.\n", _currentAnimationId);

@@ -11,7 +11,8 @@ bool Compare_Rows(const unsigned a[NUM_COLS], const unsigned b[NUM_COLS])
 void AnimationList::load(){
 
   // 4 animations here
-  initNumberOfAnimations(1);
+  initNumberOfAnimations(4);
+  int rows = 0;
 
   uint8_t animationId = 0;
 /*
@@ -58,7 +59,7 @@ void AnimationList::load(){
     {LED4TOP, 180, 0, BLACK, 0}
   };
 
-  int rows = sizeof(led_test1) / sizeof(led_test1[0]);
+  rows = sizeof(led_test1) / sizeof(led_test1[0]);
   _addAsAnimationUint(led_test1, rows, animationId++);
 
   // LED test: all LEDs change colors at the same time
@@ -109,9 +110,9 @@ void AnimationList::load(){
     {LED4TOP, 150, 0, LILA, 0}
   };
 
-  int rows = sizeof(led_test2) / sizeof(led_test2[0]);
+  rows = sizeof(led_test2) / sizeof(led_test2[0]);
   _addAsAnimationUint(led_test2, rows, animationId++);
-*/
+/*
 #ifdef WITH_PROGMEM
   FLASH_TABLE(unsigned, stepper_test1, NUM_COLS,
 #else
@@ -188,7 +189,7 @@ void AnimationList::load(){
     {LED3TOP,  120, 0, YELLOW, 100},
     {LED4BOT,  120, 0, CYAN, 100},
     {LED4TOP,  120, 0, WHITE, 100}
-*/
+
 #ifdef WITH_PROGMEM
   );
   _addAsAnimationFlashTable(stepper_test1, animationId++);
@@ -197,7 +198,8 @@ void AnimationList::load(){
   int rows = sizeof(stepper_test1) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test1, rows, animationId++);
 #endif
-/*
+*/
+
 #ifdef WITH_PROGMEM
   FLASH_TABLE(unsigned, stepper_test2, NUM_COLS,
 #else
@@ -236,13 +238,29 @@ void AnimationList::load(){
     {LED2BOT,  100, 0, YELLOW, 100},
     {LED2TOP,  100, 0, YELLOW, 100},
 
-    {STEPPER3, 120, 0, NOCOLOR},
+    {STEPPER3, 120, 3000, NOCOLOR},
     {LED3BOT,  120, 0, GREEN, 100},
     {LED3TOP,  120, 0, GREEN, 100},
 
-    {STEPPER4, 140, 0, NOCOLOR},
+    {STEPPER4, 140, 3000, NOCOLOR},
     {LED4BOT,  140, 0, YELLOW, 100},
     {LED4TOP,  140, 0, YELLOW, 100},
+
+    {STEPPER4, 160, 0, NOCOLOR},
+    {LED4BOT,  160, 0, RED, 100},
+    {LED4TOP,  160, 0, LILA, 100},
+
+    {STEPPER3, 160, 0, NOCOLOR},
+    {LED3BOT,  160, 0, BLUE, 100},
+    {LED3TOP,  160, 0, LILA, 100},
+
+    {STEPPER2, 160, 0, NOCOLOR},
+    {LED2BOT,  160, 0, RED, 100},
+    {LED2TOP,  160, 0, LILA, 100},
+
+    {STEPPER1, 160, 0, NOCOLOR},
+    {LED1BOT,  160, 0, BLUE, 100},
+    {LED1TOP,  160, 0, LILA, 100},
 
 
 #ifdef WITH_PROGMEM
@@ -253,10 +271,14 @@ void AnimationList::load(){
   rows = sizeof(stepper_test2) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test2, rows, animationId++);
 #endif
-*/
 
 /*
-  unsigned a1[][NUM_COLS] = {
+#ifdef WITH_PROGMEM
+  FLASH_TABLE(unsigned, animation1, NUM_COLS,
+#else
+    unsigned animation1[][NUM_COLS] = {
+#endif
+
     {STEPPER1, 0, 0, NOCOLOR},
     {STEPPER1, 20, 0, NOCOLOR},
     {STEPPER1, 90, 2600, NOCOLOR},
@@ -318,13 +340,23 @@ void AnimationList::load(){
     {LED4BOT, 310, 0, GREEN, 50},
     {LED4BOT, 320, 0, YELLOW, 50},
     {LED4BOT, 370, 0, YELLOW, 0}
-  };
 
-  rows = sizeof(a1) / sizeof(a1[0]);
-  _addAsAnimationUint(a1, rows, animationId++);
+  #ifdef WITH_PROGMEM
+    );
+    _addAsAnimationFlashTable(animation1, animationId++);
+  #else
+    };
+    rows = sizeof(animation1) / sizeof(stepper_test1[0]);
+    _addAsAnimationUint(animation1, rows, animationId++);
+  #endif
 
   //animation 2
-  unsigned a2[][NUM_COLS] = {
+  #ifdef WITH_PROGMEM
+    FLASH_TABLE(unsigned, animation2, NUM_COLS,
+  #else
+      unsigned animation2[][NUM_COLS] = {
+  #endif
+
     {STEPPER1, 0, 0, NOCOLOR},
     {STEPPER4, 0, 0, NOCOLOR},
     {STEPPER4, 20, 0, NOCOLOR},
@@ -364,11 +396,16 @@ void AnimationList::load(){
     {LED4BOT, 42, 0, BLACK, 0},
     {LED4BOT, 200, 0, WHITE, 100},
     {LED4BOT, 220, 0, BLACK, 0}
-  };
 
-  rows = sizeof(a2) / sizeof(a2[0]);
-  _addAsAnimationUint(a2, rows, animationId++);
-*/
+  #ifdef WITH_PROGMEM
+    );
+    _addAsAnimationFlashTable(animation2, animationId++);
+  #else
+    };
+    rows = sizeof(animation2) / sizeof(stepper_test1[0]);
+    _addAsAnimationUint(animation2, rows, animationId++);
+  #endif
+
 }
 
 #else
@@ -412,6 +449,6 @@ void AnimationList::load(){
 
   rows = sizeof(a1) / sizeof(a1[0]);
   _addAsAnimationUint(a1, rows, animationId++);
-
+*/
 }
 #endif
