@@ -382,9 +382,9 @@ void AnimationList::load(){
   uint8_t animationId = 0;
 
   unsigned led_test1[][NUM_COLS] = {
-    {LED1TOP, 0, 0, BLACK, 0},
-    {LED1TOP, 20, 0, BLACK, 0},
-    {LED1TOP, 40, 0, RED, 100},
+    {LED1TOP, 0, 0, GREEN, 100},
+    {LED1TOP, 20, 0, BLUE, 100},
+    {LED1TOP, 40, 0, LILA, 100},
     {LED4TOP, 180, 0, BLACK, 0}
   };
 

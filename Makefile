@@ -26,8 +26,8 @@ LIBDIR      := test/lib/$(PLATFORM)
 #Flags, Libraries and Includes
 #CFLAGS      := -ggdb -static-libgcc -static-libstdc++ -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
 CFLAGS      := -ggdb -fopenmp -Wall -O3 -g -std=gnu++11 -DWITHIN_UNITTEST
-LIB         := -fopenmp -lm -L$(LIBDIR) -lgtest_main -lgtest
-EXLIB       := -lm -L$(LIBDIR) -lgtest_main -lgtest
+LIB         := -fopenmp -lm -L$(LIBDIR) -lgtest_main -lgtest -pthread
+EXLIB       := -lm -L$(LIBDIR) -lgtest_main -lgtest -pthread
 GOOGLETEST_DIR := /c/Users/gregor/Documents/GitHub/googletest/googletest
 INC         := -I$(INCDIR) -I$(TESTINCDIR) -Itest/include -I/usr/local/include -I$(GOOGLETEST_DIR)/include
 INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
@@ -39,8 +39,7 @@ INCDEP      := -I$(INCDIR) -I$(TESTINCDIR) -I$(GOOGLETEST_DIR)/include
 SOURCES      := $(SRCDIR)/RGB.cpp $(SRCDIR)/Animation.cpp $(SRCDIR)/AnimationOps.cpp \
 								$(SRCDIR)/LedWorker.cpp $(SRCDIR)/StepperWorker.cpp $(SRCDIR)/AnimationList.cpp
 TESTSOURCES  := $(TESTDIR)/test_base.cpp $(TESTDIR)/mock_Arduino.cpp  \
-								$(TESTDIR)/test_StepperWorker.cpp
-								#$(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
+								$(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
 								$(TESTDIR)/test_Animation.cpp  $(TESTDIR)/test_AnimationOps.cpp \
 								$(TESTDIR)/test_LedWorker.cpp $(TESTDIR)/test_StepperWorker.cpp \
 								$(TESTDIR)/test_FiniteStates.cpp

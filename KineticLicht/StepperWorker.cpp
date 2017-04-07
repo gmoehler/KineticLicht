@@ -218,7 +218,6 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
   void StepperWorker::loop(long elapsedTime) {
     _elapsedTime = elapsedTime;
 
-    FPRINTF2(x11,"***%d -> %d\n", _currentState, _nextState);
     // transitions
     // don't allow 2 transitions without actions function
     // so skipt if transition was triggered before
@@ -310,6 +309,7 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
     }
 
     // switch to next state
+    FPRINTF2(x11,"***%d -> %d\n", _currentState, _nextState);
     bool stateChanged = (  _currentState != _nextState);
     _currentState = _nextState;
 
