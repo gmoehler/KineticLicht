@@ -232,14 +232,14 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
         case CALIBRATING_UP:
         if (_to_endstop_hit()){
           FPRINTF0(x0,"***calup _to_endstop_hit\n");
-          _triggerTransition(ENDSTOP_HIT);
+          _triggerTransition(CALIBRATING_ENDSTOPHIT);
         }
         break;
 
         case CALIBRATING_ENDSTOPHIT:
         if (_to_endstop_waiting()){
           FPRINTF0(x1,"***calehit 2 _to_endstop_waiting\n");
-          _triggerTransition(ENDSTOP_WAITING);
+          _triggerTransition(CALIBRATION_FINISHED);
         }
         break;
 
