@@ -16,17 +16,20 @@ bool keyFrameCompare (KeyFrame i, KeyFrame j) {
 }
 
 Animation::Animation() :
+   _numberOfKeyFrames(0),
    _initialValuesRetrieved(false),
    _isSorted(false),
    _withMotor(false),
-   _finishedActuators(0),
+   _animationFinished(false),
    _finishTime(0L) {}
 
 void Animation::init(std::vector<KeyFrame> kfs) {
+  _clear();
   addKeyFrames(kfs);
 }
 
 void Animation::init(unsigned **v, int length) {
+  _clear();
   for (int i=0; i< length; i++){
     KeyFrame kf(v[i]);
     addKeyFrame(kf);
@@ -36,6 +39,7 @@ void Animation::init(unsigned **v, int length) {
 
 #ifdef WITH_PROGMEM
 void Animation::init(_FLASH_TABLE<unsigned> *ftable) {
+  _clear();
   int numRows = ftable->rows();
   for (int i=0; i< numRows; i++){
     _FLASH_ARRAY<unsigned> v = (*ftable)[i];
@@ -54,6 +58,20 @@ void Animation::init(_FLASH_TABLE<unsigned> *ftable) {
 }
 #endif
 
+void Animation::_clear() {
+  for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
+        std::vector<KeyFrame>& kfs = it-> second;
+        kfs.clear();
+  }
+
+  _numberOfKeyFrames = 0;
+  _initialValuesRetrieved = false,
+  _isSorted = false,
+  _withMotor = false,
+  _animationFinished = false,
+  _finishTime = 0L;
+}
+
 int Animation::numberOfKeyFrames(){
   int num = 0;
   for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
@@ -61,7 +79,9 @@ int Animation::numberOfKeyFrames(){
     num += kfs.size();
   }
 
-  return num;
+  //return num;
+
+  return _numberOfKeyFrames;
 }
 
  bool Animation::containsMotorFrames(){
@@ -69,7 +89,7 @@ int Animation::numberOfKeyFrames(){
  }
 
 bool Animation::isAnimationFinished(long elapsedTime) {
-  return _finishedActuators == _keyFrameMap.size() && elapsedTime > _finishTime;
+  return _animationFinished;
 }
 
 std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
@@ -84,22 +104,20 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
   // add initial key frames for all activators
   if (!_initialValuesRetrieved){
     for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
-      std::vector<KeyFrame> kfs = it-> second;
-      KeyFrame& currentKeyFrame = kfs[0];
-      nextKeyFrames.push_back(currentKeyFrame);
-      if (kfs.size()==1){
-        _finishedActuators++;
-        //printf("Finished: %u\n", it-> first);
+      std::vector<KeyFrame>& kfs = it-> second;
+      if (kfs.size() > 0){
+        KeyFrame& currentKeyFrame = kfs[0];
+        nextKeyFrames.push_back(currentKeyFrame);
       }
-      _initialValuesRetrieved = true;
     }
+    _initialValuesRetrieved = true;
   }
 
   // get next key frames
   for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
 
     uint8_t id = it-> first;
-    std::vector<KeyFrame> kfs = it-> second;
+    std::vector<KeyFrame>& kfs = it-> second;
     uint8_t currentFrameId = _currentFrameIdMap[id];
 
     KeyFrame& currentKeyFrame = kfs[currentFrameId];
@@ -122,13 +140,17 @@ std::vector<KeyFrame> Animation::getNextTargetKeyFrames(long elapsedTime) {
 
       if (currentFrameId == kfs.size()-1){
         finished = true;
-        _finishedActuators++;
-        FPRINTF1(ani_msg8, "*** %d: Finished Animation\n", id);
+        FPRINTF1(ani_msg8, "*** %d: Finished Sub-animation\n", id);
       }
 
       // look at next frame already
       currentTargetTime = currentKeyFrame.getTimeMs();
     }
+  }
+
+  if (elapsedTime > _finishTime){
+    _animationFinished = true;
+    FPRINTF0(ani_msg8, "*** Finished Animation\n");
   }
 
   return nextKeyFrames;
@@ -138,7 +160,7 @@ void Animation::_doSort(){
   FPRINTF0(ani_msg6, "Sorting animation...");
 
   for(auto it = _keyFrameMap.begin(); it != _keyFrameMap.end(); it++) {
-    std::vector<KeyFrame> kfs = it-> second;
+    std::vector<KeyFrame>& kfs = it-> second;
     std::sort (kfs.begin(), kfs.end(), keyFrameCompare);
   }
 
@@ -164,9 +186,11 @@ void Animation::addKeyFrame(KeyFrame& kf) {
       _withMotor = true;
     }
 
+    _numberOfKeyFrames++;
+
     // trigger resorting
     _isSorted = false;
-    FPRINTF1(ani_msg27, "addKeyFrame3   %d bytes", freeRam1());
+    FPRINTF1(ani_msg27, "addKeyFrame3   %d bytes\n", freeRam1());
 }
 
 void Animation::addKeyFrames(std::vector<KeyFrame> kfs) {
@@ -187,8 +211,6 @@ void Animation::resetCurrentKeyFrame(){
 
   // we still need to retrieve the first key frames
   _initialValuesRetrieved = false;
-  _finishedActuators = 0;
-
 }
 
 void Animation::printAnimation(){
@@ -201,7 +223,6 @@ void Animation::printAnimation(){
   }
 
   if (numberOfKeyFrames() > 0){
-
     if (!_initialValuesRetrieved){
       FPRINTF0(ani_msg8, "No key frames in action.\n");
       return;

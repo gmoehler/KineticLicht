@@ -38,6 +38,7 @@ public:
   // add new key frames - sort is done on first getNextTargetKeyFrames()
   void addKeyFrame(KeyFrame& kf);
   void addKeyFrames(std::vector<KeyFrame> new_kfs);
+
   void resetCurrentKeyFrame();
   int numberOfKeyFrames();
 
@@ -50,14 +51,16 @@ private:
   std::map<uint8_t, std::vector<KeyFrame>> _keyFrameMap;
   //int _currentFrameId;
   std::map<uint8_t, uint8_t> _currentFrameIdMap;
-  //unsigned _numberOfKeyFrames;
+  uint16_t _numberOfKeyFrames;
   bool _initialValuesRetrieved;
   bool _isSorted;
   bool _withMotor;
-  uint8_t _finishedActuators;
+  // all frames read 
+  bool _animationFinished;
   long _finishTime;
 
   void _doSort();
+  void _clear();
 
   // make copy constructor private
   // should not be used because it waists memory

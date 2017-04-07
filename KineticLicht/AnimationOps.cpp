@@ -168,6 +168,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
   void AnimationOps::_entry_finished(){
     // choose next animation based on strategy
+    uint8_t prevAnimationId = _currentAnimationId;
     if (_strategy == SINGLE_ANIMATION) {
 
       if (!_strategy_repeat){
@@ -189,7 +190,8 @@ void AnimationOps::init(AnimationStrategy strategy,
       }
     }
     // load the new current animation
-    if (_currentAnimationId != NO_CURRENT_ANIMATION){
+    if (_currentAnimationId != NO_CURRENT_ANIMATION &&
+        prevAnimationId != _currentAnimationId){
       selectAnimation(_currentAnimationId);
     }
   }
@@ -204,7 +206,7 @@ void AnimationOps::init(AnimationStrategy strategy,
 
     // continue if we have a valid id
     if (_currentAnimationId == NO_CURRENT_ANIMATION){
-      //FPRINTF0(aops_msg7, "No more animations available.\n");
+      FPRINTF0(aops_msg7, "No more animations available.\n");
     }
     else {
       FPRINTF1(aops_msg8, "### Proceeding with Animation %d ###.\n", _currentAnimationId);

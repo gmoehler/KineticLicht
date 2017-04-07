@@ -230,14 +230,12 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
 
         case CALIBRATING_UP:
         if (_to_endstop_hit()){
-          FPRINTF0(x0,"***calup _to_endstop_hit\n");
           _triggerTransition(CALIBRATING_ENDSTOPHIT);
         }
         break;
 
         case CALIBRATING_ENDSTOPHIT:
         if (_to_endstop_waiting()){
-          FPRINTF0(x1,"***calehit 2 _to_endstop_waiting\n");
           _triggerTransition(CALIBRATION_FINISHED);
         }
         break;
@@ -248,32 +246,27 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
 
         case ACTIVE:
         if (_to_endstop_hit()){
-        FPRINTF0(x2,"*** act 2 _to_endstop_hit\n");
           _triggerTransition(ENDSTOP_HIT);
         }
         else if (_to_past_target()){
-          FPRINTF0(x3,"*** _to_past_target\n");
           _triggerTransition(PAST_TARGET);
         }
         break;
 
         case PAST_TARGET:
         if (_past_target_to_active()){
-          FPRINTF0(x4,"*** pt 2 _past_target_to_active\n");
           _triggerTransition(ACTIVE);
         }
         break;
 
         case ENDSTOP_HIT:
         if (_to_endstop_waiting()){
-          FPRINTF0(x5,"*** esh 2 _to_endstop_waitin\ng");
           _triggerTransition(ENDSTOP_WAITING);
         }
         break;
 
         case ENDSTOP_WAITING:
         if (_endstop_waiting_to_active()){
-          FPRINTF0(x6,"*** esh 2 _endstop_waiting_to_activ\ne");
           _triggerTransition(ACTIVE);
         }
         break;
@@ -309,8 +302,10 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
     }
 
     // switch to next state
-    FPRINTF2(x11,"***%d -> %d\n", _currentState, _nextState);
     bool stateChanged = (  _currentState != _nextState);
+    if (stateChanged){
+      FPRINTF3(sw_msg16,"STP %d: Changed state: %d -> %d\n", _id, _currentState, _nextState);
+    }
     _currentState = _nextState;
 
     // entry functions and actions
