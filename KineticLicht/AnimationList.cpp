@@ -112,7 +112,7 @@ void AnimationList::load(){
 
   rows = sizeof(led_test2) / sizeof(led_test2[0]);
   _addAsAnimationUint(led_test2, rows, animationId++);
-/*
+
 #ifdef WITH_PROGMEM
   FLASH_TABLE(unsigned, stepper_test1, NUM_COLS,
 #else
@@ -156,7 +156,7 @@ void AnimationList::load(){
     {LED4BOT, 200, 0, YELLOW, 100},
     {LED4TOP, 0, 0, YELLOW, 100},
     {LED4TOP, 200, 0, LILA, 100},
-/*    {LED1TOP, 1, 0, YELLOW, 100},
+    {LED1TOP, 1, 0, YELLOW, 100},
     {LED2BOT, 1, 0, YELLOW, 100},
     {LED2TOP, 1, 0, YELLOW, 100},
     {LED3BOT, 1, 0, YELLOW, 100},
@@ -407,7 +407,7 @@ void AnimationList::load(){
   #endif
 
 }
-
+*/
 #else
 
 // consistent version for unit test
@@ -449,6 +449,5 @@ void AnimationList::load(){
 
   rows = sizeof(a1) / sizeof(a1[0]);
   _addAsAnimationUint(a1, rows, animationId++);
-*/
 }
 #endif

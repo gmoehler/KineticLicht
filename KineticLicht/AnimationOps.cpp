@@ -19,7 +19,7 @@ AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
 _elapsedTime(0), _startTime(-1),
 _programFinished(false),
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
-_tlc(tlc)
+_tlc(tlc), _currentState(ANIMATION_INIT), _nextState(ANIMATION_INIT)
 {
   //setDebugString(std::string("AnimationOps"));
   _tlc = tlc;
