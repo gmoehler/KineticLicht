@@ -29,10 +29,10 @@ enum AnimationStrategy { SINGLE_ANIMATION, LOOP_ANIMATION };
 
 #define NO_CURRENT_ANIMATION -1
 
-class AnimationOps : public FiniteStateMachine<AnimationOps> {
+class AnimationOpsFSM : public FiniteStateMachine<AnimationOpsFSM> {
 
 public:
-  AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations=true);
+  AnimationOpsFSM(Adafruit_TLC5947& tlc, bool loadAnimations=true);
 
   void addStepperWorker(StepperWorker* sw);
   void addLedWorker(LedWorker* lw);

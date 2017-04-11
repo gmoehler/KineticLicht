@@ -4,26 +4,26 @@
 
 int freeRam2 ()
 {
-#ifndef WITHIN_UNITTEST
+  #ifndef WITHIN_UNITTEST
   extern int __heap_start, *__brkval;
   int v;
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-#else
+  #else
   return 0;
-#endif
+  #endif
 }
 
 
 AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
-: FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
-_animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION), _elapsedTime(0), _startTime(-1),
+: _animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION),
+_elapsedTime(0), _startTime(-1),
 _programFinished(false),
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
 _tlc(tlc)
 {
-  setDebugString(std::string("AnimationOps"));
+  //setDebugString(std::string("AnimationOps"));
   _tlc = tlc;
-
+  /*
   addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOps::_init_to_calibrating);
   addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationOps::_init_to_active);
   addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationOps::_calibrating_to_active);
@@ -36,6 +36,7 @@ _tlc(tlc)
   addStateAction(ANIMATION_ACTIVE, &AnimationOps::_action_active);
   addStateEntryAction(ANIMATION_FINISHED, &AnimationOps::_entry_finished);
   addStateAction(ANIMATION_FINISHED, &AnimationOps::_action_finished);
+  */
 }
 
 uint8_t AnimationOps::getNumAnimations(){
@@ -43,19 +44,19 @@ uint8_t AnimationOps::getNumAnimations(){
 }
 
 void AnimationOps::selectAnimation(uint8_t id){
-#ifdef WITH_PROGMEM
+  #ifdef WITH_PROGMEM
   _FLASH_TABLE<unsigned> *ftable = _animations.getAnimationTable(id);
   int numKf = _animations.getNumKeyFrames(id);
   FPRINTF1(aop_msg16, "ani selecting. free: %d\n", freeRam2())
   _currentAnimation.init(ftable);
   FPRINTF1(aop_msg14, "ani selected. free: %d\n", freeRam2())
-#else
+  #else
   unsigned **aniUint = _animations.getAnimationAsUint(id);
   int numKf = _animations.getNumKeyFrames(id);
   _currentAnimation.init(aniUint, numKf);
   FPRINTF0(aop_msg13, "Selecting new Animation:\n");
   _currentAnimation.printAnimation();
-#endif
+  #endif
 }
 
 Animation& AnimationOps::_getCurrentAnimation(){
@@ -66,137 +67,132 @@ bool AnimationOps::isProgramFinished(){
   return _programFinished;
 }
 
-void AnimationOps::init(AnimationStrategy strategy,
-    uint8_t startWithAnimationId, bool repeat){
+void AnimationOps::init(AnimationStrategy strategy, uint8_t startWithAnimationId, bool repeat){
 
-    _strategy = strategy;
-    _strategy_startWithAnimationId = startWithAnimationId;
-    _strategy_repeat = repeat;
+  _strategy = strategy;
+  _strategy_startWithAnimationId = startWithAnimationId;
+  _strategy_repeat = repeat;
 
-    for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker* sw = it->second;
-      sw->init();
-    }
-
-    for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
-      LedWorker* lw = it->second;
-      lw->init();
-    }
-
-    _tlc.begin(); // start LED PWM decoder
-
-    if (_strategy_startWithAnimationId < getNumAnimations()){
-      _currentAnimationId = _strategy_startWithAnimationId;
-      selectAnimation(_currentAnimationId);
-      FPRINTF1(aop_msg15, "ani selected2. free: %d\n", freeRam2())
-    }
-    else {
-      FPRINTF2 (aops_msg0, "#### ERROR! Cannot start with animation id %d > %d.\n",
-      _strategy_startWithAnimationId, getNumAnimations());
-    }
-
+  for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
+    StepperWorker* sw = it->second;
+    sw->init();
   }
 
-  void AnimationOps::loop(){
-    FiniteStateMachine::loop();
+  for (auto it = _ledWorkerMap.begin(); it != _ledWorkerMap.end(); ++it) {
+    LedWorker* lw = it->second;
+    lw->init();
   }
 
-  void AnimationOps::addStepperWorker(StepperWorker* sw){
-    uint8_t id = sw->getId();
-    // cannot use operator[] since we do not have an empty constructor of StepperWorker
-    _stepperWorkerMap.insert( std::map<int, StepperWorker*>::value_type ( id, sw ));
+  _tlc.begin(); // start LED PWM decoder
+
+  if (_strategy_startWithAnimationId < getNumAnimations()){
+    _currentAnimationId = _strategy_startWithAnimationId;
+    selectAnimation(_currentAnimationId);
+    FPRINTF1(aop_msg15, "ani selected2. free: %d\n", freeRam2())
+  }
+  else {
+    FPRINTF2 (aops_msg0, "#### ERROR! Cannot start with animation id %d > %d.\n",
+    _strategy_startWithAnimationId, getNumAnimations());
   }
 
-  void AnimationOps::addLedWorker(LedWorker* lw){
-    uint8_t id = lw->getId();
-    // cannot use operator[] since we do not have an empty constructor of LedWorker
-    _ledWorkerMap.insert( std::map< int, LedWorker* >::value_type ( id, lw ));
+}
+
+void AnimationOps::addStepperWorker(StepperWorker* sw){
+  uint8_t id = sw->getId();
+  // cannot use operator[] since we do not have an empty constructor of StepperWorker
+  _stepperWorkerMap.insert( std::map<int, StepperWorker*>::value_type ( id, sw ));
+}
+
+void AnimationOps::addLedWorker(LedWorker* lw){
+  uint8_t id = lw->getId();
+  // cannot use operator[] since we do not have an empty constructor of LedWorker
+  _ledWorkerMap.insert( std::map< int, LedWorker* >::value_type ( id, lw ));
+}
+
+bool AnimationOps::_init_to_calibrating(){
+  //FPRINTF1(aops_msg1, "_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
+  return _getCurrentAnimation().containsMotorFrames();
+}
+
+
+void AnimationOps::_entry_calibrating(){
+  FPRINTF0(aops_msg2, "### Proceeding to state ANIMATION_CALIBRATING. ###\n");
+
+  //_startTime = millis(); // reset time
+  //FPRINTF1(aops_msg3, "+++ startTime: %ld\n", _startTime);
+  for (auto it = _stepperWorkerMap.begin() ;
+  it != _stepperWorkerMap.end(); ++it) {
+    StepperWorker* sw = it->second;
+    //FPRINTF1b(aops_msg4, "+++ Starting calibration for sw %d\n", sw->getId());
+    sw->startCalibration();
   }
+}
 
-  bool AnimationOps::_init_to_calibrating(){
-    //FPRINTF1(aops_msg1, "_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
-    return _getCurrentAnimation().containsMotorFrames();
+void AnimationOps::_action_calibrating(){
+
+  _elapsedTime = millis() - _startTime;
+
+  for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
+    StepperWorker* sw = it->second;
+    sw->loop(_elapsedTime);
   }
+}
 
-
-  void AnimationOps::_entry_calibrating(){
-    FPRINTF0(aops_msg2, "### Proceeding to state ANIMATION_CALIBRATING. ###\n");
-
-    //_startTime = millis(); // reset time
-    //FPRINTF1(aops_msg3, "+++ startTime: %ld\n", _startTime);
-    for (auto it = _stepperWorkerMap.begin() ;
-    it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker* sw = it->second;
-      //FPRINTF1b(aops_msg4, "+++ Starting calibration for sw %d\n", sw->getId());
-      sw->startCalibration();
+bool AnimationOps::_calibrating_to_active(){
+  // return true if all calibrations are finished
+  for (auto it = _stepperWorkerMap.begin() ;
+  it != _stepperWorkerMap.end(); ++it) {
+    StepperWorker* sw = it->second;
+    if (sw->getState() != CALIBRATION_FINISHED){
+      return false;
     }
   }
+  return true;
+}
 
-  void AnimationOps::_action_calibrating(){
-
-    _elapsedTime = millis() - _startTime;
-
-    for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker* sw = it->second;
-      sw->loop(_elapsedTime);
-    }
-  }
-
-  bool AnimationOps::_calibrating_to_active(){
-    // return true if all calibrations are finished
-    for (auto it = _stepperWorkerMap.begin() ;
-    it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker* sw = it->second;
-      if (sw->getState() != CALIBRATION_FINISHED){
-        return false;
-      }
-    }
+bool AnimationOps::_init_to_active(){
+  if (!_getCurrentAnimation().containsMotorFrames()){
+    FPRINTF0(aops_msg5, "### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
     return true;
   }
+  return false;
+}
 
-  bool AnimationOps::_init_to_active(){
-    if (!_getCurrentAnimation().containsMotorFrames()){
-      FPRINTF0(aops_msg5, "### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
-      return true;
-    }
-    return false;
+void AnimationOps::_entry_active(){
+  _startTime = millis(); // reset time
+  //FPRINTF1(aops_msg6, "+++ startTime: %ld\n", _startTime);
+  for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
+    StepperWorker* sw = it->second;
+    sw->startAnimation();
   }
+}
 
-  void AnimationOps::_entry_active(){
-    _startTime = millis(); // reset time
-    //FPRINTF1(aops_msg6, "+++ startTime: %ld\n", _startTime);
-    for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
-      StepperWorker* sw = it->second;
-      sw->startAnimation();
+void AnimationOps::_entry_finished(){
+  // choose next animation based on strategy
+  uint8_t prevAnimationId = _currentAnimationId;
+  if (_strategy == SINGLE_ANIMATION) {
+
+    if (!_strategy_repeat){
+      // stop after first animation
+      _currentAnimationId = NO_CURRENT_ANIMATION;
     }
   }
-
-  void AnimationOps::_entry_finished(){
-    // choose next animation based on strategy
-    uint8_t prevAnimationId = _currentAnimationId;
-    if (_strategy == SINGLE_ANIMATION) {
-
-      if (!_strategy_repeat){
-        // stop after first animation
+  else { // loop
+    _currentAnimationId++;
+    if (_currentAnimationId >= getNumAnimations()) {
+      if (_strategy_repeat){
+        // restart animation
+        _currentAnimationId = _strategy_startWithAnimationId;
+      }
+      else {
+        // stop animation
         _currentAnimationId = NO_CURRENT_ANIMATION;
       }
     }
-    else { // loop
-      _currentAnimationId++;
-      if (_currentAnimationId >= getNumAnimations()) {
-        if (_strategy_repeat){
-          // restart animation
-          _currentAnimationId = _strategy_startWithAnimationId;
-        }
-        else {
-          // stop animation
-          _currentAnimationId = NO_CURRENT_ANIMATION;
-        }
-      }
-    }
-    // load the new current animation
-    if (_currentAnimationId != NO_CURRENT_ANIMATION &&
-        prevAnimationId != _currentAnimationId){
+  }
+  // load the new current animation
+  if (_currentAnimationId != NO_CURRENT_ANIMATION &&
+    prevAnimationId != _currentAnimationId){
       selectAnimation(_currentAnimationId);
     }
     else if (_currentAnimationId == NO_CURRENT_ANIMATION){
@@ -234,15 +230,15 @@ void AnimationOps::init(AnimationStrategy strategy,
   void AnimationOps::_action_active(){
 
     _elapsedTime = millis() - _startTime;
-#ifdef AOPS_DEBUG
-//      FPRINTF1(aops_msg9, "+++ elapsed Time: %ld\n", _elapsedTime);
-//      _getCurrentAnimation().printAnimation();
-#endif
+    #ifdef AOPS_DEBUG
+    //      FPRINTF1(aops_msg9, "+++ elapsed Time: %ld\n", _elapsedTime);
+    //      _getCurrentAnimation().printAnimation();
+    #endif
 
     std::vector<KeyFrame> kfs = _getCurrentAnimation().getNextTargetKeyFrames(_elapsedTime);
-#ifdef AOPS_DEBUG
-//      FPRINTF1(aops_msg11, "++++ Number of KeyFrames read: %d\n\n", kfs.size());
-#endif
+    #ifdef AOPS_DEBUG
+    //      FPRINTF1(aops_msg11, "++++ Number of KeyFrames read: %d\n\n", kfs.size());
+    #endif
     for (std::vector<KeyFrame>::iterator kf_it = kfs.begin(); kf_it != kfs.end(); kf_it++) {
 
       bool keyFrameHandled = false;
@@ -291,10 +287,17 @@ void AnimationOps::init(AnimationStrategy strategy,
       }
       _tlc.write();
     }
-}
-    
-void AnimationOps::loop(long elapsedTime) {
-    _elapsedTime = elapsedTime;
+  }
+
+  AnimationState AnimationOps::getState(){
+    return _currentState;
+  }
+
+  void AnimationOps::_triggerTransition(AnimationState toState){
+    _nextState = toState;
+  }
+
+  void AnimationOps::loop() {
 
     // transitions
     // don't allow 2 transitions without actions function
@@ -316,34 +319,18 @@ void AnimationOps::loop(long elapsedTime) {
           _triggerTransition(ANIMATION_ACTIVE);
         }
         break;
-        
+
         case ANIMATION_ACTIVE:
         if (_active_to_finished()){
           _triggerTransition(ANIMATION_FINISHED);
         }
         break;
-        
+
         case ANIMATION_FINISHED:
         if (_finished_to_init()){
           _triggerTransition(ANIMATION_INIT);
         }
         break;
-        
-        default:
-        // no other valid state
-        break;
-    }
-    
-    // exit functions of current state
-    if (_nextState != _currentState){
-      switch (_currentState) {
-
-        case ANIMATION_INIT:
-        case ANIMATION_CALIBRATING:
-        case ANIMATION_ACTIVE:
-        case ANIMATION_FINISHED:
-        // no exit function
-        break;
 
         default:
         // no other valid state
@@ -351,45 +338,58 @@ void AnimationOps::loop(long elapsedTime) {
       }
     }
 
-    // switch to next state
-    bool stateChanged = (  _currentState != _nextState);
-    if (stateChanged){
-      FPRINTF3(sw_msg16,"STP %d: Changed state: %d -> %d\n", _id, _currentState, _nextState);
-    }
-    _currentState = _nextState;
-
-    // entry functions and actions
+    // no exit functions of current state
+    /*  if (_nextState != _currentState){
     switch (_currentState) {
-      case ANIMATION_INIT:
-      // no action
-      break;
-           
-      case ANIMATION_CALIBRATING:
-      if (stateChanged){
-        _entry_calibrating();
-      }
-      _action_calibrating();
-      break;
 
-      case ANIMATION_ACTIVE:
-      if (stateChanged){
-        _entry_active();
-      }
-      _action_active();
-      break;
+    case ANIMATION_INIT:
+    case ANIMATION_CALIBRATING:
+    case ANIMATION_ACTIVE:
+    case ANIMATION_FINISHED:
+    break;
 
-      case ANIMATION_FINISHED:
-      if (stateChanged){
-        _entry_finished();
-      }
-      _action_finished();
-      break;
+    default:
+    break;
+  }
+}*/
 
-      default:
-      // no other valid state
-      break;
-    }
-    
+// switch to next state
+bool stateChanged = (_currentState != _nextState);
+if (stateChanged){
+  FPRINTF2(sw_msg16,"AniOps: Changed state: %d -> %d\n",_currentState, _nextState);
+}
+_currentState = _nextState;
+
+// entry functions and actions
+switch (_currentState) {
+  case ANIMATION_INIT:
+  // no action
+  break;
+
+  case ANIMATION_CALIBRATING:
+  if (stateChanged){
+    _entry_calibrating();
+  }
+  _action_calibrating();
+  break;
+
+  case ANIMATION_ACTIVE:
+  if (stateChanged){
+    _entry_active();
+  }
+  _action_active();
+  break;
+
+  case ANIMATION_FINISHED:
+  if (stateChanged){
+    _entry_finished();
+  }
+  _action_finished();
+  break;
+
+  default:
+  // no other valid state
+  break;
 }
 
-  } // AnimationOps
+}

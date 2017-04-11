@@ -29,7 +29,7 @@ enum AnimationStrategy { SINGLE_ANIMATION, LOOP_ANIMATION };
 
 #define NO_CURRENT_ANIMATION -1
 
-class AnimationOps : public FiniteStateMachine<AnimationOps> {
+class AnimationOps {
 
 public:
   AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations=true);
@@ -46,6 +46,7 @@ public:
   void init(AnimationStrategy strategy, uint8_t startWithAnimationId, bool repeat);
   void loop(); // to be called in loop()
 
+  AnimationState getState();
   bool isProgramFinished();
 
 private:
@@ -64,6 +65,11 @@ private:
   bool _strategy_repeat;
 
   Adafruit_TLC5947 _tlc;
+
+  void _triggerTransition(AnimationState toState);
+
+  AnimationState _currentState;
+  AnimationState _nextState;
 
   bool _init_to_calibrating();
   bool _init_to_active();

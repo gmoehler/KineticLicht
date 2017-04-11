@@ -41,8 +41,7 @@ SOURCES      := $(SRCDIR)/RGB.cpp $(SRCDIR)/Animation.cpp $(SRCDIR)/AnimationOps
 TESTSOURCES  := $(TESTDIR)/test_base.cpp $(TESTDIR)/mock_Arduino.cpp  \
 								$(TESTDIR)/test_rgb.cpp $(TESTDIR)/test_KeyFrame.cpp \
 								$(TESTDIR)/test_Animation.cpp  $(TESTDIR)/test_AnimationOps.cpp \
-								$(TESTDIR)/test_LedWorker.cpp $(TESTDIR)/test_StepperWorker.cpp \
-								$(TESTDIR)/test_FiniteStates.cpp
+								$(TESTDIR)/test_LedWorker.cpp $(TESTDIR)/test_StepperWorker.cpp
 EXSOURCES    := $(EXDIR)/test_base.cpp $(EXDIR)/mock_Arduino.cpp $(EXDIR)/example_main.cpp
 
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) \

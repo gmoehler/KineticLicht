@@ -1,4 +1,4 @@
-#include "AnimationOps.h"
+#include "AnimationOpsFSM.h"
 
 // full height: 4200 = 2100mm
 
@@ -14,7 +14,7 @@ int freeRam2 ()
 }
 
 
-AnimationOps::AnimationOps(Adafruit_TLC5947& tlc, bool loadAnimations)
+AnimationOpsFSM::AnimationOpsFSM(Adafruit_TLC5947& tlc, bool loadAnimations)
 : FiniteStateMachine (NUM_ANIMATION_STATES, ANIMATION_INIT, *this),
 _animations(loadAnimations), _currentAnimationId(NO_CURRENT_ANIMATION), _elapsedTime(0), _startTime(-1),
 _programFinished(false),
@@ -24,25 +24,25 @@ _tlc(tlc)
   setDebugString(std::string("AnimationOps"));
   _tlc = tlc;
 
-  addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOps::_init_to_calibrating);
-  addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationOps::_init_to_active);
-  addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationOps::_calibrating_to_active);
-  addTransition(ANIMATION_ACTIVE, ANIMATION_FINISHED, &AnimationOps::_active_to_finished);
-  addTransition(ANIMATION_FINISHED, ANIMATION_INIT, &AnimationOps::_finished_to_init);
+  addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOpsFSM::_init_to_calibrating);
+  addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationOpsFSM::_init_to_active);
+  addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationOpsFSM::_calibrating_to_active);
+  addTransition(ANIMATION_ACTIVE, ANIMATION_FINISHED, &AnimationOpsFSM::_active_to_finished);
+  addTransition(ANIMATION_FINISHED, ANIMATION_INIT, &AnimationOpsFSM::_finished_to_init);
 
-  addStateEntryAction(ANIMATION_CALIBRATING,&AnimationOps::_entry_calibrating);
-  addStateAction(ANIMATION_CALIBRATING, &AnimationOps::_action_calibrating);
-  addStateEntryAction(ANIMATION_ACTIVE, &AnimationOps::_entry_active);
-  addStateAction(ANIMATION_ACTIVE, &AnimationOps::_action_active);
-  addStateEntryAction(ANIMATION_FINISHED, &AnimationOps::_entry_finished);
-  addStateAction(ANIMATION_FINISHED, &AnimationOps::_action_finished);
+  addStateEntryAction(ANIMATION_CALIBRATING,&AnimationOpsFSM::_entry_calibrating);
+  addStateAction(ANIMATION_CALIBRATING, &AnimationOpsFSM::_action_calibrating);
+  addStateEntryAction(ANIMATION_ACTIVE, &AnimationOpsFSM::_entry_active);
+  addStateAction(ANIMATION_ACTIVE, &AnimationOpsFSM::_action_active);
+  addStateEntryAction(ANIMATION_FINISHED, &AnimationOpsFSM::_entry_finished);
+  addStateAction(ANIMATION_FINISHED, &AnimationOpsFSM::_action_finished);
 }
 
-uint8_t AnimationOps::getNumAnimations(){
+uint8_t AnimationOpsFSM::getNumAnimations(){
   return _animations.getNumAnimations();
 }
 
-void AnimationOps::selectAnimation(uint8_t id){
+void AnimationOpsFSM::selectAnimation(uint8_t id){
 #ifdef WITH_PROGMEM
   _FLASH_TABLE<unsigned> *ftable = _animations.getAnimationTable(id);
   int numKf = _animations.getNumKeyFrames(id);
@@ -58,15 +58,15 @@ void AnimationOps::selectAnimation(uint8_t id){
 #endif
 }
 
-Animation& AnimationOps::_getCurrentAnimation(){
+Animation& AnimationOpsFSM::_getCurrentAnimation(){
   return _currentAnimation;
 }
 
-bool AnimationOps::isProgramFinished(){
+bool AnimationOpsFSM::isProgramFinished(){
   return _programFinished;
 }
 
-void AnimationOps::init(AnimationStrategy strategy,
+void AnimationOpsFSM::init(AnimationStrategy strategy,
     uint8_t startWithAnimationId, bool repeat){
 
     _strategy = strategy;
@@ -97,29 +97,29 @@ void AnimationOps::init(AnimationStrategy strategy,
 
   }
 
-  void AnimationOps::loop(){
+  void AnimationOpsFSM::loop(){
     FiniteStateMachine::loop();
   }
 
-  void AnimationOps::addStepperWorker(StepperWorker* sw){
+  void AnimationOpsFSM::addStepperWorker(StepperWorker* sw){
     uint8_t id = sw->getId();
     // cannot use operator[] since we do not have an empty constructor of StepperWorker
     _stepperWorkerMap.insert( std::map<int, StepperWorker*>::value_type ( id, sw ));
   }
 
-  void AnimationOps::addLedWorker(LedWorker* lw){
+  void AnimationOpsFSM::addLedWorker(LedWorker* lw){
     uint8_t id = lw->getId();
     // cannot use operator[] since we do not have an empty constructor of LedWorker
     _ledWorkerMap.insert( std::map< int, LedWorker* >::value_type ( id, lw ));
   }
 
-  bool AnimationOps::_init_to_calibrating(){
+  bool AnimationOpsFSM::_init_to_calibrating(){
     //FPRINTF1(aops_msg1, "_init_to_calibrating %d:\n", _getCurrentAnimation().numberOfKeyFrames());
     return _getCurrentAnimation().containsMotorFrames();
   }
 
 
-  void AnimationOps::_entry_calibrating(){
+  void AnimationOpsFSM::_entry_calibrating(){
     FPRINTF0(aops_msg2, "### Proceeding to state ANIMATION_CALIBRATING. ###\n");
 
     //_startTime = millis(); // reset time
@@ -132,7 +132,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     }
   }
 
-  void AnimationOps::_action_calibrating(){
+  void AnimationOpsFSM::_action_calibrating(){
 
     _elapsedTime = millis() - _startTime;
 
@@ -142,7 +142,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     }
   }
 
-  bool AnimationOps::_calibrating_to_active(){
+  bool AnimationOpsFSM::_calibrating_to_active(){
     // return true if all calibrations are finished
     for (auto it = _stepperWorkerMap.begin() ;
     it != _stepperWorkerMap.end(); ++it) {
@@ -154,7 +154,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     return true;
   }
 
-  bool AnimationOps::_init_to_active(){
+  bool AnimationOpsFSM::_init_to_active(){
     if (!_getCurrentAnimation().containsMotorFrames()){
       FPRINTF0(aops_msg5, "### No motor frames. Proceeding directly to state ANIMATION_ACTIVE. ###\n");
       return true;
@@ -162,7 +162,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     return false;
   }
 
-  void AnimationOps::_entry_active(){
+  void AnimationOpsFSM::_entry_active(){
     _startTime = millis(); // reset time
     //FPRINTF1(aops_msg6, "+++ startTime: %ld\n", _startTime);
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
@@ -171,7 +171,7 @@ void AnimationOps::init(AnimationStrategy strategy,
     }
   }
 
-  void AnimationOps::_entry_finished(){
+  void AnimationOpsFSM::_entry_finished(){
     // choose next animation based on strategy
     uint8_t prevAnimationId = _currentAnimationId;
     if (_strategy == SINGLE_ANIMATION) {
@@ -204,13 +204,13 @@ void AnimationOps::init(AnimationStrategy strategy,
     }
   }
 
-  void AnimationOps::_action_finished(){
+  void AnimationOpsFSM::_action_finished(){
     if (_currentAnimationId == NO_CURRENT_ANIMATION){
       //TODO: do things to stop animation: go dark, stop steppers, ...
     }
   }
 
-  bool AnimationOps::_finished_to_init(){
+  bool AnimationOpsFSM::_finished_to_init(){
 
     // continue if we have a valid id
     if (_currentAnimationId == NO_CURRENT_ANIMATION){
@@ -227,11 +227,11 @@ void AnimationOps::init(AnimationStrategy strategy,
     return false;
   }
 
-  bool AnimationOps::_active_to_finished(){
+  bool AnimationOpsFSM::_active_to_finished(){
     return _getCurrentAnimation().isAnimationFinished(_elapsedTime);
   }
 
-  void AnimationOps::_action_active(){
+  void AnimationOpsFSM::_action_active(){
 
     _elapsedTime = millis() - _startTime;
 #ifdef AOPS_DEBUG
