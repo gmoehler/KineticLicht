@@ -17,7 +17,6 @@
 #include <math.h>
 #include <KineticLicht.h>
 #include "KeyFrame.h"
-#include "FiniteStates.h"
 
 #define SW_DEBUG
 

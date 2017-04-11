@@ -10,8 +10,7 @@
 #include <Animation.h>
 #include <AnimationOps.h>
 #include <LedWorker.h>
-#include <StepperWorkerFSM.h>
-#include <FiniteStates.h>
+#include <StepperWorker.h>
 
 int compressExpand(int val);
 void RGB_EXPECT_EQ(int a, int b);

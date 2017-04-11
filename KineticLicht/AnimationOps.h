@@ -10,7 +10,6 @@
 #endif
 
 #include "KineticLicht.h"
-#include "FiniteStates.h"
 #include "KeyFrame.h"
 #include "Animation.h"
 #include "AnimationList.h"
