@@ -1,12 +1,5 @@
 #include "StepperWorker.h"
 
-#define ARDBUFFER 80
-// max speed SINGLE: ca. 220 (with one light: down:350, up: 230)
-// max speed INTERLEAVE: ca. 350
-#define MAX_SPEED 200
-#define CALIBRATE_SPEED -200
-#define ALLOWED_TARGETTIME_OVERSHOOT 100
-
 StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
   uint8_t endStopPin, bool reverseDirection)
   : _currentState(INIT), _nextState(INIT),
@@ -151,6 +144,7 @@ StepperWorker::StepperWorker(uint8_t id, AccelStepper &astepper,
 
       #ifdef SW_DEBUG
       FPRINTF2(sw_msg8, "STP %d: Set speed: %d\n", _id, (int) _currentSpeed);
+      printf("STP %d: Set speed: %d\n", _id, (int) _currentSpeed);
       /*      int curSpeed = 1000 * _currentSpeed;
       int actSpeed = 1000 * act_speed;
       FPRINTF3(sw_msg9, "%d Update Speed to %d Act: %d\n", _id, curSpeed, actSpeed);*/

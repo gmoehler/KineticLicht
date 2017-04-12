@@ -1,14 +1,14 @@
 /******************************************************************
- This is the library for the Adafruit Motor Shield V2 for Arduino. 
+ This is the library for the Adafruit Motor Shield V2 for Arduino.
  It supports DC motors & Stepper motors with microstepping as well
  as stacking-support. It is *not* compatible with the V1 library!
 
  It will only work with https://www.adafruit.com/products/1483
- 
+
  Adafruit invests time and resources providing this open
  source code, please support Adafruit and open-source hardware
  by purchasing products from Adafruit!
- 
+
  Written by Limor Fried/Ladyada for Adafruit Industries.
  BSD license, check license.txt for more information.
  All text above must be included in any redistribution.
@@ -53,7 +53,7 @@ class Adafruit_DCMotor
   friend class Adafruit_MotorShield;
   void run(uint8_t);
   void setSpeed(uint8_t);
-  
+
  private:
   uint8_t PWMpin, IN1pin, IN2pin;
   Adafruit_MotorShield *MC;
@@ -68,7 +68,7 @@ class Adafruit_StepperMotor {
   void step(uint16_t steps, uint8_t dir,  uint8_t style = SINGLE);
   void setSpeed(uint16_t);
   uint8_t onestep(uint8_t dir, uint8_t style);
-  uint8_t quickstep(uint8_t dir);
+  void initOnestep();
   void release(void);
   uint32_t usperstep;
 
@@ -79,6 +79,7 @@ class Adafruit_StepperMotor {
   uint8_t currentstep;
   Adafruit_MotorShield *MC;
   uint8_t steppernum;
+  bool pwmInitialized;
 };
 
 class Adafruit_MotorShield

@@ -14,7 +14,7 @@
 #include "Animation.h"
 #include "AnimationOps.h"
 
-//#define USE_QUICKSTEP
+#define DEBUG_PRINT
 
 std::map<long, int> create_NumberButtonMap();
 int freeRam ();
@@ -58,7 +58,7 @@ Adafruit_StepperMotor *steppermotor4 = AFMS_a.getStepper(200, 1);
 int fr2 = freeRam();
 
 // you can change these to SINGLE, DOUBLE or INTERLEAVE or MICROSTEP!
-uint8_t style = DOUBLE;
+uint8_t style = INTERLEAVE;
 void forwardstep1() {
 #ifndef USE_QUICKSTEP
   steppermotor1->onestep(FORWARD, style);
@@ -185,7 +185,7 @@ void setup()
   aniop.addLedWorker(&rgb4o);
   aniop.addLedWorker(&rgb4u);
 
-  aniop.init(SINGLE_ANIMATION, 0, true);
+  aniop.init(SINGLE_ANIMATION, 0, false);
 
   FPRINTF1(kin_msg8,"8### FREE RAM: %d\n",  freeRam ());
 
@@ -223,7 +223,7 @@ void loop()
     aniop.loop();
   }
   else {
-    FPRINTF1(kin_msg10, "ERROR! Memory exhausted: %d Bytes left\n", fr);
+    printf("ERROR! Memory exhausted: %d Bytes left\n", fr);
   }
 
 }

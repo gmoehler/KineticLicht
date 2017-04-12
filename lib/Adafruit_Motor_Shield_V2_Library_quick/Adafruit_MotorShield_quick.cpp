@@ -116,6 +116,7 @@ Adafruit_StepperMotor *Adafruit_MotorShield::getStepper(uint16_t steps, uint8_t 
     steppers[num].AIN2pin = ain2;
     steppers[num].BIN1pin = bin1;
     steppers[num].BIN2pin = bin2;
+    steppers[num].pwmInitialized = false;
   }
   return &steppers[num];
 }
@@ -158,6 +159,7 @@ void Adafruit_DCMotor::setSpeed(uint8_t speed) {
 
 Adafruit_StepperMotor::Adafruit_StepperMotor(void) {
   revsteps = steppernum = currentstep = 0;
+  pwmInitialized = false;
 }
 /*
 
@@ -213,6 +215,7 @@ void Adafruit_StepperMotor::release(void) {
   MC->setPin(BIN2pin, LOW);
   MC->setPWM(PWMApin, 0);
   MC->setPWM(PWMBpin, 0);
+  pwmInitialized=false;
 }
 
 void Adafruit_StepperMotor::step(uint16_t steps, uint8_t dir,  uint8_t style) {
@@ -243,7 +246,6 @@ uint8_t Adafruit_StepperMotor::onestep(uint8_t dir, uint8_t style) {
   uint8_t ocrb, ocra;
 
   ocra = ocrb = 255;
-
 
   // next determine what sort of stepping procedure we're up to
   if (style == SINGLE) {
@@ -319,9 +321,16 @@ uint8_t Adafruit_StepperMotor::onestep(uint8_t dir, uint8_t style) {
   Serial.print(" pwmA = "); Serial.print(ocra, DEC);
   Serial.print(" pwmB = "); Serial.println(ocrb, DEC);
 #endif
-  MC->setPWM(PWMApin, ocra*16);
-  MC->setPWM(PWMBpin, ocrb*16);
 
+// for other styles call initOnestep once
+if (!pwmInitialized || style == MICROSTEP ) {
+#ifdef MOTORDEBUG
+      Serial.println("******Initializing");
+#endif
+      MC->setPWM(PWMApin, ocra*16);
+      MC->setPWM(PWMBpin, ocrb*16);
+      pwmInitialized = true;
+ }
 
   // release all
   uint8_t latch_state = 0; // all motor pins to 0
@@ -364,102 +373,6 @@ uint8_t Adafruit_StepperMotor::onestep(uint8_t dir, uint8_t style) {
       break;
     }
   }
-#ifdef MOTORDEBUG
-  Serial.print("Latch: 0x"); Serial.println(latch_state, HEX);
-#endif
-
-  if (latch_state & 0x1) {
-   // Serial.println(AIN2pin);
-    MC->setPin(AIN2pin, HIGH);
-  } else {
-    MC->setPin(AIN2pin, LOW);
-  }
-  if (latch_state & 0x2) {
-    MC->setPin(BIN1pin, HIGH);
-   // Serial.println(BIN1pin);
-  } else {
-    MC->setPin(BIN1pin, LOW);
-  }
-  if (latch_state & 0x4) {
-    MC->setPin(AIN1pin, HIGH);
-   // Serial.println(AIN1pin);
-  } else {
-    MC->setPin(AIN1pin, LOW);
-  }
-  if (latch_state & 0x8) {
-    MC->setPin(BIN2pin, HIGH);
-   // Serial.println(BIN2pin);
-  } else {
-    MC->setPin(BIN2pin, LOW);
-  }
-
-  return currentstep;
-}
-
-
-
-uint8_t Adafruit_StepperMotor::quickstep(uint8_t dir) {
-  uint8_t a, b, c, d;
-  uint8_t ocrb, ocra;
-
-  ocra = ocrb = 255;
-
-  // DOUBLE step only
-
-  if (! (currentstep/(MICROSTEPS/2) % 2)) { // we're at an even step, weird
-      if (dir == FORWARD) {
-        currentstep += MICROSTEPS/2;
-      } else {
-        currentstep -= MICROSTEPS/2;
-      }
-    } else {           // go to the next odd step
-      if (dir == FORWARD) {
-        currentstep += MICROSTEPS;
-      } else {
-        currentstep -= MICROSTEPS;
-      }
-    }
-
-  currentstep += MICROSTEPS*4;
-  currentstep %= MICROSTEPS*4;
-
-#ifdef MOTORDEBUG
-  Serial.print("current step: "); Serial.println(currentstep, DEC);
-  Serial.print(" pwmA = "); Serial.print(ocra, DEC);
-  Serial.print(" pwmB = "); Serial.println(ocrb, DEC);
-#endif
-
-  // release all
-  uint8_t latch_state = 0; // all motor pins to 0
-
-
-    switch (currentstep/(MICROSTEPS/2)) {
-    case 0:
-      latch_state |= 0x1; // energize coil 1 only
-      break;
-    case 1:
-      latch_state |= 0x3; // energize coil 1+2
-      break;
-    case 2:
-      latch_state |= 0x2; // energize coil 2 only
-      break;
-    case 3:
-      latch_state |= 0x6; // energize coil 2+3
-      break;
-    case 4:
-      latch_state |= 0x4; // energize coil 3 only
-      break;
-    case 5:
-      latch_state |= 0xC; // energize coil 3+4
-      break;
-    case 6:
-      latch_state |= 0x8; // energize coil 4 only
-      break;
-    case 7:
-      latch_state |= 0x9; // energize coil 1+4
-      break;
-    }
-
 #ifdef MOTORDEBUG
   Serial.print("Latch: 0x"); Serial.println(latch_state, HEX);
 #endif

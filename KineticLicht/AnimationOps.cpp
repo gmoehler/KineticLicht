@@ -21,22 +21,8 @@ _programFinished(false),
 _strategy(SINGLE_ANIMATION), _strategy_startWithAnimationId(-1), _strategy_repeat(false),
 _tlc(tlc), _currentState(ANIMATION_INIT), _nextState(ANIMATION_INIT)
 {
-  //setDebugString(std::string("AnimationOps"));
-  _tlc = tlc;
-  /*
-  addTransition(ANIMATION_INIT, ANIMATION_CALIBRATING, &AnimationOps::_init_to_calibrating);
-  addTransition(ANIMATION_INIT, ANIMATION_ACTIVE, &AnimationOps::_init_to_active);
-  addTransition(ANIMATION_CALIBRATING, ANIMATION_ACTIVE, &AnimationOps::_calibrating_to_active);
-  addTransition(ANIMATION_ACTIVE, ANIMATION_FINISHED, &AnimationOps::_active_to_finished);
-  addTransition(ANIMATION_FINISHED, ANIMATION_INIT, &AnimationOps::_finished_to_init);
+//  _tlc = tlc;
 
-  addStateEntryAction(ANIMATION_CALIBRATING,&AnimationOps::_entry_calibrating);
-  addStateAction(ANIMATION_CALIBRATING, &AnimationOps::_action_calibrating);
-  addStateEntryAction(ANIMATION_ACTIVE, &AnimationOps::_entry_active);
-  addStateAction(ANIMATION_ACTIVE, &AnimationOps::_action_active);
-  addStateEntryAction(ANIMATION_FINISHED, &AnimationOps::_entry_finished);
-  addStateAction(ANIMATION_FINISHED, &AnimationOps::_action_finished);
-  */
 }
 
 uint8_t AnimationOps::getNumAnimations(){
@@ -211,16 +197,12 @@ void AnimationOps::_entry_finished(){
     // continue if we have a valid id
     if (_currentAnimationId == NO_CURRENT_ANIMATION){
       //FPRINTF0(aops_msg7, "No more animations available.\n");
-    }
-    else {
-      FPRINTF1(aops_msg8, "### Proceeding with Animation %d ###.\n", _currentAnimationId);
+      return false;
     }
 
-    if (_currentAnimationId != NO_CURRENT_ANIMATION){
-      _getCurrentAnimation().resetCurrentKeyFrame();
-      return true;
-    }
-    return false;
+    FPRINTF1(aops_msg8, "### Proceeding with Animation %d ###.\n", _currentAnimationId);
+    _getCurrentAnimation().resetCurrentKeyFrame();
+    return true;
   }
 
   bool AnimationOps::_active_to_finished(){
@@ -262,7 +244,6 @@ void AnimationOps::_entry_finished(){
         FPRINTF1(aops_msg12,"### WARNING. KeyFrame id did not match any worker: %d ###.\n", kf_it->getId());
       }
     }
-
 
     for (auto it = _stepperWorkerMap.begin(); it != _stepperWorkerMap.end(); ++it) {
       StepperWorker* sw = it->second;

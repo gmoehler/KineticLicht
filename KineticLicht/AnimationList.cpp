@@ -112,31 +112,31 @@ void AnimationList::load(){
 
   rows = sizeof(led_test2) / sizeof(led_test2[0]);
   _addAsAnimationUint(led_test2, rows, animationId++);
-
+*/
 #ifdef WITH_PROGMEM
   FLASH_TABLE(unsigned, stepper_test1, NUM_COLS,
 #else
     unsigned stepper_test1[][NUM_COLS] = {
 #endif
-    {STEPPER1, 0, 0, NOCOLOR},
-    {STEPPER1, 50, 2000, NOCOLOR},
+   {STEPPER1, 0, 0, NOCOLOR},
+    {STEPPER1, 50, 3000, NOCOLOR},
     {STEPPER1, 100, 0, NOCOLOR},
     {STEPPER1, 150, 1500, NOCOLOR},
     {STEPPER1, 200, 0, NOCOLOR},
-    {STEPPER1, 50, 2000, NOCOLOR},
+    {STEPPER1, 50, 3000, NOCOLOR},
     {STEPPER1, 100, 0, NOCOLOR},
     {STEPPER2, 0, 0, NOCOLOR},
-    {STEPPER2, 50, 2000, NOCOLOR},
+    {STEPPER2, 50, 3000, NOCOLOR},
     {STEPPER2, 100, 0, NOCOLOR},
     {STEPPER2, 150, 1500, NOCOLOR},
     {STEPPER2, 200, 0, NOCOLOR},
     {STEPPER3, 0, 0, NOCOLOR},
-    {STEPPER3, 50, 2000, NOCOLOR},
+    {STEPPER3, 50, 3000, NOCOLOR},
     {STEPPER3, 100, 0, NOCOLOR},
     {STEPPER3, 150, 1500, NOCOLOR},
     {STEPPER3, 200, 0, NOCOLOR},
     {STEPPER4, 0, 0, NOCOLOR},
-    {STEPPER4, 50, 2000, NOCOLOR},
+    {STEPPER4, 50, 3000, NOCOLOR},
     {STEPPER4, 100, 0, NOCOLOR},
     {STEPPER4, 150, 1500, NOCOLOR},
     {STEPPER4, 200, 0, NOCOLOR},
@@ -198,8 +198,9 @@ void AnimationList::load(){
   int rows = sizeof(stepper_test1) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test1, rows, animationId++);
 #endif
-*/
 
+
+/*
 #ifdef WITH_PROGMEM
   FLASH_TABLE(unsigned, stepper_test2, NUM_COLS,
 #else
@@ -271,6 +272,7 @@ void AnimationList::load(){
   rows = sizeof(stepper_test2) / sizeof(stepper_test1[0]);
   _addAsAnimationUint(stepper_test2, rows, animationId++);
 #endif
+*/
 
 /*
 #ifdef WITH_PROGMEM
@@ -405,9 +407,17 @@ void AnimationList::load(){
     rows = sizeof(animation2) / sizeof(stepper_test1[0]);
     _addAsAnimationUint(animation2, rows, animationId++);
   #endif
+*/
+
+
+
+
+
+
+
 
 }
-*/
+
 #else
 
 // consistent version for unit test
