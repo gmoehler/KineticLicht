@@ -23,7 +23,7 @@
 #define ARDBUFFER 80
 // max speed DOUBLE: ca. 220 (with one light: down:350, up: 230) --> 250
 // max speed INTERLEAVE: ca. 350 -> 370
-#define MAX_SPEED 350
+#define MAX_SPEED 360
 #define CALIBRATE_SPEED -300
 
 #define ALLOWED_TARGETTIME_OVERSHOOT 100
